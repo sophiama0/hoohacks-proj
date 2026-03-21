@@ -4,10 +4,10 @@
  */
 
 const FRIENDS = [
-  {id:'alex',  name:'Alex Chen',       ini:'AC', color:'#ef4444', lat:38.0538, lng:-78.4865, gait:73, loc:"Near O'Neills Pub",    batt:24},
-  {id:'jordan',name:'Jordan Kim',      ini:'JK', color:'#f59e0b', lat:38.0528, lng:-78.4858, gait:87, loc:'Walking on Wertland St',batt:61},
-  {id:'maya',  name:'Maya Rodriguez',  ini:'MR', color:'#10b981', lat:38.0542, lng:-78.4878, gait:15, loc:'At Boylan Heights',     batt:88},
-  {id:'sam',   name:'Sam Taylor',      ini:'ST', color:'#3b82f6', lat:38.0545, lng:-78.4875, gait:41, loc:'Corner area',           batt:52},
+  {id:'alex',  name:'Collin Chan',      ini:'CC', color:'#355E3B', lat:38.0538, lng:-78.4865, gait:73, loc:"Near Trinity Irish Pub",    batt:24},
+  {id:'jordan',name:'Jordan Kim',      ini:'JK', color:'#355E3B', lat:38.0528, lng:-78.4858, gait:87, loc:'Walking on Wertland St',batt:61},
+  {id:'maya',  name:'Maya Rodriguez',  ini:'MR', color:'#355E3B', lat:38.0542, lng:-78.4878, gait:15, loc:'At Boylan Heights',     batt:88},
+  {id:'richard',   name:'Richard Do',      ini:'RD', color:'#355E3B', lat:38.0545, lng:-78.4875, gait:41, loc:'At Bodos Bagles',           batt:52},
 ];
 const ME = {lat:38.0535, lng:-78.4870};
 let map, markers = {};
@@ -26,14 +26,14 @@ function initMap(){
 
   // Safe place marker
   L.marker([38.0520,-78.4892], {icon: L.divIcon({
-    html:`<div style="width:36px;height:36px;border-radius:10px;background:#10b981;border:2px solid white;box-shadow:0 4px 10px rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;font-size:16px"></div>`,
+    html:`<div style="width:36px;height:36px;border-radius:10px;background:#355E3B;border:2px solid white;box-shadow:0 4px 10px rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>`,
     className:'', iconSize:[36,36], iconAnchor:[18,18]
   })}).addTo(map).bindPopup('<b> Safe Place</b><br>My Apartment, Rugby Road');
 
   FRIENDS.forEach(addMarker);
   renderChips();
   startSim();
-  setTimeout(()=>toast('','Alex Chen — 73% alert','Tap their chip below to fly to their location'), 1000);
+  setTimeout(()=>toast('','Collin Chan — 73% alert','Tap their chip below to fly to their location'), 1000);
 }
 
 function addMarker(f){
