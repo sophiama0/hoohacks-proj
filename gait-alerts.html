@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Rally — Gait Detection &amp; Alerts</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;}
+    :root{--bg:#080810;--surface:rgba(255,255,255,0.07);--surface2:rgba(255,255,255,0.12);--border:rgba(255,255,255,0.1);--primary:#7c3aed;--danger:#ef4444;--warning:#f59e0b;--safe:#10b981;--text:#f8fafc;--text-muted:#94a3b8;--text-faint:#475569;}
+    html,body{height:100%;background:#04040a;display:flex;justify-content:center;align-items:center;font-family:'Inter',system-ui,sans-serif;}
+    #app{width:390px;height:844px;background:var(--bg);border-radius:40px;overflow:hidden;position:relative;box-shadow:0 0 0 1px rgba(255,255,255,0.08),0 50px 100px rgba(0,0,0,0.8);}
+    @media(max-width:430px){html,body{background:var(--bg);}#app{width:100vw;height:100vh;height:100dvh;border-radius:0;box-shadow:none;}}
+    .header{padding:52px 18px 14px;background:rgba(8,8,16,0.95);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);position:absolute;top:0;left:0;right:0;z-index:100;}
+    .header-top{display:flex;align-items:center;justify-content:space-between;}
+    .back{font-size:14px;color:var(--text-muted);text-decoration:none;}
+    .back:hover{color:var(--text);}
+    .header-title{font-size:18px;font-weight:700;color:var(--text);}
+    .content{position:absolute;top:104px;bottom:0;left:0;right:0;overflow-y:auto;padding:16px 14px 24px;display:flex;flex-direction:column;gap:14px;}
+    /* Hero gauge */
+    .hero{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:22px;text-align:center;position:relative;overflow:hidden;}
+    .hero::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 0%,rgba(124,58,237,0.06),transparent 70%);pointer-events:none;}
+    .gauge-wrap{width:160px;height:160px;margin:0 auto 16px;position:relative;}
+    .gauge-wrap svg{width:100%;height:100%;}
+    .gauge-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;}
+    .gauge-num{font-size:34px;font-weight:800;letter-spacing:-1px;}
+    .gauge-lbl{font-size:11px;color:var(--text-muted);}
+    .hero-title{font-size:16px;font-weight:700;color:var(--text);}
+    .hero-desc{font-size:13px;color:var(--text-muted);margin-top:4px;line-height:1.5;}
+    /* Slider control */
+    .slider-wrap{padding:6px 0 2px;}
+    .slider-label{font-size:12px;color:var(--text-muted);margin-bottom:8px;display:flex;justify-content:space-between;}
+    input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:6px;border-radius:3px;outline:none;cursor:pointer;}
+    input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:var(--primary);border:2px solid white;box-shadow:0 2px 8px rgba(0,0,0,0.3);cursor:pointer;}
+    /* Stages */
+    .section-label{font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;}
+    .stages{display:flex;flex-direction:column;gap:8px;}
+    .stage{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:13px 14px;display:flex;align-items:center;gap:12px;transition:all 0.3s;}
+    .stage.on{border-color:rgba(245,158,11,0.5);background:rgba(245,158,11,0.07);}
+    .stage.red{border-color:rgba(239,68,68,0.5);background:rgba(239,68,68,0.08);animation:stageglow 1.5s ease-in-out infinite;}
+    @keyframes stageglow{0%,100%{box-shadow:0 0 0 rgba(239,68,68,0);}50%{box-shadow:0 0 16px rgba(239,68,68,0.2);}}
+    .stage-ic{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+    .stage-body{flex:1;}
+    .stage-t{font-size:13px;font-weight:600;color:var(--text);}
+    .stage-s{font-size:11px;color:var(--text-muted);margin-top:2px;}
+    .stage-badge{font-size:11px;font-weight:700;padding:3px 9px;border-radius:50px;}
+    /* Ambient */
+    .ambient-card{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:16px;}
+    .awave{display:flex;align-items:center;justify-content:center;gap:3px;height:36px;margin:10px 0;}
+    .wbar{width:4px;border-radius:2px;background:var(--primary);animation:wup var(--d) ease-in-out infinite alternate;}
+    @keyframes wup{from{height:4px;opacity:0.3;}to{height:var(--h);opacity:1;}}
+    .env-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px;}
+    .env-item{background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:11px;padding:10px;text-align:center;cursor:pointer;transition:all 0.2s;}
+    .env-item.active{border-color:var(--primary);background:rgba(124,58,237,0.12);}
+    .env-item:hover{background:rgba(255,255,255,0.08);}
+    .env-icon{font-size:20px;margin-bottom:4px;}
+    .env-label{font-size:11px;color:var(--text-muted);}
+    .env-item.active .env-label{color:var(--primary);font-weight:600;}
+    /* Water */
+    .water-card{background:linear-gradient(135deg,rgba(59,130,246,0.12),rgba(124,58,237,0.08));border:1px solid rgba(59,130,246,0.25);border-radius:18px;padding:15px;display:flex;align-items:center;gap:12px;}
+    .water-btn{margin-left:auto;padding:8px 14px;background:rgba(59,130,246,0.18);border:1px solid rgba(59,130,246,0.3);border-radius:50px;color:#60a5fa;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap;transition:all 0.2s;}
+    .water-btn:hover{background:rgba(59,130,246,0.28);}
+    /* Health data */
+    .health-card{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:15px;}
+    .metric-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.06);}
+    .metric-row:last-child{border-bottom:none;padding-bottom:0;}
+    .metric-name{font-size:13px;color:var(--text-muted);}
+    .metric-val{font-size:13px;font-weight:600;}
+    /* Toast */
+    .toast{position:absolute;top:110px;left:14px;right:14px;z-index:900;background:rgba(12,12,20,0.96);backdrop-filter:blur(10px);border:1px solid var(--border);border-radius:14px;padding:11px 14px;display:flex;align-items:center;gap:11px;transform:translateY(-16px);opacity:0;transition:all 0.3s;pointer-events:none;}
+    .toast.show{transform:translateY(0);opacity:1;}
+  </style>
+</head>
+<body>
+<div id="app">
+  <div class="header">
+    <div class="header-top">
+      <a class="back" href="index.html">‹ Back</a>
+      <div class="header-title">Gait Detection</div>
+      <div style="font-size:11px;font-weight:600;padding:3px 10px;border-radius:50px;background:rgba(16,185,129,0.12);color:#10b981">LIVE</div>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- Gauge hero -->
+    <div class="hero">
+      <div class="gauge-wrap">
+        <svg viewBox="0 0 160 160">
+          <circle cx="80" cy="80" r="65" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="12"/>
+          <circle id="garc" cx="80" cy="80" r="65" fill="none" stroke="#7c3aed" stroke-width="12"
+            stroke-linecap="round" stroke-dasharray="408" stroke-dashoffset="408"
+            transform="rotate(-90 80 80)" style="transition:stroke-dashoffset 0.8s ease,stroke 0.4s"/>
+        </svg>
+        <div class="gauge-center">
+          <div class="gauge-num" id="gpct" style="color:var(--text)">12%</div>
+          <div class="gauge-lbl">gait index</div>
+        </div>
+      </div>
+      <div class="hero-title" id="gtext">Looking good! 👍</div>
+      <div class="hero-desc" id="gdesc">Your walk is steady — no concerns detected.</div>
+      <div class="slider-wrap" style="margin-top:14px">
+        <div class="slider-label">
+          <span>Simulate gait impairment</span>
+          <span id="slider-val" style="color:var(--text);font-weight:600">12%</span>
+        </div>
+        <input type="range" id="gait-slider" min="0" max="99" value="12" oninput="setGait(this.value)">
+      </div>
+    </div>
+
+    <!-- How it works -->
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:15px;">
+      <div class="section-label" style="margin-bottom:10px">How gait detection works</div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div style="display:flex;gap:10px;align-items:flex-start">
+          <div style="font-size:16px;flex-shrink:0">📱</div>
+          <div style="font-size:12px;color:var(--text-muted);line-height:1.5"><strong style="color:var(--text)">Accelerometer + Gyroscope</strong> data from Apple HealthKit / Google Fit measures step timing, stride variance, and rotational sway.</div>
+        </div>
+        <div style="display:flex;gap:10px;align-items:flex-start">
+          <div style="font-size:16px;flex-shrink:0">🧠</div>
+          <div style="font-size:12px;color:var(--text-muted);line-height:1.5"><strong style="color:var(--text)">Your personal baseline</strong> (set during calibration) is compared against live readings. Deviations are scored as a percentage.</div>
+        </div>
+        <div style="display:flex;gap:10px;align-items:flex-start">
+          <div style="font-size:16px;flex-shrink:0">🍻</div>
+          <div style="font-size:12px;color:var(--text-muted);line-height:1.5">When intoxicated, <strong style="color:var(--text)">the brain loses fine motor control</strong> — causing wider stance, irregular step timing, and increased lateral sway — all detectable signals.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Alert stages -->
+    <div class="section-label">Progressive Alert Thresholds</div>
+    <div class="stages">
+      <div class="stage" id="s60">
+        <div class="stage-ic" style="background:rgba(245,158,11,0.12)">👀</div>
+        <div class="stage-body">
+          <div class="stage-t">Heads Up</div>
+          <div class="stage-s">Friends get a gentle background notification</div>
+        </div>
+        <div class="stage-badge" style="background:rgba(245,158,11,0.12);color:#f59e0b">60%</div>
+      </div>
+      <div class="stage" id="s80">
+        <div class="stage-ic" style="background:rgba(251,146,60,0.12)">🤔</div>
+        <div class="stage-body">
+          <div class="stage-t">Check On Them</div>
+          <div class="stage-s">Friends are notified to actively check in</div>
+        </div>
+        <div class="stage-badge" style="background:rgba(251,146,60,0.12);color:#fb923c">80%</div>
+      </div>
+      <div class="stage" id="s95">
+        <div class="stage-ic" style="background:rgba(239,68,68,0.12)">🆘</div>
+        <div class="stage-body">
+          <div class="stage-t">Go Find Them NOW</div>
+          <div class="stage-s">Emergency alert + location sent to all friends</div>
+        </div>
+        <div class="stage-badge" style="background:rgba(239,68,68,0.12);color:#ef4444">95%</div>
+      </div>
+    </div>
+
+    <!-- Health metrics -->
+    <div class="section-label">Live Health Metrics</div>
+    <div class="health-card">
+      <div class="metric-row"><span class="metric-name">Step regularity</span><span class="metric-val" id="m-regularity" style="color:var(--safe)">Excellent</span></div>
+      <div class="metric-row"><span class="metric-name">Stride variance</span><span class="metric-val" id="m-stride" style="color:var(--safe)">±2.1 cm</span></div>
+      <div class="metric-row"><span class="metric-name">Lateral sway</span><span class="metric-val" id="m-sway" style="color:var(--safe)">Minimal</span></div>
+      <div class="metric-row"><span class="metric-name">Step timing</span><span class="metric-val" id="m-timing" style="color:var(--safe)">Regular</span></div>
+      <div class="metric-row"><span class="metric-name">Data source</span><span class="metric-val" style="color:var(--text-muted);font-size:11px">Apple HealthKit</span></div>
+    </div>
+
+    <!-- Ambient sound detection -->
+    <div class="section-label">AI Ambient Detection</div>
+    <div class="ambient-card">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start">
+        <div>
+          <div style="font-size:14px;font-weight:600;color:var(--text)">🎵 Mic-Based Environment Inference</div>
+          <div style="font-size:12px;color:var(--text-muted);margin-top:3px;line-height:1.5">Rally listens to ambient noise to infer whether you're still at the bar, outside, or somewhere alone.</div>
+        </div>
+      </div>
+      <div class="awave" id="awave"></div>
+      <div style="text-align:center;font-size:13px;color:var(--text-muted);margin-bottom:12px">
+        Detected: <strong id="amloc" style="color:var(--text)">Loud venue — likely still at the bar</strong>
+      </div>
+      <div class="env-grid">
+        <div class="env-item active" id="env-bar" onclick="setEnv('bar',this)"><div class="env-icon">🍺</div><div class="env-label">Bar / Venue</div></div>
+        <div class="env-item" id="env-outside" onclick="setEnv('outside',this)"><div class="env-icon">🌙</div><div class="env-label">Outside / Street</div></div>
+        <div class="env-item" id="env-quiet" onclick="setEnv('quiet',this)"><div class="env-icon">😶</div><div class="env-label">Quiet / Alone</div></div>
+        <div class="env-item" id="env-ride" onclick="setEnv('ride',this)"><div class="env-icon">🚗</div><div class="env-label">In a Ride</div></div>
+      </div>
+    </div>
+
+    <!-- Hydration reminder -->
+    <div class="section-label">Hydration Reminders</div>
+    <div class="water-card">
+      <div style="font-size:28px">💧</div>
+      <div>
+        <div style="font-size:14px;font-weight:600;color:var(--text)">Drink Water</div>
+        <div style="font-size:12px;color:var(--text-muted);margin-top:2px">Auto-reminds your whole group every 45 min</div>
+        <div style="font-size:11px;color:var(--text-faint);margin-top:2px">Last sent: 12 minutes ago</div>
+      </div>
+      <button class="water-btn" onclick="toast('💧','Reminder Sent!','Your friends were reminded to drink water 💧')">Ping All</button>
+    </div>
+
+  </div>
+
+  <div class="toast" id="toastEl">
+    <div id="tic" style="font-size:20px">✅</div>
+    <div><div id="tt" style="font-size:13px;font-weight:600;color:var(--text)"></div><div id="ts" style="font-size:11px;color:var(--text-muted);margin-top:2px"></div></div>
+  </div>
+</div>
+
+<script>
+let toastTmr, currentGait=12;
+const circumference=2*Math.PI*65; // 408
+
+function gc(g){return g>=95?'#ef4444':g>=80?'#f97316':g>=60?'#f59e0b':g>=40?'#3b82f6':'#10b981';}
+
+function setGait(val){
+  val=parseInt(val); currentGait=val;
+  document.getElementById('slider-val').textContent=val+'%';
+  // Arc
+  const arc=document.getElementById('garc');
+  arc.style.strokeDashoffset=circumference-(val/100)*circumference;
+  arc.style.stroke=gc(val);
+  // Number
+  const gpct=document.getElementById('gpct');
+  gpct.textContent=val+'%'; gpct.style.color=gc(val);
+  // Text
+  const texts={
+    text: val<40?'Looking good! 👍':val<60?'Monitoring your gait 📡':val<80?'Heads up sent to friends 👀':val<95?'Friends checking on you ⚠️':'FRIENDS COMING NOW 🆘',
+    desc: val<40?'Your walk is steady — no concerns detected.':val<60?'Slight irregularity — keep it steady!':val<80?'Your friends have been gently notified.':val<95?'Your gait is significantly off. Stay safe!':'Emergency alert sent. Stay where you are!'
+  };
+  document.getElementById('gtext').textContent=texts.text;
+  document.getElementById('gdesc').textContent=texts.desc;
+  // Stages
+  document.getElementById('s60').className='stage'+(val>=60?' on':'');
+  document.getElementById('s80').className='stage'+(val>=80?(val>=95?' red':' on'):'');
+  document.getElementById('s95').className='stage'+(val>=95?' red':'');
+  // Health metrics
+  const reg=val<40?['Excellent','var(--safe)']:val<60?['Good','#60a5fa']:val<80?['Irregular','var(--warning)']:['Very irregular','var(--danger)'];
+  document.getElementById('m-regularity').textContent=reg[0]; document.getElementById('m-regularity').style.color=reg[1];
+  const strideV=Math.round(2+val*0.2*10)/10;
+  document.getElementById('m-stride').textContent='±'+strideV.toFixed(1)+' cm'; document.getElementById('m-stride').style.color=gc(val);
+  const swayL=val<40?'Minimal':val<60?'Low':val<80?'Moderate':val<95?'High':'Severe';
+  document.getElementById('m-sway').textContent=swayL; document.getElementById('m-sway').style.color=gc(val);
+  const timingL=val<40?'Regular':val<60?'Mostly regular':val<80?'Irregular':val<95?'Very irregular':'Severely off';
+  document.getElementById('m-timing').textContent=timingL; document.getElementById('m-timing').style.color=gc(val);
+  // Alert toasts
+  if(val>=95&&currentGait<95) toast('🆘','CRITICAL','All friends alerted — emergency level');
+  else if(val>=80&&currentGait<80) toast('⚠️','Check-in alert sent','Friends notified to check on you');
+  else if(val>=60&&currentGait<60) toast('👀','Heads up sent','Friends gently notified');
+}
+
+const envInfo={
+  bar:{label:'Loud venue — likely still at the bar',id:'env-bar'},
+  outside:{label:'Outside / street — moderate noise',id:'env-outside'},
+  quiet:{label:'Very quiet — possibly alone somewhere',id:'env-quiet'},
+  ride:{label:'In a vehicle — likely in a ride home',id:'env-ride'}
+};
+function setEnv(key,el){
+  document.querySelectorAll('.env-item').forEach(e=>e.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('amloc').textContent=envInfo[key].label;
+}
+
+function initAmbient(){
+  const w=document.getElementById('awave'); w.innerHTML='';
+  [8,14,22,32,18,36,24,16,30,20,28,12,38,22,16,10].forEach(h=>{
+    const b=document.createElement('div'); b.className='wbar';
+    b.style.setProperty('--h',h+'px');
+    b.style.setProperty('--d',(0.35+Math.random()*0.55).toFixed(2)+'s');
+    b.style.height=Math.floor(h*0.4)+'px';
+    w.appendChild(b);
+  });
+}
+
+function toast(ic,t,s){
+  document.getElementById('tic').textContent=ic;
+  document.getElementById('tt').textContent=t;
+  document.getElementById('ts').textContent=s;
+  const el=document.getElementById('toastEl');
+  if(toastTmr)clearTimeout(toastTmr);
+  el.classList.add('show');
+  toastTmr=setTimeout(()=>el.classList.remove('show'),3200);
+}
+
+// Init
+setGait(12); initAmbient();
+
+// Live simulation
+setInterval(()=>{
+  const slider=document.getElementById('gait-slider');
+  const drift=Math.round((Math.random()-0.45)*3);
+  const newVal=Math.max(0,Math.min(99,parseInt(slider.value)+drift));
+  slider.value=newVal;
+  setGait(newVal);
+},2500);
+</script>
+</body>
+</html>

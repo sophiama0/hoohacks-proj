@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Rally — Gait Calibration</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;}
+    :root{--bg:#080810;--surface:rgba(255,255,255,0.07);--surface2:rgba(255,255,255,0.12);--border:rgba(255,255,255,0.1);--primary:#7c3aed;--primary-glow:rgba(124,58,237,0.35);--text:#f8fafc;--text-muted:#94a3b8;--safe:#10b981;}
+    html,body{height:100%;background:#04040a;display:flex;justify-content:center;align-items:center;font-family:'Inter',system-ui,sans-serif;}
+    #app{width:390px;height:844px;background:var(--bg);border-radius:40px;overflow:hidden;position:relative;box-shadow:0 0 0 1px rgba(255,255,255,0.08),0 50px 100px rgba(0,0,0,0.8),0 0 60px rgba(124,58,237,0.08);}
+    @media(max-width:430px){html,body{background:var(--bg);}#app{width:100vw;height:100vh;height:100dvh;border-radius:0;box-shadow:none;}}
+    .back{position:absolute;top:52px;left:20px;z-index:10;display:flex;align-items:center;gap:6px;font-size:14px;color:var(--text-muted);text-decoration:none;transition:color 0.2s;}
+    .back:hover{color:var(--text);}
+    .screen{display:flex;flex-direction:column;align-items:center;padding:100px 28px 40px;height:100%;gap:18px;}
+    .cal-icon{width:96px;height:96px;border-radius:50%;background:rgba(124,58,237,0.15);border:2px solid var(--primary);display:flex;align-items:center;justify-content:center;font-size:44px;animation:walkbounce 0.55s ease-in-out infinite alternate;}
+    @keyframes walkbounce{from{transform:translateY(0) rotate(-6deg);}to{transform:translateY(-10px) rotate(6deg);}}
+    .cal-icon.done{animation:none;transform:none;background:rgba(16,185,129,0.15);border-color:var(--safe);}
+    h2{font-size:26px;font-weight:700;color:var(--text);text-align:center;letter-spacing:-0.5px;}
+    .sub{font-size:15px;color:var(--text-muted);text-align:center;line-height:1.65;max-width:300px;}
+    .steps{display:flex;gap:7px;margin-top:6px;}
+    .step{width:34px;height:6px;background:rgba(255,255,255,0.1);border-radius:3px;transition:background 0.3s;}
+    .step.done{background:var(--primary);}
+    .step.done.last{background:var(--safe);}
+    .prog{font-size:13px;color:var(--text-muted);min-height:20px;}
+    .info-box{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:10px;margin-top:6px;}
+    .info-row{display:flex;align-items:flex-start;gap:10px;}
+    .info-ic{font-size:18px;flex-shrink:0;margin-top:1px;}
+    .info-text{font-size:13px;color:var(--text-muted);line-height:1.5;}
+    .info-text strong{color:var(--text);}
+    .spacer{flex:1;}
+    .btn{width:100%;padding:16px;border:none;border-radius:50px;font-size:16px;font-weight:600;cursor:pointer;font-family:inherit;transition:all 0.2s;}
+    .btn-primary{background:var(--primary);color:white;}
+    .btn-primary:hover{opacity:0.9;transform:translateY(-1px);}
+    .btn-primary:disabled{opacity:0.45;transform:none;cursor:default;}
+    .btn-ghost{background:var(--surface);color:var(--text-muted);border:1px solid var(--border);margin-top:10px;}
+    .btn-ghost:hover{background:var(--surface2);}
+    .success-screen{display:none;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:18px;padding:40px 28px;text-align:center;}
+    .success-screen.show{display:flex;}
+    .screen.hide{display:none;}
+    .check{width:88px;height:88px;border-radius:50%;background:rgba(16,185,129,0.15);border:2px solid var(--safe);display:flex;align-items:center;justify-content:center;font-size:40px;}
+  </style>
+</head>
+<body>
+<div id="app">
+  <a class="back" href="index.html">‹ Back</a>
+
+  <div class="screen" id="cal-screen">
+    <div class="cal-icon" id="walk-icon">🚶</div>
+    <h2>Calibrate your walk</h2>
+    <div class="sub">Walk naturally for a few steps so Rally learns your personal gait baseline — this helps detect when something seems off later.</div>
+
+    <div class="steps" id="steps-row">
+      <div class="step done" id="s1"></div><div class="step done" id="s2"></div>
+      <div class="step done" id="s3"></div><div class="step" id="s4"></div>
+      <div class="step" id="s5"></div><div class="step" id="s6"></div>
+      <div class="step" id="s7"></div><div class="step" id="s8"></div>
+    </div>
+    <div class="prog" id="prog-text">Tap start, then walk a few steps</div>
+
+    <div class="info-box">
+      <div class="info-row">
+        <div class="info-ic">🧠</div>
+        <div class="info-text"><strong>Why we need this:</strong> Everyone walks differently. Your baseline lets us detect changes caused by intoxication — not just any unusual movement.</div>
+      </div>
+      <div class="info-row">
+        <div class="info-ic">📱</div>
+        <div class="info-text"><strong>Uses Apple HealthKit / Google Fit</strong> accelerometer and gyroscope data to measure step regularity, stride length variance, and lateral sway.</div>
+      </div>
+      <div class="info-row">
+        <div class="info-ic">🔒</div>
+        <div class="info-text"><strong>Private by default.</strong> Your baseline is stored only on your device and never shared with anyone.</div>
+      </div>
+    </div>
+
+    <div class="spacer"></div>
+    <button class="btn btn-primary" id="start-btn" onclick="startCal()">Start Walking Calibration</button>
+    <button class="btn btn-ghost" onclick="window.location.href='index.html'">Skip for now</button>
+  </div>
+
+  <div class="success-screen" id="success-screen">
+    <div class="check">✅</div>
+    <h2>Baseline saved!</h2>
+    <div class="sub">Rally now knows your natural gait. You'll be alerted if your walk changes significantly throughout the night.</div>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:16px;width:100%;text-align:left">
+      <div style="font-size:12px;color:var(--text-muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:1px;font-weight:600">Calibration Results</div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:8px"><span style="font-size:13px;color:var(--text-muted)">Step regularity</span><span style="font-size:13px;font-weight:600;color:var(--safe)">Excellent</span></div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:8px"><span style="font-size:13px;color:var(--text-muted)">Stride consistency</span><span style="font-size:13px;font-weight:600;color:var(--safe)">98%</span></div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:8px"><span style="font-size:13px;color:var(--text-muted)">Lateral sway</span><span style="font-size:13px;font-weight:600;color:var(--safe)">Minimal</span></div>
+      <div style="display:flex;justify-content:space-between"><span style="font-size:13px;color:var(--text-muted)">Steps recorded</span><span style="font-size:13px;font-weight:600;color:var(--text)">8</span></div>
+    </div>
+    <button class="btn btn-primary" onclick="window.location.href='index.html'" style="width:100%">Go to App →</button>
+  </div>
+</div>
+
+<script>
+let steps=3, tmr=null;
+function startCal(){
+  const btn=document.getElementById('start-btn');
+  btn.textContent='Calibrating…'; btn.disabled=true;
+  tmr=setInterval(()=>{
+    steps++;
+    for(let i=1;i<=8;i++){
+      const el=document.getElementById('s'+i);
+      el.classList.toggle('done',i<=steps);
+      if(i===steps) el.classList.add('last');
+      else el.classList.remove('last');
+    }
+    const t=steps<8?`Capturing step ${steps} of 8…`:'✅ Calibration complete!';
+    document.getElementById('prog-text').textContent=t;
+    if(steps>=8){clearInterval(tmr);setTimeout(showSuccess,700);}
+  },340);
+}
+function showSuccess(){
+  document.getElementById('cal-screen').classList.add('hide');
+  document.getElementById('success-screen').classList.add('show');
+}
+</script>
+</body>
+</html>
