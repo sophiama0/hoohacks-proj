@@ -31,7 +31,7 @@
 
     /*  Topbar  */
     .topbar{position:absolute;top:0;left:0;right:0;z-index:200;padding:52px 18px 10px;display:flex;align-items:center;justify-content:space-between;pointer-events:none;}
-    .topbar-logo{display:flex;align-items:center;gap:8px;pointer-events:all;background:rgba(0,0,0,0.55);backdrop-filter:blur(10px);border:1px solid var(--border);border-radius:50px;padding:7px 14px;}
+    .topbar-logo{display:flex;align-items:center;justify-content:center;gap:8px;pointer-events:all;background:rgba(0,0,0,0.55);backdrop-filter:blur(10px);border:1px solid var(--border);border-radius:50px;padding:7px 14px;}
     .topbar-logo-icon{font-size:16px;}
     .topbar-logo-name{font-size:16px;font-weight:800;color:var(--text);letter-spacing:-0.5px;}
     .topbar-logo-name span{color:var(--primary);}
@@ -90,28 +90,38 @@
     </div>
     <div class="sidebar-label">Features</div>
     <a class="sidebar-item" href="friends.html">
-      <div class="sidebar-ic" style="background:rgba(16,185,129,0.15)"></div>
+      <div class="sidebar-ic" style="background:rgba(53,94,59,0.2)">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      </div>
       <div class="sidebar-title" style="flex:1">Friends &amp; Status</div>
       <div class="sidebar-arr">›</div>
     </a>
     <a class="sidebar-item" href="gait-alerts.html">
-      <div class="sidebar-ic" style="background:rgba(245,158,11,0.15)"></div>
+      <div class="sidebar-ic" style="background:rgba(53,94,59,0.2)">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      </div>
       <div class="sidebar-title" style="flex:1">Gait Detection &amp; Alerts</div>
       <div class="sidebar-arr">›</div>
     </a>
     <a class="sidebar-item" href="night-summary.html">
-      <div class="sidebar-ic" style="background:rgba(53,94,59,0.15)"></div>
+      <div class="sidebar-ic" style="background:rgba(53,94,59,0.2)">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </div>
       <div class="sidebar-title" style="flex:1">Night Summary</div>
       <div class="sidebar-arr">›</div>
     </a>
     <div class="sidebar-divider"></div>
     <a class="sidebar-item" href="calibration.html">
-      <div class="sidebar-ic" style="background:rgba(53,94,59,0.10)"></div>
+      <div class="sidebar-ic" style="background:rgba(53,94,59,0.2)">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>
+      </div>
       <div class="sidebar-title" style="flex:1">Gait Calibration</div>
       <div class="sidebar-arr">›</div>
     </a>
     <a class="sidebar-item" href="emergency.html">
-      <div class="sidebar-ic" style="background:rgba(239,68,68,0.15)"></div>
+      <div class="sidebar-ic" style="background:rgba(53,94,59,0.2)">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      </div>
       <div class="sidebar-title" style="flex:1">Emergency &amp; SOS</div>
       <div class="sidebar-arr">›</div>
     </a>
@@ -137,7 +147,6 @@
           <span></span><span></span><span></span>
         </div>
         <div class="topbar-logo">
-          <span class="topbar-logo-icon"></span>
           <span class="topbar-logo-name">Ral<span>ly</span></span>
         </div>
       </div>
