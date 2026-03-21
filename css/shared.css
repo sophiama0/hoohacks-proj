@@ -1,0 +1,122 @@
+/* ─── Fonts ─────────────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+/* ─── Reset ──────────────────────────────────────────────────── */
+*{margin:0;padding:0;box-sizing:border-box;}
+
+/* ─── Design tokens ──────────────────────────────────────────── */
+:root{
+  --bg:#080810;
+  --surface:rgba(255,255,255,0.07);
+  --surface2:rgba(255,255,255,0.12);
+  --border:rgba(255,255,255,0.1);
+  --primary:#7c3aed;
+  --danger:#ef4444;
+  --warning:#f59e0b;
+  --safe:#10b981;
+  --text:#f8fafc;
+  --text-muted:#94a3b8;
+  --text-faint:#475569;
+}
+
+/* ─── App shell ───────────────────────────────────────────────── */
+html,body{
+  height:100%;
+  background:#04040a;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-family:'Inter',system-ui,sans-serif;
+}
+#app{
+  width:390px;
+  height:844px;
+  background:var(--bg);
+  border-radius:40px;
+  overflow:hidden;
+  position:relative;
+  box-shadow:0 0 0 1px rgba(255,255,255,0.08),0 50px 100px rgba(0,0,0,0.8);
+}
+@media(max-width:430px){
+  html,body{background:var(--bg);}
+  #app{width:100vw;height:100vh;height:100dvh;border-radius:0;box-shadow:none;}
+}
+
+/* ─── Page header (inner pages) ──────────────────────────────── */
+.header{
+  padding:52px 18px 14px;
+  background:rgba(8,8,16,0.95);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--border);
+  position:absolute;top:0;left:0;right:0;z-index:100;
+}
+.header-top{display:flex;align-items:center;justify-content:space-between;}
+.header-title{font-size:18px;font-weight:700;color:var(--text);}
+.back{font-size:14px;color:var(--text-muted);text-decoration:none;}
+.back:hover{color:var(--text);}
+
+/* ─── Section label ──────────────────────────────────────────── */
+.section-label{
+  font-size:11px;font-weight:600;color:var(--text-muted);
+  text-transform:uppercase;letter-spacing:1px;
+}
+
+/* ─── Location box ───────────────────────────────────────────── */
+.loc-box{
+  background:rgba(255,255,255,0.05);
+  border:1px solid var(--border);
+  border-radius:13px;
+  padding:13px;
+  margin-bottom:14px;
+}
+
+/* ─── Toast ──────────────────────────────────────────────────── */
+/* Default top — individual pages can override via inline style  */
+.toast{
+  position:absolute;
+  top:110px;left:14px;right:14px;
+  z-index:900;
+  background:rgba(12,12,20,0.96);
+  backdrop-filter:blur(10px);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:11px 14px;
+  display:flex;align-items:center;gap:11px;
+  transform:translateY(-16px);opacity:0;
+  transition:all 0.3s ease;
+  pointer-events:none;
+}
+.toast.show{transform:translateY(0);opacity:1;}
+
+/* ─── Modal system ───────────────────────────────────────────── */
+.modal-overlay{
+  position:absolute;inset:0;
+  background:rgba(0,0,0,0.75);
+  backdrop-filter:blur(5px);
+  z-index:600;
+  display:none;align-items:flex-end;
+}
+.modal-overlay.open{display:flex;}
+.modal-sheet{
+  width:100%;
+  background:#111118;
+  border-radius:24px 24px 0 0;
+  border:1px solid var(--border);
+  border-bottom:none;
+  padding:20px;
+  animation:slideup 0.28s ease;
+}
+@keyframes slideup{from{transform:translateY(100%);}to{transform:translateY(0);}}
+.mhandle{width:36px;height:4px;background:rgba(255,255,255,0.18);border-radius:2px;margin:0 auto 18px;}
+.mtitle{font-size:18px;font-weight:700;color:var(--text);margin-bottom:4px;}
+.msub{font-size:13px;color:var(--text-muted);margin-bottom:16px;line-height:1.5;}
+.mbtn{
+  width:100%;padding:15px;border:none;border-radius:50px;
+  font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;
+  margin-bottom:9px;display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.mbtn.primary{background:var(--primary);color:white;}
+.mbtn.danger{background:var(--danger);color:white;}
+.mbtn.ghost{background:rgba(255,255,255,0.05);color:var(--text-muted);border:1px solid var(--border);}
+.mbtn.danger-soft{background:rgba(239,68,68,0.12);color:#f87171;border:1px solid rgba(239,68,68,0.3);}
+.mbtn.purple-soft{background:rgba(124,58,237,0.12);color:#a78bfa;border:1px solid rgba(124,58,237,0.3);}

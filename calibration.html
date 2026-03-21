@@ -4,15 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <title>Rally — Gait Calibration</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/shared.css">
   <style>
-    *{margin:0;padding:0;box-sizing:border-box;}
-    :root{--bg:#080810;--surface:rgba(255,255,255,0.07);--surface2:rgba(255,255,255,0.12);--border:rgba(255,255,255,0.1);--primary:#7c3aed;--primary-glow:rgba(124,58,237,0.35);--text:#f8fafc;--text-muted:#94a3b8;--safe:#10b981;}
-    html,body{height:100%;background:#04040a;display:flex;justify-content:center;align-items:center;font-family:'Inter',system-ui,sans-serif;}
-    #app{width:390px;height:844px;background:var(--bg);border-radius:40px;overflow:hidden;position:relative;box-shadow:0 0 0 1px rgba(255,255,255,0.08),0 50px 100px rgba(0,0,0,0.8),0 0 60px rgba(124,58,237,0.08);}
-    @media(max-width:430px){html,body{background:var(--bg);}#app{width:100vw;height:100vh;height:100dvh;border-radius:0;box-shadow:none;}}
-    .back{position:absolute;top:52px;left:20px;z-index:10;display:flex;align-items:center;gap:6px;font-size:14px;color:var(--text-muted);text-decoration:none;transition:color 0.2s;}
-    .back:hover{color:var(--text);}
+    /* Override app box-shadow with purple tint for this page */
+    #app{box-shadow:0 0 0 1px rgba(255,255,255,0.08),0 50px 100px rgba(0,0,0,0.8),0 0 60px rgba(124,58,237,0.08);}
+
+    .back{position:absolute;top:52px;left:20px;z-index:10;display:flex;align-items:center;gap:6px;}
     .screen{display:flex;flex-direction:column;align-items:center;padding:100px 28px 40px;height:100%;gap:18px;}
     .cal-icon{width:96px;height:96px;border-radius:50%;background:rgba(124,58,237,0.15);border:2px solid var(--primary);display:flex;align-items:center;justify-content:center;font-size:44px;animation:walkbounce 0.55s ease-in-out infinite alternate;}
     @keyframes walkbounce{from{transform:translateY(0) rotate(-6deg);}to{transform:translateY(-10px) rotate(6deg);}}
@@ -50,7 +47,6 @@
     <div class="cal-icon" id="walk-icon">🚶</div>
     <h2>Calibrate your walk</h2>
     <div class="sub">Walk naturally for a few steps so Rally learns your personal gait baseline — this helps detect when something seems off later.</div>
-
     <div class="steps" id="steps-row">
       <div class="step done" id="s1"></div><div class="step done" id="s2"></div>
       <div class="step done" id="s3"></div><div class="step" id="s4"></div>
@@ -58,22 +54,11 @@
       <div class="step" id="s7"></div><div class="step" id="s8"></div>
     </div>
     <div class="prog" id="prog-text">Tap start, then walk a few steps</div>
-
     <div class="info-box">
-      <div class="info-row">
-        <div class="info-ic">🧠</div>
-        <div class="info-text"><strong>Why we need this:</strong> Everyone walks differently. Your baseline lets us detect changes caused by intoxication — not just any unusual movement.</div>
-      </div>
-      <div class="info-row">
-        <div class="info-ic">📱</div>
-        <div class="info-text"><strong>Uses Apple HealthKit / Google Fit</strong> accelerometer and gyroscope data to measure step regularity, stride length variance, and lateral sway.</div>
-      </div>
-      <div class="info-row">
-        <div class="info-ic">🔒</div>
-        <div class="info-text"><strong>Private by default.</strong> Your baseline is stored only on your device and never shared with anyone.</div>
-      </div>
+      <div class="info-row"><div class="info-ic">🧠</div><div class="info-text"><strong>Why we need this:</strong> Everyone walks differently. Your baseline lets us detect changes caused by intoxication — not just any unusual movement.</div></div>
+      <div class="info-row"><div class="info-ic">📱</div><div class="info-text"><strong>Uses Apple HealthKit / Google Fit</strong> accelerometer and gyroscope data to measure step regularity, stride length variance, and lateral sway.</div></div>
+      <div class="info-row"><div class="info-ic">🔒</div><div class="info-text"><strong>Private by default.</strong> Your baseline is stored only on your device and never shared with anyone.</div></div>
     </div>
-
     <div class="spacer"></div>
     <button class="btn btn-primary" id="start-btn" onclick="startCal()">Start Walking Calibration</button>
     <button class="btn btn-ghost" onclick="window.location.href='index.html'">Skip for now</button>
@@ -95,22 +80,20 @@
 </div>
 
 <script>
-let steps=3, tmr=null;
+let steps = 3, tmr = null;
 function startCal(){
-  const btn=document.getElementById('start-btn');
-  btn.textContent='Calibrating…'; btn.disabled=true;
-  tmr=setInterval(()=>{
+  const btn = document.getElementById('start-btn');
+  btn.textContent = 'Calibrating…'; btn.disabled = true;
+  tmr = setInterval(()=>{
     steps++;
     for(let i=1;i<=8;i++){
-      const el=document.getElementById('s'+i);
-      el.classList.toggle('done',i<=steps);
-      if(i===steps) el.classList.add('last');
-      else el.classList.remove('last');
+      const el = document.getElementById('s'+i);
+      el.classList.toggle('done', i<=steps);
+      if(i===steps) el.classList.add('last'); else el.classList.remove('last');
     }
-    const t=steps<8?`Capturing step ${steps} of 8…`:'✅ Calibration complete!';
-    document.getElementById('prog-text').textContent=t;
-    if(steps>=8){clearInterval(tmr);setTimeout(showSuccess,700);}
-  },340);
+    document.getElementById('prog-text').textContent = steps<8?`Capturing step ${steps} of 8…`:'✅ Calibration complete!';
+    if(steps>=8){clearInterval(tmr); setTimeout(showSuccess, 700);}
+  }, 340);
 }
 function showSuccess(){
   document.getElementById('cal-screen').classList.add('hide');

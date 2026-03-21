@@ -3,98 +3,242 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>Rally — Feature Index</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <title>Rally — Stay Safe Together</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <link rel="stylesheet" href="css/shared.css">
   <style>
-    *{margin:0;padding:0;box-sizing:border-box;}
-    :root{--bg:#080810;--surface:rgba(255,255,255,0.07);--border:rgba(255,255,255,0.1);--primary:#7c3aed;--danger:#ef4444;--warning:#f59e0b;--safe:#10b981;--text:#f8fafc;--text-muted:#94a3b8;}
-    html,body{min-height:100%;background:#04040a;display:flex;justify-content:center;font-family:'Inter',system-ui,sans-serif;padding:40px 16px 60px;}
-    .wrap{width:100%;max-width:420px;}
-    .header{text-align:center;padding:20px 0 36px;}
-    .logo{width:72px;height:72px;border-radius:20px;background:var(--primary);display:inline-flex;align-items:center;justify-content:center;font-size:32px;box-shadow:0 0 40px rgba(124,58,237,0.4);margin-bottom:14px;}
-    h1{font-size:32px;font-weight:800;color:var(--text);letter-spacing:-1px;margin-bottom:6px;}
-    .tagline{font-size:14px;color:var(--text-muted);}
-    .section-label{font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:12px;padding-left:2px;}
-    .grid{display:flex;flex-direction:column;gap:10px;margin-bottom:32px;}
-    a.card{
-      display:flex;align-items:center;gap:14px;
-      background:var(--surface);border:1px solid var(--border);border-radius:18px;
-      padding:16px;text-decoration:none;transition:all 0.2s;
-    }
-    a.card:hover{background:rgba(255,255,255,0.11);border-color:rgba(255,255,255,0.18);transform:translateY(-1px);}
-    .card-ic{width:48px;height:48px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
-    .card-body{flex:1;}
-    .card-title{font-size:15px;font-weight:600;color:var(--text);margin-bottom:3px;}
-    .card-desc{font-size:12px;color:var(--text-muted);line-height:1.5;}
-    .card-arr{color:rgba(255,255,255,0.2);font-size:16px;}
-    .file-tag{font-size:10px;font-weight:600;color:rgba(255,255,255,0.25);background:rgba(255,255,255,0.05);border-radius:4px;padding:2px 6px;margin-top:4px;display:inline-block;font-family:monospace;}
+    /* ── Sidebar ── */
+    .sidebar{position:absolute;top:0;left:0;width:260px;height:100%;background:#0e0e18;border-right:1px solid var(--border);z-index:800;display:flex;flex-direction:column;padding:56px 0 30px;transform:translateX(-260px);transition:transform 0.32s cubic-bezier(0.4,0,0.2,1);}
+    .sidebar.open{transform:translateX(0);}
+    .sidebar-header{padding:16px 20px 12px;border-bottom:1px solid var(--border);margin-bottom:8px;}
+    .sidebar-logo{display:flex;align-items:center;gap:10px;}
+    .sidebar-logo-ic{width:36px;height:36px;border-radius:10px;background:var(--primary);display:flex;align-items:center;justify-content:center;font-size:18px;box-shadow:0 0 16px rgba(124,58,237,0.4);}
+    .sidebar-logo-name{font-size:17px;font-weight:800;color:var(--text);letter-spacing:-0.5px;}
+    .sidebar-logo-name span{color:var(--primary);}
+    .sidebar-label{font-size:10px;font-weight:700;color:var(--text-faint);text-transform:uppercase;letter-spacing:1.2px;padding:10px 20px 6px;}
+    .sidebar-item{display:flex;align-items:center;gap:12px;padding:10px 16px;text-decoration:none;transition:background 0.15s;margin:0 8px;border-radius:12px;}
+    .sidebar-item:hover{background:rgba(255,255,255,0.07);}
+    .sidebar-ic{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
+    .sidebar-body{flex:1;}
+    .sidebar-title{font-size:13px;font-weight:600;color:var(--text);}
+    .sidebar-desc{font-size:11px;color:var(--text-muted);margin-top:1px;line-height:1.3;}
+    .sidebar-arr{font-size:13px;color:rgba(255,255,255,0.2);}
+    .sidebar-divider{height:1px;background:var(--border);margin:8px 20px;}
+
+    /* ── Main content wrapper ── */
+    .main{position:absolute;inset:0;transition:transform 0.32s cubic-bezier(0.4,0,0.2,1);}
+    .main.pushed{transform:translateX(260px);}
+
+    /* ── Topbar ── */
+    .topbar{position:absolute;top:0;left:0;right:0;z-index:200;padding:52px 18px 10px;display:flex;align-items:center;justify-content:space-between;pointer-events:none;}
+    .topbar-logo{display:flex;align-items:center;gap:8px;pointer-events:all;background:rgba(0,0,0,0.55);backdrop-filter:blur(10px);border:1px solid var(--border);border-radius:50px;padding:7px 14px;}
+    .topbar-logo-icon{font-size:16px;}
+    .topbar-logo-name{font-size:16px;font-weight:800;color:var(--text);letter-spacing:-0.5px;}
+    .topbar-logo-name span{color:var(--primary);}
+    .topbar-right{display:flex;gap:8px;pointer-events:all;}
+    .topbar-icon-btn{width:36px;height:36px;border-radius:50%;background:rgba(0,0,0,0.55);backdrop-filter:blur(10px);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;}
+    .hamburger{width:36px;height:36px;border-radius:50%;background:rgba(0,0,0,0.55);backdrop-filter:blur(10px);border:1px solid var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;}
+    .hamburger span{display:block;width:14px;height:2px;background:var(--text);border-radius:2px;transition:all 0.25s;}
+    .hamburger.open span:nth-child(1){transform:translateY(6px) rotate(45deg);}
+    .hamburger.open span:nth-child(2){opacity:0;transform:scaleX(0);}
+    .hamburger.open span:nth-child(3){transform:translateY(-6px) rotate(-45deg);}
+
+    /* ── Map ── */
+    #map{position:absolute;inset:0;z-index:0;}
+    .leaflet-container{background:#1a1a2e;}
+
+    /* ── Legend ── */
+    .legend{position:absolute;top:110px;left:14px;z-index:500;background:rgba(10,10,20,0.9);backdrop-filter:blur(10px);border:1px solid var(--border);border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:5px;}
+    .legend-row{display:flex;align-items:center;gap:7px;font-size:11px;color:var(--text-muted);}
+    .ldot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+
+    /* ── Bottom action bar ── */
+    .map-bottom{position:absolute;bottom:0;left:0;right:0;z-index:400;padding:12px 14px 20px;background:linear-gradient(to top,rgba(8,8,16,1) 0%,rgba(8,8,16,0.92) 60%,transparent 100%);}
+    .action-primary{width:100%;padding:15px 10px;border:none;border-radius:50px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:8px;transition:all 0.2s;margin-bottom:9px;background:var(--danger);color:white;box-shadow:0 0 24px rgba(239,68,68,0.45);}
+    .action-primary:hover{transform:translateY(-1px);box-shadow:0 0 32px rgba(239,68,68,0.6);}
+    .action-row{display:flex;gap:8px;margin-bottom:10px;}
+    .action-btn{flex:1;padding:12px 10px;border:none;border-radius:50px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:6px;transition:all 0.2s;}
+    .action-btn:hover{transform:translateY(-1px);}
+    .btn-contact{background:rgba(124,58,237,0.18);color:#a78bfa;border:1px solid rgba(124,58,237,0.4);}
+    .btn-uber{background:rgba(255,255,255,0.08);color:var(--text);border:1px solid var(--border);}
+
+    /* ── Friend chips ── */
+    .chips{display:flex;gap:9px;overflow-x:auto;-ms-overflow-style:none;scrollbar-width:none;}
+    .chips::-webkit-scrollbar{display:none;}
+    .chip{flex-shrink:0;display:flex;align-items:center;gap:8px;background:rgba(10,10,20,0.92);backdrop-filter:blur(10px);border:1px solid var(--border);border-radius:50px;padding:7px 12px 7px 7px;cursor:pointer;transition:all 0.2s;}
+    .chip:hover{border-color:var(--primary);}
+    .chip.hi{border-color:rgba(239,68,68,0.7);box-shadow:0 0 12px rgba(239,68,68,0.25);animation:chipglow 1.8s ease-in-out infinite;}
+    .chip.md{border-color:rgba(245,158,11,0.6);}
+    @keyframes chipglow{0%,100%{box-shadow:0 0 12px rgba(239,68,68,0.25);}50%{box-shadow:0 0 22px rgba(239,68,68,0.5);}}
+    .av{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:white;position:relative;flex-shrink:0;}
+    .av-dot{width:9px;height:9px;border-radius:50%;position:absolute;bottom:0;right:0;border:2px solid rgba(10,10,20,0.9);}
+    .chip-name{font-size:12px;font-weight:600;color:var(--text);}
+    .chip-info{font-size:10px;color:var(--text-muted);}
+
+    /* Toast top override for map (sits above map, below topbar) */
+    .toast{top:76px;}
   </style>
 </head>
 <body>
-<div class="wrap">
-  <div class="header">
-    <div class="logo">🫂</div>
-    <h1>Rally</h1>
-    <div class="tagline">Stay safe. Stay together. — Feature demos</div>
+<div id="app">
+
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo">
+        <div class="sidebar-logo-ic">🫂</div>
+        <div class="sidebar-logo-name">Ral<span>ly</span></div>
+      </div>
+    </div>
+    <div class="sidebar-label">Features</div>
+    <a class="sidebar-item" href="friends.html">
+      <div class="sidebar-ic" style="background:rgba(16,185,129,0.15)">👥</div>
+      <div class="sidebar-body">
+        <div class="sidebar-title">Friends &amp; Status</div>
+        <div class="sidebar-desc">Gait levels, battery &amp; check-in pings</div>
+      </div>
+      <div class="sidebar-arr">›</div>
+    </a>
+    <a class="sidebar-item" href="gait-alerts.html">
+      <div class="sidebar-ic" style="background:rgba(245,158,11,0.15)">📡</div>
+      <div class="sidebar-body">
+        <div class="sidebar-title">Gait Detection &amp; Alerts</div>
+        <div class="sidebar-desc">Progressive alerts at 60%, 80%, 95%</div>
+      </div>
+      <div class="sidebar-arr">›</div>
+    </a>
+    <a class="sidebar-item" href="night-summary.html">
+      <div class="sidebar-ic" style="background:rgba(124,58,237,0.15)">📊</div>
+      <div class="sidebar-body">
+        <div class="sidebar-title">Night Summary</div>
+        <div class="sidebar-desc">Paths, timeline &amp; who got home safe</div>
+      </div>
+      <div class="sidebar-arr">›</div>
+    </a>
+    <div class="sidebar-divider"></div>
+    <a class="sidebar-item" href="calibration.html">
+      <div class="sidebar-ic" style="background:rgba(124,58,237,0.10)">🚶</div>
+      <div class="sidebar-body">
+        <div class="sidebar-title">Gait Calibration</div>
+        <div class="sidebar-desc">Set your sober baseline</div>
+      </div>
+      <div class="sidebar-arr">›</div>
+    </a>
+    <a class="sidebar-item" href="emergency.html">
+      <div class="sidebar-ic" style="background:rgba(239,68,68,0.15)">🚨</div>
+      <div class="sidebar-body">
+        <div class="sidebar-title">Emergency &amp; SOS</div>
+        <div class="sidebar-desc">One-tap 911 &amp; ride ordering</div>
+      </div>
+      <div class="sidebar-arr">›</div>
+    </a>
   </div>
 
-  <div class="section-label">Core Features</div>
-  <div class="grid">
-    <a class="card" href="calibration.html">
-      <div class="card-ic" style="background:rgba(124,58,237,0.15)">🚶</div>
-      <div class="card-body">
-        <div class="card-title">Gait Calibration</div>
-        <div class="card-desc">Walk a few steps to set your sober baseline. Rally learns your natural gait to detect changes later.</div>
-        <div class="file-tag">calibration.html</div>
+  <div class="main" id="main">
+    <div class="topbar">
+      <div style="display:flex;align-items:center;gap:8px;pointer-events:all;">
+        <div class="hamburger" id="hamburger" onclick="toggleSidebar();event.stopPropagation()">
+          <span></span><span></span><span></span>
+        </div>
+        <div class="topbar-logo">
+          <span class="topbar-logo-icon">🫂</span>
+          <span class="topbar-logo-name">Ral<span>ly</span></span>
+        </div>
       </div>
-      <div class="card-arr">›</div>
-    </a>
-    <a class="card" href="map.html">
-      <div class="card-ic" style="background:rgba(59,130,246,0.15)">🗺️</div>
-      <div class="card-body">
-        <div class="card-title">Live Friend Map</div>
-        <div class="card-desc">Real-time map of everyone in your group. Add safe places like your apartment or AirBnb.</div>
-        <div class="file-tag">map.html</div>
+      <div class="topbar-right">
+        <div class="topbar-icon-btn" onclick="centerMap()" title="My location">📍</div>
+        <div class="topbar-icon-btn" onclick="openModal('safe-modal')" title="Safe places">🏠</div>
       </div>
-      <div class="card-arr">›</div>
-    </a>
-    <a class="card" href="friends.html">
-      <div class="card-ic" style="background:rgba(16,185,129,0.15)">👥</div>
-      <div class="card-body">
-        <div class="card-title">Friends &amp; Status</div>
-        <div class="card-desc">See each friend's gait level, battery, and location. Send "Are you ok?" pings with one tap.</div>
-        <div class="file-tag">friends.html</div>
+    </div>
+
+    <div id="map"></div>
+
+    <div class="legend">
+      <div class="legend-row"><div class="ldot" style="background:#ef4444"></div>Critical alert</div>
+      <div class="legend-row"><div class="ldot" style="background:#f59e0b"></div>Heads up</div>
+      <div class="legend-row"><div class="ldot" style="background:#10b981"></div>All good</div>
+      <div class="legend-row"><div class="ldot" style="background:#7c3aed"></div>You</div>
+      <div class="legend-row"><div class="ldot" style="background:#10b981;border-radius:3px"></div>Safe place</div>
+    </div>
+
+    <div class="map-bottom">
+      <button class="action-primary" onclick="openModal('helpme-modal')">🚨 Come Help Me</button>
+      <div class="action-row">
+        <button class="action-btn btn-contact" onclick="openModal('contact-modal')">📱 Call Emergency Contact</button>
+        <button class="action-btn btn-uber" onclick="openModal('uber-modal')">🚗 Order Uber</button>
       </div>
-      <div class="card-arr">›</div>
-    </a>
-    <a class="card" href="gait-alerts.html">
-      <div class="card-ic" style="background:rgba(245,158,11,0.15)">📡</div>
-      <div class="card-body">
-        <div class="card-title">Gait Detection &amp; Alerts</div>
-        <div class="card-desc">Progressive alerts at 60%, 80%, 95%. Ambient sound detection + hydration reminders.</div>
-        <div class="file-tag">gait-alerts.html</div>
+      <div class="chips" id="chips"></div>
+    </div>
+
+    <!-- Come Help Me Modal -->
+    <div class="modal-overlay" id="helpme-modal">
+      <div class="modal-sheet">
+        <div class="mhandle"></div>
+        <div class="mtitle" style="color:var(--danger)">🚨 Come Help Me</div>
+        <div class="msub">Your live GPS location will be sent to your friends with turn-by-turn directions to reach you.</div>
+        <div class="loc-box">
+          <div style="font-size:11px;color:var(--text-muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:1px;font-weight:600">Your location</div>
+          <div style="font-size:14px;font-weight:600;color:var(--text)">📍 Near O'Neills Irish Pub</div>
+          <div style="font-size:12px;color:var(--text-muted);margin-top:3px">1819 University Ave, Charlottesville, VA</div>
+          <div style="font-size:12px;color:var(--text-muted);margin-top:3px">🏛️ Nearby: McDonald's, brick building w/ green awning</div>
+        </div>
+        <button class="mbtn danger" onclick="closeModal('helpme-modal');toast('📣','Help Request Sent!','All 4 friends received directions to your location')">📣 Alert All Friends</button>
+        <button class="mbtn danger-soft" onclick="closeModal('helpme-modal');toast('👨‍👩‍👧','Calling Mom','(555) 867-5309 — emergency contact')">📱 Also Call Emergency Contact</button>
+        <button class="mbtn ghost" onclick="closeModal('helpme-modal')">Cancel</button>
       </div>
-      <div class="card-arr">›</div>
-    </a>
-    <a class="card" href="emergency.html">
-      <div class="card-ic" style="background:rgba(239,68,68,0.15)">🚨</div>
-      <div class="card-body">
-        <div class="card-title">Emergency &amp; SOS</div>
-        <div class="card-desc">One-tap 911, emergency contacts, "Help find me" with landmark info, and instant ride ordering.</div>
-        <div class="file-tag">emergency.html</div>
+    </div>
+
+    <!-- Call Emergency Contact Modal -->
+    <div class="modal-overlay" id="contact-modal">
+      <div class="modal-sheet">
+        <div class="mhandle"></div>
+        <div class="mtitle">📱 Call Emergency Contact</div>
+        <div class="msub">Your location will be shared automatically when you call.</div>
+        <button class="mbtn purple-soft" onclick="closeModal('contact-modal');toast('📞','Calling Mom','(555) 867-5309 — sharing your GPS location')">📞 Mom — (555) 867-5309</button>
+        <button class="mbtn danger" onclick="closeModal('contact-modal');toast('📞','Calling 911','Emergency services notified with your GPS location')">🚨 Call 911 Instead</button>
+        <button class="mbtn ghost" onclick="closeModal('contact-modal')">Cancel</button>
       </div>
-      <div class="card-arr">›</div>
-    </a>
-    <a class="card" href="night-summary.html">
-      <div class="card-ic" style="background:rgba(124,58,237,0.15)">📊</div>
-      <div class="card-body">
-        <div class="card-title">Night Summary</div>
-        <div class="card-desc">After the night, see where everyone went on the map, a timeline of events, and who made it home safely.</div>
-        <div class="file-tag">night-summary.html</div>
+    </div>
+
+    <!-- Order Uber Modal -->
+    <div class="modal-overlay" id="uber-modal">
+      <div class="modal-sheet">
+        <div class="mhandle"></div>
+        <div class="mtitle">🚗 Order a Ride</div>
+        <div class="msub">Your current location will be pre-filled as the pickup point.</div>
+        <div class="loc-box">
+          <div style="font-size:11px;color:var(--text-muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:1px;font-weight:600">Pickup location</div>
+          <div style="font-size:14px;font-weight:600;color:var(--text)">📍 Near O'Neills Irish Pub</div>
+          <div style="font-size:12px;color:var(--text-muted);margin-top:3px">1819 University Ave, Charlottesville, VA</div>
+        </div>
+        <button class="mbtn primary" onclick="closeModal('uber-modal');toast('🚗','Opening Uber','Pickup pre-filled to your GPS location')">🚗 Open Uber</button>
+        <button class="mbtn ghost" style="color:var(--text-muted)" onclick="closeModal('uber-modal');toast('🚗','Opening Lyft','Pickup pre-filled to your GPS location')">Open Lyft</button>
+        <button class="mbtn ghost" onclick="closeModal('uber-modal')">Cancel</button>
       </div>
-      <div class="card-arr">›</div>
-    </a>
+    </div>
+
+    <!-- Safe Place Modal -->
+    <div class="modal-overlay" id="safe-modal">
+      <div class="modal-sheet">
+        <div class="mhandle"></div>
+        <div class="mtitle">🏠 Add Safe Place</div>
+        <div class="msub">You'll get a notification when you arrive — and so will your friends.</div>
+        <button class="mbtn ghost" style="justify-content:flex-start" onclick="closeModal('safe-modal');toast('📍','Pin Mode','Tap anywhere on the map to drop a safe place pin')">📍 Drop a pin on the map</button>
+        <button class="mbtn ghost" style="justify-content:flex-start" onclick="closeModal('safe-modal');toast('📌','Safe Place Added','Your current location is now marked as safe!')">📌 Use current location</button>
+        <button class="mbtn ghost" style="justify-content:flex-start" onclick="closeModal('safe-modal');toast('🔍','Search','Enter an address to add a safe place')">🔍 Search for address</button>
+        <button class="mbtn ghost" onclick="closeModal('safe-modal')">Cancel</button>
+      </div>
+    </div>
+
+    <div class="toast" id="toastEl">
+      <div id="tic" style="font-size:20px">✅</div>
+      <div><div id="tt" style="font-size:13px;font-weight:600;color:var(--text)"></div><div id="ts" style="font-size:11px;color:var(--text-muted);margin-top:2px"></div></div>
+    </div>
   </div>
+
 </div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/map.js"></script>
 </body>
 </html>
