@@ -17,7 +17,7 @@
     .sos-subtitle{font-size:13px;color:rgba(248,250,252,0.6);margin-top:10px;}
 
     /* Find me card */
-    .findme-card{background:rgba(124,58,237,0.1);border:1px solid rgba(124,58,237,0.3);border-radius:20px;padding:18px;}
+    .findme-card{background:rgba(53,94,59,0.1);border:1px solid rgba(53,94,59,0.3);border-radius:20px;padding:18px;}
     .findme-title{font-size:16px;font-weight:700;color:var(--text);margin-bottom:4px;}
     .findme-desc{font-size:13px;color:var(--text-muted);line-height:1.5;margin-bottom:14px;}
     .loc-line{font-size:13px;color:var(--text-muted);margin-top:3px;}
@@ -63,37 +63,37 @@
 
   <div class="content">
     <div class="sos-hero">
-      <button class="sos-big-btn" onclick="openModal('sos-modal')">🚨 EMERGENCY SOS</button>
+      <button class="sos-big-btn" onclick="openModal('sos-modal')">EMERGENCY SOS</button>
       <div class="sos-subtitle">Instantly contacts 911, your emergency contact,<br>and all friends — with your GPS location</div>
     </div>
 
     <div class="findme-card">
-      <div class="findme-title">🆘 Help! Come Find Me</div>
+      <div class="findme-title">Help! Come Find Me</div>
       <div class="findme-desc">Can't find your group? Send your exact location with nearby landmarks so they can navigate right to you.</div>
       <div class="loc-box">
         <div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;font-weight:600;margin-bottom:7px">Your current location</div>
-        <div style="font-size:14px;font-weight:600;color:var(--text)">📍 Near O'Neills Irish Pub</div>
+        <div style="font-size:14px;font-weight:600;color:var(--text)">Near O'Neills Irish Pub</div>
         <div class="loc-line">1819 University Ave, Charlottesville, VA</div>
-        <div class="loc-line" style="margin-top:6px">🏛️ <strong>Nearby landmarks:</strong> McDonald's on corner, brick building with green awning, bus stop across street</div>
+        <div class="loc-line" style="margin-top:6px"> <strong>Nearby landmarks:</strong> McDonald's on corner, brick building with green awning, bus stop across street</div>
       </div>
-      <button class="btn btn-primary" onclick="toast('📣','Directions Sent!','All 4 friends received turn-by-turn directions to your location')">📣 Send Location to All Friends</button>
+      <button class="btn btn-primary" onclick="toast('Alert','Directions Sent!','All 4 friends received turn-by-turn directions to your location')">Send Location to All Friends</button>
     </div>
 
     <div class="section-label">Emergency Contacts</div>
     <div style="background:rgba(239,68,68,0.06);border:1px solid rgba(239,68,68,0.25);border-radius:18px;overflow:hidden;">
-      <div class="card-section-title" style="color:#f87171;border-bottom:1px solid rgba(239,68,68,0.2)">🚨 Quick Call</div>
-      <div class="sitem" onclick="toast('📞','Calling 911','Your GPS location has been shared with emergency services')">
-        <div class="sic" style="background:rgba(239,68,68,0.15)">📞</div>
+      <div class="card-section-title" style="color:#f87171;border-bottom:1px solid rgba(239,68,68,0.2)">Quick Call</div>
+      <div class="sitem" onclick="toast('Call','Calling 911','Your GPS location has been shared with emergency services')">
+        <div class="sic" style="background:rgba(239,68,68,0.15)"></div>
         <div class="slabel">Call 911<div class="ssub">Your GPS location will be sent automatically</div></div>
         <div class="sarr" style="color:#f87171">›</div>
       </div>
-      <div class="sitem" onclick="toast('👩','Calling Mom','(555) 867-5309 — emergency contact')">
-        <div class="sic" style="background:rgba(239,68,68,0.1)">👩</div>
+      <div class="sitem" onclick="toast('Call','Calling Mom','(555) 867-5309 — emergency contact')">
+        <div class="sic" style="background:rgba(239,68,68,0.1)"></div>
         <div class="slabel">Mom<div class="ssub">(555) 867-5309 · Emergency contact</div></div>
         <div class="sarr">›</div>
       </div>
-      <div class="sitem" onclick="toast('➕','Add Contact','Add another emergency contact in Settings')">
-        <div class="sic" style="background:rgba(255,255,255,0.04)">➕</div>
+      <div class="sitem" onclick="toast('Info','Add Contact','Add another emergency contact in Settings')">
+        <div class="sic" style="background:rgba(255,255,255,0.04)"></div>
         <div class="slabel" style="color:var(--text-muted)">Add emergency contact</div>
       </div>
     </div>
@@ -101,13 +101,13 @@
     <div class="section-label">Check In</div>
     <div class="card-section">
       <div class="card-section-title">Are you ok? Pings</div>
-      <div class="sitem" onclick="toast('✉️','Sent to All Friends','\"Are you okay?\" notification delivered to your group')">
-        <div class="sic" style="background:rgba(124,58,237,0.15)">✉️</div>
+      <div class="sitem" onclick="toast('Message','Sent to All Friends','\"Are you okay?\" notification delivered to your group')">
+        <div class="sic" style="background:rgba(53,94,59,0.15)"></div>
         <div class="slabel">Ask group "Are you ok?"<div class="ssub">They have 5 min to respond — you'll be alerted if not</div></div>
         <div class="sarr">›</div>
       </div>
-      <div class="sitem" onclick="toast('📣','Alert Sent','All friends notified of your location and that you need help')">
-        <div class="sic" style="background:rgba(239,68,68,0.12)">📣</div>
+      <div class="sitem" onclick="toast('Alert','Alert Sent','All friends notified of your location and that you need help')">
+        <div class="sic" style="background:rgba(239,68,68,0.12)"></div>
         <div class="slabel">Alert all friends<div class="ssub">Sends your location + a heads-up message to everyone</div></div>
         <div class="sarr">›</div>
       </div>
@@ -115,13 +115,13 @@
 
     <div class="section-label">Get Home Safe</div>
     <div class="ride-row">
-      <div class="ride-card" onclick="toast('🚗','Opening Uber','Your current location has been pre-filled')">
-        <div class="ride-icon">🚗</div>
+      <div class="ride-card" onclick="toast('Ride','Opening Uber','Your current location has been pre-filled')">
+        <div class="ride-icon"></div>
         <div class="ride-name">Uber</div>
         <div class="ride-sub">Auto-fills your location</div>
       </div>
-      <div class="ride-card" onclick="toast('🟣','Opening Lyft','Your current location has been pre-filled')">
-        <div class="ride-icon">🟣</div>
+      <div class="ride-card" onclick="toast('Ride','Opening Lyft','Your current location has been pre-filled')">
+        <div class="ride-icon"></div>
         <div class="ride-name">Lyft</div>
         <div class="ride-sub">Auto-fills your location</div>
       </div>
@@ -129,10 +129,10 @@
 
     <div class="section-label">Safety Tips</div>
     <div class="card-section">
-      <div class="sitem" style="cursor:default"><div class="sic" style="background:rgba(245,158,11,0.12)">💧</div><div class="slabel" style="font-size:13px">Drink a glass of water between every alcoholic drink</div></div>
-      <div class="sitem" style="cursor:default"><div class="sic" style="background:rgba(16,185,129,0.12)">📱</div><div class="slabel" style="font-size:13px">Keep your phone charged — enable low battery alerts</div></div>
-      <div class="sitem" style="cursor:default"><div class="sic" style="background:rgba(59,130,246,0.12)">🏠</div><div class="slabel" style="font-size:13px">Set a safe place before going out so friends know where "home" is</div></div>
-      <div class="sitem" style="cursor:default;border-bottom:none"><div class="sic" style="background:rgba(124,58,237,0.12)">👥</div><div class="slabel" style="font-size:13px">Always designate a sober friend or agree to buddy up</div></div>
+      <div class="sitem" style="cursor:default"><div class="sic" style="background:rgba(245,158,11,0.12)"></div><div class="slabel" style="font-size:13px">Drink a glass of water between every alcoholic drink</div></div>
+      <div class="sitem" style="cursor:default"><div class="sic" style="background:rgba(16,185,129,0.12)"></div><div class="slabel" style="font-size:13px">Keep your phone charged — enable low battery alerts</div></div>
+      <div class="sitem" style="cursor:default"><div class="sic" style="background:rgba(59,130,246,0.12)"></div><div class="slabel" style="font-size:13px">Set a safe place before going out so friends know where "home" is</div></div>
+      <div class="sitem" style="cursor:default;border-bottom:none"><div class="sic" style="background:rgba(53,94,59,0.12)"></div><div class="slabel" style="font-size:13px">Always designate a sober friend or agree to buddy up</div></div>
     </div>
   </div>
 
@@ -140,17 +140,17 @@
   <div class="modal-overlay" id="sos-modal">
     <div class="modal-sheet">
       <div class="mhandle"></div>
-      <div class="mtitle" style="color:var(--danger)">🚨 Emergency SOS</div>
+      <div class="mtitle" style="color:var(--danger)">Emergency SOS</div>
       <div class="msub">Your GPS location will be sent automatically to whoever you contact. Choose your action:</div>
-      <button class="mbtn danger" onclick="closeModal('sos-modal');toast('📞','Calling 911','Emergency services notified with your GPS location')">📞 Call 911</button>
-      <button class="mbtn danger-soft" onclick="closeModal('sos-modal');toast('👩','Calling Mom','(555) 867-5309 — calling your emergency contact now')">📱 Call Emergency Contact</button>
-      <button class="mbtn danger-soft" onclick="closeModal('sos-modal');toast('📣','All Friends Alerted','Your location sent to all 4 friends with SOS message')">📣 Alert All Friends</button>
+      <button class="mbtn danger" onclick="closeModal('sos-modal');toast('Call','Calling 911','Emergency services notified with your GPS location')">Call 911</button>
+      <button class="mbtn danger-soft" onclick="closeModal('sos-modal');toast('Call','Calling Mom','(555) 867-5309 — calling your emergency contact now')">Call Emergency Contact</button>
+      <button class="mbtn danger-soft" onclick="closeModal('sos-modal');toast('Alert','All Friends Alerted','Your location sent to all 4 friends with SOS message')">Alert All Friends</button>
       <button class="mbtn ghost" onclick="closeModal('sos-modal')">Cancel</button>
     </div>
   </div>
 
   <div class="toast" id="toastEl">
-    <div id="tic" style="font-size:20px">✅</div>
+    <div id="tic" style="font-size:20px"></div>
     <div><div id="tt" style="font-size:13px;font-weight:600;color:var(--text)"></div><div id="ts" style="font-size:11px;color:var(--text-muted);margin-top:2px"></div></div>
   </div>
 </div>

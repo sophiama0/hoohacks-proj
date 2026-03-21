@@ -8,7 +8,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     *{margin:0;padding:0;box-sizing:border-box;}
-    :root{--bg:#080810;--surface:rgba(255,255,255,0.07);--surface2:rgba(255,255,255,0.12);--border:rgba(255,255,255,0.1);--primary:#7c3aed;--danger:#ef4444;--warning:#f59e0b;--safe:#10b981;--text:#f8fafc;--text-muted:#94a3b8;--text-faint:#475569;}
+    :root{--bg:#080810;--surface:rgba(255,255,255,0.07);--surface2:rgba(255,255,255,0.12);--border:rgba(255,255,255,0.1);--primary:#355E3B;--danger:#ef4444;--warning:#f59e0b;--safe:#10b981;--text:#f8fafc;--text-muted:#94a3b8;--text-faint:#475569;}
     html,body{height:100%;background:#04040a;display:flex;justify-content:center;align-items:center;font-family:'Inter',system-ui,sans-serif;}
     #app{width:390px;height:844px;background:var(--bg);border-radius:40px;overflow:hidden;position:relative;box-shadow:0 0 0 1px rgba(255,255,255,0.08),0 50px 100px rgba(0,0,0,0.8);}
     @media(max-width:430px){html,body{background:var(--bg);}#app{width:100vw;height:100vh;height:100dvh;border-radius:0;box-shadow:none;}}
@@ -82,26 +82,26 @@
     <div class="legend-row"><div class="ldot" style="background:#ef4444"></div>Critical alert</div>
     <div class="legend-row"><div class="ldot" style="background:#f59e0b"></div>Heads up</div>
     <div class="legend-row"><div class="ldot" style="background:#10b981"></div>All good</div>
-    <div class="legend-row"><div class="ldot" style="background:#7c3aed"></div>You</div>
+    <div class="legend-row"><div class="ldot" style="background:#355E3B"></div>You</div>
     <div class="legend-row"><div class="ldot" style="background:#10b981;border-radius:3px"></div>Safe place</div>
   </div>
 
   <div class="fabs">
     <div class="fab" onclick="centerMap()" title="My Location">
-      <span class="fab-label">My location</span>📍
+      <span class="fab-label">My location</span>
     </div>
     <div class="fab" onclick="openModal('safe-modal')" title="Safe Places">
-      <span class="fab-label">Safe places</span>🏠
+      <span class="fab-label">Safe places</span>
     </div>
-    <div class="fab" onclick="toast('🚗','Opening Uber','Pre-filling your GPS location…')" title="Order Ride">
-      <span class="fab-label">Order a ride</span>🚗
+    <div class="fab" onclick="toast('','Opening Uber','Pre-filling your GPS location…')" title="Order Ride">
+      <span class="fab-label">Order a ride</span>
     </div>
   </div>
 
   <div class="map-bottom">
     <div class="action-row">
-      <button class="action-btn btn-findme" onclick="openModal('findme-modal')">🆘 Help! Find Me</button>
-      <button class="action-btn btn-sos" onclick="openModal('sos-modal')">🚨 SOS</button>
+      <button class="action-btn btn-findme" onclick="openModal('findme-modal')"> Help! Find Me</button>
+      <button class="action-btn btn-sos" onclick="openModal('sos-modal')"> SOS</button>
     </div>
     <div class="chips" id="chips"></div>
   </div>
@@ -110,11 +110,11 @@
   <div class="modal-overlay" id="sos-modal">
     <div class="modal-sheet">
       <div class="mhandle"></div>
-      <div class="mtitle" style="color:var(--danger)">🚨 Emergency SOS</div>
+      <div class="mtitle" style="color:var(--danger)"> Emergency SOS</div>
       <div class="msub">Your GPS location will be shared automatically with whoever you contact.</div>
-      <button class="mbtn danger" onclick="closeModal('sos-modal');toast('📞','Calling 911','Emergency services notified with your GPS location')">📞 Call 911</button>
-      <button class="mbtn danger-soft" onclick="closeModal('sos-modal');toast('👨‍👩‍👧','Calling Mom','(555) 867-5309 — emergency contact')">📱 Call Emergency Contact</button>
-      <button class="mbtn danger-soft" onclick="closeModal('sos-modal');toast('📣','All Friends Alerted','Location sent to all 4 friends')">📣 Alert All Friends</button>
+      <button class="mbtn danger" onclick="closeModal('sos-modal');toast('','Calling 911','Emergency services notified with your GPS location')"> Call 911</button>
+      <button class="mbtn danger-soft" onclick="closeModal('sos-modal');toast('','Calling Mom','(555) 867-5309 — emergency contact')"> Call Emergency Contact</button>
+      <button class="mbtn danger-soft" onclick="closeModal('sos-modal');toast('','All Friends Alerted','Location sent to all 4 friends')"> Alert All Friends</button>
       <button class="mbtn ghost" onclick="closeModal('sos-modal')">Cancel</button>
     </div>
   </div>
@@ -123,15 +123,15 @@
   <div class="modal-overlay" id="findme-modal">
     <div class="modal-sheet">
       <div class="mhandle"></div>
-      <div class="mtitle">🆘 Send My Location</div>
+      <div class="mtitle"> Send My Location</div>
       <div class="msub">Your friends will receive turn-by-turn directions to find you, plus nearby landmark info.</div>
       <div class="loc-box">
         <div style="font-size:11px;color:var(--text-muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:1px;font-weight:600">Your location</div>
-        <div style="font-size:14px;font-weight:600;color:var(--text)">📍 Near O'Neills Irish Pub</div>
+        <div style="font-size:14px;font-weight:600;color:var(--text)"> Near O'Neills Irish Pub</div>
         <div style="font-size:12px;color:var(--text-muted);margin-top:3px">1819 University Ave, Charlottesville, VA</div>
-        <div style="font-size:12px;color:var(--text-muted);margin-top:3px">🏛️ Nearby: McDonald's, brick building w/ green awning</div>
+        <div style="font-size:12px;color:var(--text-muted);margin-top:3px"> Nearby: McDonald's, brick building w/ green awning</div>
       </div>
-      <button class="mbtn primary" onclick="closeModal('findme-modal');toast('📣','Directions Sent!','All 4 friends received directions to your location')">📣 Send to All Friends</button>
+      <button class="mbtn primary" onclick="closeModal('findme-modal');toast('','Directions Sent!','All 4 friends received directions to your location')"> Send to All Friends</button>
       <button class="mbtn ghost" onclick="closeModal('findme-modal')">Cancel</button>
     </div>
   </div>
@@ -140,18 +140,18 @@
   <div class="modal-overlay" id="safe-modal">
     <div class="modal-sheet">
       <div class="mhandle"></div>
-      <div class="mtitle">🏠 Add Safe Place</div>
+      <div class="mtitle"> Add Safe Place</div>
       <div class="msub">You'll get a notification when you arrive — and so will your friends. Great for your apartment, hotel, or AirBnb.</div>
-      <button class="mbtn ghost" style="justify-content:flex-start" onclick="closeModal('safe-modal');toast('📍','Pin Mode','Tap anywhere on the map to drop a safe place pin')">📍 Drop a pin on the map</button>
-      <button class="mbtn ghost" style="justify-content:flex-start" onclick="closeModal('safe-modal');toast('📌','Safe Place Added','Your current location is now marked as safe!')">📌 Use current location</button>
-      <button class="mbtn ghost" style="justify-content:flex-start" onclick="closeModal('safe-modal');toast('🔍','Search','Enter an address to add a safe place')">🔍 Search for address</button>
+      <button class="mbtn ghost" style="justify-content:flex-start" onclick="closeModal('safe-modal');toast('','Pin Mode','Tap anywhere on the map to drop a safe place pin')"> Drop a pin on the map</button>
+      <button class="mbtn ghost" style="justify-content:flex-start" onclick="closeModal('safe-modal');toast('','Safe Place Added','Your current location is now marked as safe!')"> Use current location</button>
+      <button class="mbtn ghost" style="justify-content:flex-start" onclick="closeModal('safe-modal');toast('','Search','Enter an address to add a safe place')"> Search for address</button>
       <button class="mbtn ghost" onclick="closeModal('safe-modal')">Cancel</button>
     </div>
   </div>
 
   <!-- Toast -->
   <div class="toast" id="toastEl">
-    <div id="tic" style="font-size:20px">✅</div>
+    <div id="tic" style="font-size:20px"></div>
     <div><div id="tt" style="font-size:13px;font-weight:600;color:var(--text)"></div><div id="ts" style="font-size:11px;color:var(--text-muted);margin-top:2px"></div></div>
   </div>
 </div>
@@ -175,23 +175,23 @@ function initMap(){
 
   // Me marker
   L.marker([ME.lat,ME.lng],{icon:L.divIcon({
-    html:`<div style="width:44px;height:44px;border-radius:50%;background:#7c3aed;border:3px solid white;box-shadow:0 0 0 3px rgba(124,58,237,0.4),0 4px 12px rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;color:white;font-family:Inter,sans-serif">S</div>`,
+    html:`<div style="width:44px;height:44px;border-radius:50%;background:#355E3B;border:3px solid white;box-shadow:0 0 0 3px rgba(53,94,59,0.4),0 4px 12px rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;color:white;font-family:Inter,sans-serif">S</div>`,
     className:'',iconSize:[44,44],iconAnchor:[22,22]
   })}).addTo(map).bindPopup('<b>Sophie (You)</b><br>Your location');
 
-  L.circle([ME.lat,ME.lng],{radius:25,color:'#7c3aed',fillColor:'#7c3aed',fillOpacity:0.08,weight:1}).addTo(map);
+  L.circle([ME.lat,ME.lng],{radius:25,color:'#355E3B',fillColor:'#355E3B',fillOpacity:0.08,weight:1}).addTo(map);
 
   // Safe place
   L.marker([38.0520,-78.4892],{icon:L.divIcon({
-    html:`<div style="width:36px;height:36px;border-radius:10px;background:#10b981;border:2px solid white;box-shadow:0 4px 10px rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;font-size:16px">🏠</div>`,
+    html:`<div style="width:36px;height:36px;border-radius:10px;background:#10b981;border:2px solid white;box-shadow:0 4px 10px rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;font-size:16px"></div>`,
     className:'',iconSize:[36,36],iconAnchor:[18,18]
-  })}).addTo(map).bindPopup('<b>🏠 Safe Place</b><br>My Apartment, Rugby Road');
+  })}).addTo(map).bindPopup('<b> Safe Place</b><br>My Apartment, Rugby Road');
 
   FRIENDS.forEach(addMarker);
   renderChips();
   startSim();
 
-  setTimeout(()=>toast('⚠️','Alex Chen — 73% alert','Tap their chip below to fly to their location'),1000);
+  setTimeout(()=>toast('','Alex Chen — 73% alert','Tap their chip below to fly to their location'),1000);
 }
 
 function addMarker(f){
@@ -199,13 +199,13 @@ function addMarker(f){
   const icon=L.divIcon({
     html:`<div style="position:relative;width:40px;height:40px">
       <div style="width:40px;height:40px;border-radius:50%;background:${f.color};border:2px solid white;box-shadow:0 0 0 3px ${c}55,0 4px 10px rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:white;font-family:Inter,sans-serif">${f.ini}</div>
-      <div style="position:absolute;top:-4px;right:-4px;width:15px;height:15px;border-radius:50%;background:${c};border:2px solid #080810;display:flex;align-items:center;justify-content:center;font-size:8px;color:white;font-weight:700">${f.gait>80?'!':f.gait>60?'~':'✓'}</div>
+      <div style="position:absolute;top:-4px;right:-4px;width:15px;height:15px;border-radius:50%;background:${c};border:2px solid #080810;display:flex;align-items:center;justify-content:center;font-size:8px;color:white;font-weight:700">${f.gait>80?'!':f.gait>60?'~':''}</div>
     </div>`,
     className:'',iconSize:[40,40],iconAnchor:[20,20]
   });
   if(markers[f.id]) map.removeLayer(markers[f.id]);
   markers[f.id]=L.marker([f.lat,f.lng],{icon}).addTo(map)
-    .bindPopup(`<b>${f.name}</b><br>Gait: ${f.gait}%<br>📍 ${f.loc}<br>🔋 ${f.batt}%`);
+    .bindPopup(`<b>${f.name}</b><br>Gait: ${f.gait}%<br> ${f.loc}<br> ${f.batt}%`);
 }
 
 function renderChips(){
@@ -221,7 +221,7 @@ function renderChips(){
   });
 }
 
-function centerMap(){map.flyTo([ME.lat,ME.lng],16,{duration:1});toast('📍','Centered on you','Map moved to your location');}
+function centerMap(){map.flyTo([ME.lat,ME.lng],16,{duration:1});toast('','Centered on you','Map moved to your location');}
 
 function startSim(){
   setInterval(()=>{

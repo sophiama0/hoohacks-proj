@@ -1,16 +1,16 @@
-/* ─── Fonts ─────────────────────────────────────────────────── */
+/*  Fonts  */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
-/* ─── Reset ──────────────────────────────────────────────────── */
+/*  Reset  */
 *{margin:0;padding:0;box-sizing:border-box;}
 
-/* ─── Design tokens ──────────────────────────────────────────── */
+/*  Design tokens  */
 :root{
   --bg:#080810;
   --surface:rgba(255,255,255,0.07);
   --surface2:rgba(255,255,255,0.12);
   --border:rgba(255,255,255,0.1);
-  --primary:#7c3aed;
+  --primary:#355E3B;
   --danger:#ef4444;
   --warning:#f59e0b;
   --safe:#10b981;
@@ -19,7 +19,7 @@
   --text-faint:#475569;
 }
 
-/* ─── App shell ───────────────────────────────────────────────── */
+/*  App shell  */
 html,body{
   height:100%;
   background:#04040a;
@@ -42,7 +42,7 @@ html,body{
   #app{width:100vw;height:100vh;height:100dvh;border-radius:0;box-shadow:none;}
 }
 
-/* ─── Page header (inner pages) ──────────────────────────────── */
+/*  Page header (inner pages)  */
 .header{
   padding:52px 18px 14px;
   background:rgba(8,8,16,0.95);
@@ -55,13 +55,13 @@ html,body{
 .back{font-size:14px;color:var(--text-muted);text-decoration:none;}
 .back:hover{color:var(--text);}
 
-/* ─── Section label ──────────────────────────────────────────── */
+/*  Section label  */
 .section-label{
   font-size:11px;font-weight:600;color:var(--text-muted);
   text-transform:uppercase;letter-spacing:1px;
 }
 
-/* ─── Location box ───────────────────────────────────────────── */
+/*  Location box  */
 .loc-box{
   background:rgba(255,255,255,0.05);
   border:1px solid var(--border);
@@ -70,7 +70,7 @@ html,body{
   margin-bottom:14px;
 }
 
-/* ─── Toast ──────────────────────────────────────────────────── */
+/*  Toast  */
 /* Default top — individual pages can override via inline style  */
 .toast{
   position:absolute;
@@ -88,7 +88,7 @@ html,body{
 }
 .toast.show{transform:translateY(0);opacity:1;}
 
-/* ─── Modal system ───────────────────────────────────────────── */
+/*  Modal system  */
 .modal-overlay{
   position:absolute;inset:0;
   background:rgba(0,0,0,0.75);
@@ -119,9 +119,9 @@ html,body{
 .mbtn.danger{background:var(--danger);color:white;}
 .mbtn.ghost{background:rgba(255,255,255,0.05);color:var(--text-muted);border:1px solid var(--border);}
 .mbtn.danger-soft{background:rgba(239,68,68,0.12);color:#f87171;border:1px solid rgba(239,68,68,0.3);}
-.mbtn.purple-soft{background:rgba(124,58,237,0.12);color:#a78bfa;border:1px solid rgba(124,58,237,0.3);}
+.mbtn.purple-soft{background:rgba(53,94,59,0.12);color:#7ab880;border:1px solid rgba(53,94,59,0.3);}
 
-/* ─── Form inputs (login, signup, profile) ───────────────────── */
+/*  Form inputs (login, signup, profile)  */
 .input-group{margin-bottom:16px;}
 .input-label{display:block;font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:7px;}
 .input{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:13px 14px;font-size:15px;color:var(--text);font-family:inherit;outline:none;transition:border-color 0.2s;}

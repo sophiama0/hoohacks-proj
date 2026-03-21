@@ -18,22 +18,22 @@ function initMap(){
 
   // "You" marker
   L.marker([ME.lat,ME.lng], {icon: L.divIcon({
-    html:`<div style="width:44px;height:44px;border-radius:50%;background:#7c3aed;border:3px solid white;box-shadow:0 0 0 3px rgba(124,58,237,0.4),0 4px 12px rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;color:white;font-family:Inter,sans-serif">S</div>`,
+    html:`<div style="width:44px;height:44px;border-radius:50%;background:#355E3B;border:3px solid white;box-shadow:0 0 0 3px rgba(53,94,59,0.4),0 4px 12px rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;color:white;font-family:Inter,sans-serif">S</div>`,
     className:'', iconSize:[44,44], iconAnchor:[22,22]
   })}).addTo(map).bindPopup('<b>Sophie (You)</b><br>Your location');
 
-  L.circle([ME.lat,ME.lng], {radius:25, color:'#7c3aed', fillColor:'#7c3aed', fillOpacity:0.08, weight:1}).addTo(map);
+  L.circle([ME.lat,ME.lng], {radius:25, color:'#355E3B', fillColor:'#355E3B', fillOpacity:0.08, weight:1}).addTo(map);
 
   // Safe place marker
   L.marker([38.0520,-78.4892], {icon: L.divIcon({
-    html:`<div style="width:36px;height:36px;border-radius:10px;background:#10b981;border:2px solid white;box-shadow:0 4px 10px rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;font-size:16px">🏠</div>`,
+    html:`<div style="width:36px;height:36px;border-radius:10px;background:#10b981;border:2px solid white;box-shadow:0 4px 10px rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;font-size:16px"></div>`,
     className:'', iconSize:[36,36], iconAnchor:[18,18]
-  })}).addTo(map).bindPopup('<b>🏠 Safe Place</b><br>My Apartment, Rugby Road');
+  })}).addTo(map).bindPopup('<b> Safe Place</b><br>My Apartment, Rugby Road');
 
   FRIENDS.forEach(addMarker);
   renderChips();
   startSim();
-  setTimeout(()=>toast('⚠️','Alex Chen — 73% alert','Tap their chip below to fly to their location'), 1000);
+  setTimeout(()=>toast('','Alex Chen — 73% alert','Tap their chip below to fly to their location'), 1000);
 }
 
 function addMarker(f){
@@ -41,13 +41,13 @@ function addMarker(f){
   const icon = L.divIcon({
     html:`<div style="position:relative;width:40px;height:40px">
       <div style="width:40px;height:40px;border-radius:50%;background:${f.color};border:2px solid white;box-shadow:0 0 0 3px ${c}55,0 4px 10px rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:white;font-family:Inter,sans-serif">${f.ini}</div>
-      <div style="position:absolute;top:-4px;right:-4px;width:15px;height:15px;border-radius:50%;background:${c};border:2px solid #080810;display:flex;align-items:center;justify-content:center;font-size:8px;color:white;font-weight:700">${f.gait>80?'!':f.gait>60?'~':'✓'}</div>
+      <div style="position:absolute;top:-4px;right:-4px;width:15px;height:15px;border-radius:50%;background:${c};border:2px solid #080810;display:flex;align-items:center;justify-content:center;font-size:8px;color:white;font-weight:700">${f.gait>80?'!':f.gait>60?'~':''}</div>
     </div>`,
     className:'', iconSize:[40,40], iconAnchor:[20,20]
   });
   if(markers[f.id]) map.removeLayer(markers[f.id]);
   markers[f.id] = L.marker([f.lat,f.lng], {icon}).addTo(map)
-    .bindPopup(`<b>${f.name}</b><br>Gait: ${f.gait}%<br>📍 ${f.loc}<br>🔋 ${f.batt}%`);
+    .bindPopup(`<b>${f.name}</b><br>Gait: ${f.gait}%<br> ${f.loc}<br> ${f.batt}%`);
 }
 
 function renderChips(){
@@ -64,7 +64,7 @@ function renderChips(){
   });
 }
 
-function centerMap(){ map.flyTo([ME.lat,ME.lng], 16, {duration:1}); toast('📍','Centered on you','Map moved to your location'); }
+function centerMap(){ map.flyTo([ME.lat,ME.lng], 16, {duration:1}); toast('','Centered on you','Map moved to your location'); }
 
 function startSim(){
   setInterval(()=>{

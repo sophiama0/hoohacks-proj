@@ -11,7 +11,7 @@
     /* Avatar */
     .avatar-section{display:flex;flex-direction:column;align-items:center;gap:12px;padding:8px 0 4px;}
     .avatar-wrap{position:relative;cursor:pointer;}
-    .avatar{width:88px;height:88px;border-radius:50%;background:var(--primary);display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:700;color:white;border:3px solid rgba(124,58,237,0.4);box-shadow:0 0 24px rgba(124,58,237,0.3);overflow:hidden;}
+    .avatar{width:88px;height:88px;border-radius:50%;background:var(--primary);display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:700;color:white;border:3px solid rgba(53,94,59,0.4);box-shadow:0 0 24px rgba(53,94,59,0.3);overflow:hidden;}
     .avatar img{width:100%;height:100%;object-fit:cover;}
     .avatar-badge{position:absolute;bottom:2px;right:2px;width:26px;height:26px;background:#1a1a28;border:2px solid var(--bg);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;}
     .avatar-name{font-size:18px;font-weight:700;color:var(--text);}
@@ -70,7 +70,7 @@
         <div class="avatar" id="avatar-display">
           <span id="avatar-initials">?</span>
         </div>
-        <div class="avatar-badge">📷</div>
+        <div class="avatar-badge"></div>
       </div>
       <input type="file" id="photo-input" accept="image/*" onchange="handlePhoto(event)">
       <div class="avatar-name" id="display-name">Your Name</div>
@@ -152,7 +152,7 @@
   </div>
 
   <div class="toast" id="toastEl">
-    <div id="tic" style="font-size:20px">✅</div>
+    <div id="tic" style="font-size:20px"></div>
     <div><div id="tt" style="font-size:13px;font-weight:600;color:var(--text)"></div><div id="ts" style="font-size:11px;color:var(--text-muted);margin-top:2px"></div></div>
   </div>
 </div>
@@ -207,9 +207,9 @@ function saveProfile(){
   const confirmPw = document.getElementById('confirm-pw').value;
 
   if(newPw){
-    if(currentPw !== user.password){ toast('❌','Wrong current password','Please enter your existing password'); return; }
-    if(newPw.length < 8){ toast('❌','Password too short','Minimum 8 characters required'); return; }
-    if(newPw !== confirmPw){ toast('❌','Passwords don\'t match','New passwords must match'); return; }
+    if(currentPw !== user.password){ toast('','Wrong current password','Please enter your existing password'); return; }
+    if(newPw.length < 8){ toast('','Password too short','Minimum 8 characters required'); return; }
+    if(newPw !== confirmPw){ toast('','Passwords don\'t match','New passwords must match'); return; }
     user.password = newPw;
     document.getElementById('current-pw').value = '';
     document.getElementById('new-pw').value = '';
@@ -227,7 +227,7 @@ function saveProfile(){
   localStorage.setItem('rally_user', JSON.stringify(user));
   document.getElementById('display-name').textContent  = user.name  || 'Your Name';
   document.getElementById('display-email').textContent = user.email || '';
-  toast('✅','Profile saved','Your changes have been saved');
+  toast('','Profile saved','Your changes have been saved');
 }
 
 function signOut(){

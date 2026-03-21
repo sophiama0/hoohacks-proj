@@ -10,7 +10,7 @@
 
     /* Hero gauge */
     .hero{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:22px;text-align:center;position:relative;overflow:hidden;}
-    .hero::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 0%,rgba(124,58,237,0.06),transparent 70%);pointer-events:none;}
+    .hero::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 0%,rgba(53,94,59,0.06),transparent 70%);pointer-events:none;}
     .gauge-wrap{width:160px;height:160px;margin:0 auto 16px;position:relative;}
     .gauge-wrap svg{width:100%;height:100%;}
     .gauge-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;}
@@ -42,14 +42,14 @@
     @keyframes wup{from{height:4px;opacity:0.3;}to{height:var(--h);opacity:1;}}
     .env-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px;}
     .env-item{background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:11px;padding:10px;text-align:center;cursor:pointer;transition:all 0.2s;}
-    .env-item.active{border-color:var(--primary);background:rgba(124,58,237,0.12);}
+    .env-item.active{border-color:var(--primary);background:rgba(53,94,59,0.12);}
     .env-item:hover{background:rgba(255,255,255,0.08);}
     .env-icon{font-size:20px;margin-bottom:4px;}
     .env-label{font-size:11px;color:var(--text-muted);}
     .env-item.active .env-label{color:var(--primary);font-weight:600;}
 
     /* Hydration */
-    .water-card{background:linear-gradient(135deg,rgba(59,130,246,0.12),rgba(124,58,237,0.08));border:1px solid rgba(59,130,246,0.25);border-radius:18px;padding:15px;display:flex;align-items:center;gap:12px;}
+    .water-card{background:linear-gradient(135deg,rgba(59,130,246,0.12),rgba(53,94,59,0.08));border:1px solid rgba(59,130,246,0.25);border-radius:18px;padding:15px;display:flex;align-items:center;gap:12px;}
     .water-btn{margin-left:auto;padding:8px 14px;background:rgba(59,130,246,0.18);border:1px solid rgba(59,130,246,0.3);border-radius:50px;color:#60a5fa;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap;transition:all 0.2s;}
     .water-btn:hover{background:rgba(59,130,246,0.28);}
 
@@ -76,7 +76,7 @@
       <div class="gauge-wrap">
         <svg viewBox="0 0 160 160">
           <circle cx="80" cy="80" r="65" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="12"/>
-          <circle id="garc" cx="80" cy="80" r="65" fill="none" stroke="#7c3aed" stroke-width="12"
+          <circle id="garc" cx="80" cy="80" r="65" fill="none" stroke="#355E3B" stroke-width="12"
             stroke-linecap="round" stroke-dasharray="408" stroke-dashoffset="408"
             transform="rotate(-90 80 80)" style="transition:stroke-dashoffset 0.8s ease,stroke 0.4s"/>
         </svg>
@@ -85,7 +85,7 @@
           <div class="gauge-lbl">gait index</div>
         </div>
       </div>
-      <div class="hero-title" id="gtext">Looking good! 👍</div>
+      <div class="hero-title" id="gtext">Looking good! </div>
       <div class="hero-desc" id="gdesc">Your walk is steady — no concerns detected.</div>
       <div class="slider-wrap" style="margin-top:14px">
         <div class="slider-label">
@@ -99,17 +99,17 @@
     <div style="background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:15px;">
       <div class="section-label" style="margin-bottom:10px">How gait detection works</div>
       <div style="display:flex;flex-direction:column;gap:8px;">
-        <div style="display:flex;gap:10px;align-items:flex-start"><div style="font-size:16px;flex-shrink:0">📱</div><div style="font-size:12px;color:var(--text-muted);line-height:1.5"><strong style="color:var(--text)">Accelerometer + Gyroscope</strong> data from Apple HealthKit / Google Fit measures step timing, stride variance, and rotational sway.</div></div>
-        <div style="display:flex;gap:10px;align-items:flex-start"><div style="font-size:16px;flex-shrink:0">🧠</div><div style="font-size:12px;color:var(--text-muted);line-height:1.5"><strong style="color:var(--text)">Your personal baseline</strong> (set during calibration) is compared against live readings. Deviations are scored as a percentage.</div></div>
-        <div style="display:flex;gap:10px;align-items:flex-start"><div style="font-size:16px;flex-shrink:0">🍻</div><div style="font-size:12px;color:var(--text-muted);line-height:1.5">When intoxicated, <strong style="color:var(--text)">the brain loses fine motor control</strong> — causing wider stance, irregular step timing, and increased lateral sway.</div></div>
+        <div style="display:flex;gap:10px;align-items:flex-start"><div style="font-size:16px;flex-shrink:0"></div><div style="font-size:12px;color:var(--text-muted);line-height:1.5"><strong style="color:var(--text)">Accelerometer + Gyroscope</strong> data from Apple HealthKit / Google Fit measures step timing, stride variance, and rotational sway.</div></div>
+        <div style="display:flex;gap:10px;align-items:flex-start"><div style="font-size:16px;flex-shrink:0"></div><div style="font-size:12px;color:var(--text-muted);line-height:1.5"><strong style="color:var(--text)">Your personal baseline</strong> (set during calibration) is compared against live readings. Deviations are scored as a percentage.</div></div>
+        <div style="display:flex;gap:10px;align-items:flex-start"><div style="font-size:16px;flex-shrink:0"></div><div style="font-size:12px;color:var(--text-muted);line-height:1.5">When intoxicated, <strong style="color:var(--text)">the brain loses fine motor control</strong> — causing wider stance, irregular step timing, and increased lateral sway.</div></div>
       </div>
     </div>
 
     <div class="section-label">Progressive Alert Thresholds</div>
     <div class="stages">
-      <div class="stage" id="s60"><div class="stage-ic" style="background:rgba(245,158,11,0.12)">👀</div><div class="stage-body"><div class="stage-t">Heads Up</div><div class="stage-s">Friends get a gentle background notification</div></div><div class="stage-badge" style="background:rgba(245,158,11,0.12);color:#f59e0b">60%</div></div>
-      <div class="stage" id="s80"><div class="stage-ic" style="background:rgba(251,146,60,0.12)">🤔</div><div class="stage-body"><div class="stage-t">Check On Them</div><div class="stage-s">Friends are notified to actively check in</div></div><div class="stage-badge" style="background:rgba(251,146,60,0.12);color:#fb923c">80%</div></div>
-      <div class="stage" id="s95"><div class="stage-ic" style="background:rgba(239,68,68,0.12)">🆘</div><div class="stage-body"><div class="stage-t">Go Find Them NOW</div><div class="stage-s">Emergency alert + location sent to all friends</div></div><div class="stage-badge" style="background:rgba(239,68,68,0.12);color:#ef4444">95%</div></div>
+      <div class="stage" id="s60"><div class="stage-ic" style="background:rgba(245,158,11,0.12)"></div><div class="stage-body"><div class="stage-t">Heads Up</div><div class="stage-s">Friends get a gentle background notification</div></div><div class="stage-badge" style="background:rgba(245,158,11,0.12);color:#f59e0b">60%</div></div>
+      <div class="stage" id="s80"><div class="stage-ic" style="background:rgba(251,146,60,0.12)"></div><div class="stage-body"><div class="stage-t">Check On Them</div><div class="stage-s">Friends are notified to actively check in</div></div><div class="stage-badge" style="background:rgba(251,146,60,0.12);color:#fb923c">80%</div></div>
+      <div class="stage" id="s95"><div class="stage-ic" style="background:rgba(239,68,68,0.12)"></div><div class="stage-body"><div class="stage-t">Go Find Them NOW</div><div class="stage-s">Emergency alert + location sent to all friends</div></div><div class="stage-badge" style="background:rgba(239,68,68,0.12);color:#ef4444">95%</div></div>
     </div>
 
     <div class="section-label">Live Health Metrics</div>
@@ -125,34 +125,34 @@
     <div class="ambient-card">
       <div style="display:flex;justify-content:space-between;align-items:flex-start">
         <div>
-          <div style="font-size:14px;font-weight:600;color:var(--text)">🎵 Mic-Based Environment Inference</div>
+          <div style="font-size:14px;font-weight:600;color:var(--text)"> Mic-Based Environment Inference</div>
           <div style="font-size:12px;color:var(--text-muted);margin-top:3px;line-height:1.5">Rally listens to ambient noise to infer whether you're still at the bar, outside, or somewhere alone.</div>
         </div>
       </div>
       <div class="awave" id="awave"></div>
       <div style="text-align:center;font-size:13px;color:var(--text-muted);margin-bottom:12px">Detected: <strong id="amloc" style="color:var(--text)">Loud venue — likely still at the bar</strong></div>
       <div class="env-grid">
-        <div class="env-item active" id="env-bar"     onclick="setEnv('bar',this)"><div class="env-icon">🍺</div><div class="env-label">Bar / Venue</div></div>
-        <div class="env-item"        id="env-outside" onclick="setEnv('outside',this)"><div class="env-icon">🌙</div><div class="env-label">Outside / Street</div></div>
-        <div class="env-item"        id="env-quiet"   onclick="setEnv('quiet',this)"><div class="env-icon">😶</div><div class="env-label">Quiet / Alone</div></div>
-        <div class="env-item"        id="env-ride"    onclick="setEnv('ride',this)"><div class="env-icon">🚗</div><div class="env-label">In a Ride</div></div>
+        <div class="env-item active" id="env-bar"     onclick="setEnv('bar',this)"><div class="env-icon"></div><div class="env-label">Bar / Venue</div></div>
+        <div class="env-item"        id="env-outside" onclick="setEnv('outside',this)"><div class="env-icon"></div><div class="env-label">Outside / Street</div></div>
+        <div class="env-item"        id="env-quiet"   onclick="setEnv('quiet',this)"><div class="env-icon"></div><div class="env-label">Quiet / Alone</div></div>
+        <div class="env-item"        id="env-ride"    onclick="setEnv('ride',this)"><div class="env-icon"></div><div class="env-label">In a Ride</div></div>
       </div>
     </div>
 
     <div class="section-label">Hydration Reminders</div>
     <div class="water-card">
-      <div style="font-size:28px">💧</div>
+      <div style="font-size:28px"></div>
       <div>
         <div style="font-size:14px;font-weight:600;color:var(--text)">Drink Water</div>
         <div style="font-size:12px;color:var(--text-muted);margin-top:2px">Auto-reminds your whole group every 45 min</div>
         <div style="font-size:11px;color:var(--text-faint);margin-top:2px">Last sent: 12 minutes ago</div>
       </div>
-      <button class="water-btn" onclick="toast('💧','Reminder Sent!','Your friends were reminded to drink water 💧')">Ping All</button>
+      <button class="water-btn" onclick="toast('','Reminder Sent!','Your friends were reminded to drink water ')">Ping All</button>
     </div>
   </div>
 
   <div class="toast" id="toastEl">
-    <div id="tic" style="font-size:20px">✅</div>
+    <div id="tic" style="font-size:20px"></div>
     <div><div id="tt" style="font-size:13px;font-weight:600;color:var(--text)"></div><div id="ts" style="font-size:11px;color:var(--text-muted);margin-top:2px"></div></div>
   </div>
 </div>
@@ -170,7 +170,7 @@ function setGait(val){
   arc.style.stroke = gc(val);
   const gpct = document.getElementById('gpct');
   gpct.textContent = val+'%'; gpct.style.color = gc(val);
-  document.getElementById('gtext').textContent = val<40?'Looking good! 👍':val<60?'Monitoring your gait 📡':val<80?'Heads up sent to friends 👀':val<95?'Friends checking on you ⚠️':'FRIENDS COMING NOW 🆘';
+  document.getElementById('gtext').textContent = val<40?'Looking good! ':val<60?'Monitoring your gait ':val<80?'Heads up sent to friends ':val<95?'Friends checking on you ':'FRIENDS COMING NOW ';
   document.getElementById('gdesc').textContent = val<40?'Your walk is steady — no concerns detected.':val<60?'Slight irregularity — keep it steady!':val<80?'Your friends have been gently notified.':val<95?'Your gait is significantly off. Stay safe!':'Emergency alert sent. Stay where you are!';
   document.getElementById('s60').className = 'stage'+(val>=60?' on':'');
   document.getElementById('s80').className = 'stage'+(val>=80?(val>=95?' red':' on'):'');
@@ -183,9 +183,9 @@ function setGait(val){
   document.getElementById('m-sway').textContent = sl; document.getElementById('m-sway').style.color = gc(val);
   const tl = val<40?'Regular':val<60?'Mostly regular':val<80?'Irregular':val<95?'Very irregular':'Severely off';
   document.getElementById('m-timing').textContent = tl; document.getElementById('m-timing').style.color = gc(val);
-  if(val>=95&&currentGait<95) toast('🆘','CRITICAL','All friends alerted — emergency level');
-  else if(val>=80&&currentGait<80) toast('⚠️','Check-in alert sent','Friends notified to check on you');
-  else if(val>=60&&currentGait<60) toast('👀','Heads up sent','Friends gently notified');
+  if(val>=95&&currentGait<95) toast('','CRITICAL','All friends alerted — emergency level');
+  else if(val>=80&&currentGait<80) toast('','Check-in alert sent','Friends notified to check on you');
+  else if(val>=60&&currentGait<60) toast('','Heads up sent','Friends gently notified');
 }
 
 const envInfo = {
