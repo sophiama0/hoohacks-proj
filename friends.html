@@ -4,24 +4,16 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <title>Rally — Friends &amp; Status</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/shared.css">
   <style>
-    *{margin:0;padding:0;box-sizing:border-box;}
-    :root{--bg:#080810;--surface:rgba(255,255,255,0.07);--surface2:rgba(255,255,255,0.12);--border:rgba(255,255,255,0.1);--primary:#7c3aed;--danger:#ef4444;--warning:#f59e0b;--safe:#10b981;--text:#f8fafc;--text-muted:#94a3b8;--text-faint:#475569;}
-    html,body{height:100%;background:#04040a;display:flex;justify-content:center;align-items:center;font-family:'Inter',system-ui,sans-serif;}
-    #app{width:390px;height:844px;background:var(--bg);border-radius:40px;overflow:hidden;position:relative;box-shadow:0 0 0 1px rgba(255,255,255,0.08),0 50px 100px rgba(0,0,0,0.8);}
-    @media(max-width:430px){html,body{background:var(--bg);}#app{width:100vw;height:100vh;height:100dvh;border-radius:0;box-shadow:none;}}
-    /* Header */
-    .header{padding:52px 18px 12px;background:rgba(8,8,16,0.95);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);position:absolute;top:0;left:0;right:0;z-index:100;}
-    .header-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
-    .back{font-size:14px;color:var(--text-muted);text-decoration:none;}
-    .back:hover{color:var(--text);}
-    .header-title{font-size:18px;font-weight:700;color:var(--text);}
+    /* Toast sits below the taller header on this page */
+    .toast{top:140px;}
+
+    .header-top{margin-bottom:10px;}
     .search-bar{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:10px 14px;display:flex;align-items:center;gap:9px;color:var(--text-muted);font-size:14px;}
-    /* Content */
     .content{position:absolute;top:132px;bottom:0;left:0;right:0;overflow-y:auto;padding:14px 14px 20px;display:flex;flex-direction:column;gap:10px;}
-    .section-label{font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;padding:2px 2px;}
-    /* Cards */
+
+    /* Friend cards */
     .card{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:14px;transition:all 0.2s;}
     .card.danger{border-color:rgba(239,68,68,0.4);background:rgba(239,68,68,0.07);animation:cardglow 2s ease-in-out infinite;}
     .card.warn{border-color:rgba(245,158,11,0.35);background:rgba(245,158,11,0.05);}
@@ -45,24 +37,6 @@
     .batt{font-size:11px;color:var(--text-muted);display:flex;align-items:center;gap:3px;}
     .batt.low{color:#f87171;}
     .status-tag{font-size:10px;font-weight:700;padding:3px 9px;border-radius:50px;}
-    /* Toast */
-    .toast{position:absolute;top:140px;left:14px;right:14px;z-index:900;background:rgba(12,12,20,0.96);backdrop-filter:blur(10px);border:1px solid var(--border);border-radius:14px;padding:11px 14px;display:flex;align-items:center;gap:11px;transform:translateY(-16px);opacity:0;transition:all 0.3s;pointer-events:none;}
-    .toast.show{transform:translateY(0);opacity:1;}
-    /* Modal */
-    .modal-overlay{position:absolute;inset:0;background:rgba(0,0,0,0.75);backdrop-filter:blur(5px);z-index:600;display:none;align-items:flex-end;}
-    .modal-overlay.open{display:flex;}
-    .modal-sheet{width:100%;background:#111118;border-radius:24px 24px 0 0;border:1px solid var(--border);border-bottom:none;padding:20px;animation:slideup 0.28s ease;}
-    @keyframes slideup{from{transform:translateY(100%);}to{transform:translateY(0);}}
-    .mhandle{width:36px;height:4px;background:rgba(255,255,255,0.18);border-radius:2px;margin:0 auto 18px;}
-    .mtitle{font-size:18px;font-weight:700;color:var(--text);margin-bottom:4px;}
-    .msub{font-size:13px;color:var(--text-muted);margin-bottom:16px;line-height:1.5;}
-    .mbtn{width:100%;padding:15px;border:none;border-radius:50px;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;margin-bottom:9px;display:flex;align-items:center;justify-content:center;gap:8px;}
-    .mbtn.primary{background:var(--primary);color:white;}
-    .mbtn.danger{background:var(--danger);color:white;}
-    .mbtn.danger-soft{background:rgba(239,68,68,0.12);color:#f87171;border:1px solid rgba(239,68,68,0.3);}
-    .mbtn.ghost{background:rgba(255,255,255,0.05);color:var(--text-muted);border:1px solid var(--border);}
-    .loc-box{background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:13px;padding:13px;margin-bottom:14px;}
-    /* Live badge */
     .live-badge{font-size:11px;font-weight:600;padding:3px 9px;border-radius:50px;background:rgba(16,185,129,0.12);color:#10b981;}
   </style>
 </head>
@@ -113,16 +87,15 @@
   </div>
 </div>
 
+<script src="js/utils.js"></script>
 <script>
 const FRIENDS=[
-  {id:'alex',name:'Alex Chen',ini:'AC',color:'#ef4444',gait:73,loc:"Near O'Neills Pub",batt:24,lastSeen:'2 min ago'},
-  {id:'jordan',name:'Jordan Kim',ini:'JK',color:'#f59e0b',gait:87,loc:'Walking on Wertland St',batt:61,lastSeen:'just now'},
-  {id:'maya',name:'Maya Rodriguez',ini:'MR',color:'#10b981',gait:15,loc:'At Boylan Heights',batt:88,lastSeen:'1 min ago'},
-  {id:'sam',name:'Sam Taylor',ini:'ST',color:'#3b82f6',gait:41,loc:'Corner area',batt:52,lastSeen:'just now'}
+  {id:'alex',  name:'Alex Chen',      ini:'AC',color:'#ef4444',gait:73,loc:"Near O'Neills Pub",   batt:24,lastSeen:'2 min ago'},
+  {id:'jordan',name:'Jordan Kim',     ini:'JK',color:'#f59e0b',gait:87,loc:'Walking on Wertland St',batt:61,lastSeen:'just now'},
+  {id:'maya',  name:'Maya Rodriguez', ini:'MR',color:'#10b981',gait:15,loc:'At Boylan Heights',    batt:88,lastSeen:'1 min ago'},
+  {id:'sam',   name:'Sam Taylor',     ini:'ST',color:'#3b82f6',gait:41,loc:'Corner area',          batt:52,lastSeen:'just now'},
 ];
-let toastTmr;
 
-function gc(g){return g>=95?'#ef4444':g>=80?'#f97316':g>=60?'#f59e0b':g>=40?'#3b82f6':'#10b981';}
 function gl(g){return g>=95?'🆘 Critical':g>=80?'⚠️ Concerning':g>=60?'👀 Heads up':g>=40?'📡 Monitoring':'✅ Normal';}
 
 function render(){
@@ -152,18 +125,17 @@ function render(){
       <div class="btns">
         <button class="btn" onclick="checkin('${f.id}')">✉️ Are you ok?</button>
         <button class="btn blue" onclick="openProfile('${f.id}')">👤 View</button>
-        ${f.gait>=60?`<button class="btn red" onclick="alert_('${f.id}')">🚨 Alert group</button>`:''}
+        ${f.gait>=60?`<button class="btn red" onclick="alertGroup('${f.id}')">🚨 Alert group</button>`:''}
       </div>`;
     (f.gait>=60?al:sl).appendChild(c);
-    if(f.gait>=60) al.appendChild(document.createElement('div')).style.display='none';
   });
 }
 
 function checkin(id){
   const f=FRIENDS.find(x=>x.id===id);
-  toast('✉️',`Sent to ${f.name.split(' ')[0]}','"Are you okay?" notification delivered');
+  toast('✉️',`Sent to ${f.name.split(' ')[0]}`,'"Are you okay?" notification delivered');
 }
-function alert_(id){
+function alertGroup(id){
   const f=FRIENDS.find(x=>x.id===id);
   toast('🚨',`Alert for ${f.name.split(' ')[0]}`,'All friends have been notified to check on them');
 }
@@ -184,27 +156,12 @@ function openProfile(id){
   btn.textContent=`✉️ Send "Are you ok?" to ${f.name.split(' ')[0]}`;
   btn.onclick=()=>{closeModal('profile-modal');checkin(id);};
   const abtn=document.getElementById('modal-alert-btn');
-  if(f.gait>=60){abtn.style.display='flex';abtn.textContent=`🚨 Alert group about ${f.name.split(' ')[0]}`;abtn.onclick=()=>{closeModal('profile-modal');alert_(id);};}
+  if(f.gait>=60){abtn.style.display='flex';abtn.textContent=`🚨 Alert group about ${f.name.split(' ')[0]}`;abtn.onclick=()=>{closeModal('profile-modal');alertGroup(id);};}
   else abtn.style.display='none';
   openModal('profile-modal');
 }
 
-function openModal(id){document.getElementById(id).classList.add('open');}
-function closeModal(id){document.getElementById(id).classList.remove('open');}
-document.querySelectorAll('.modal-overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open');}));
-
-function toast(ic,t,s){
-  document.getElementById('tic').textContent=ic;
-  document.getElementById('tt').textContent=t;
-  document.getElementById('ts').textContent=s;
-  const el=document.getElementById('toastEl');
-  if(toastTmr)clearTimeout(toastTmr);
-  el.classList.add('show');
-  toastTmr=setTimeout(()=>el.classList.remove('show'),3200);
-}
-
 render();
-// Simulate live updates
 setInterval(()=>{
   FRIENDS.forEach(f=>{
     f.gait=Math.max(5,Math.min(99,Math.round(f.gait+(Math.random()-0.45)*4)));
@@ -212,7 +169,7 @@ setInterval(()=>{
   });
   render();
   const crit=FRIENDS.find(f=>f.gait>93);
-  if(crit&&Math.random()<0.05) toast('🚨',`${crit.name.split(' ')[0]} needs help!`,`Gait critical — consider going to find them`);
+  if(crit&&Math.random()<0.05) toast('🚨',`${crit.name.split(' ')[0]} needs help!`,'Gait critical — consider going to find them');
   const low=FRIENDS.find(f=>f.batt<20);
   if(low&&Math.random()<0.04) toast('🪫',`${low.name.split(' ')[0]}'s battery is low`,`${low.batt}% — they may go offline soon`);
 },3000);
