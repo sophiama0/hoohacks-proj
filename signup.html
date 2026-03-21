@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Rally — Create Account</title>
+  <link rel="stylesheet" href="css/shared.css">
+  <style>
+    .screen{position:absolute;inset:0;overflow-y:auto;padding:52px 28px 48px;}
+    .logo-wrap{text-align:center;margin-bottom:32px;}
+    .logo-ic{width:54px;height:54px;border-radius:16px;background:var(--primary);display:inline-flex;align-items:center;justify-content:center;font-size:26px;box-shadow:0 0 28px rgba(124,58,237,0.4);margin-bottom:12px;}
+    .logo-name{font-size:24px;font-weight:800;color:var(--text);letter-spacing:-0.5px;}
+    .logo-name span{color:var(--primary);}
+    h2{font-size:22px;font-weight:700;color:var(--text);margin-bottom:6px;}
+    .sub{font-size:13px;color:var(--text-muted);margin-bottom:24px;line-height:1.5;}
+    .error-msg{background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);border-radius:10px;padding:10px 14px;font-size:13px;color:#f87171;margin-bottom:14px;display:none;}
+    .error-msg.show{display:block;}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+    .divider-label{font-size:10px;font-weight:600;color:var(--text-faint);text-transform:uppercase;letter-spacing:1px;margin:4px 0 16px;}
+    .foot{text-align:center;margin-top:20px;font-size:13px;color:var(--text-muted);}
+    .foot a{color:var(--primary);text-decoration:none;font-weight:600;}
+    .terms{font-size:11px;color:var(--text-faint);text-align:center;margin-top:14px;line-height:1.5;}
+    .terms a{color:var(--text-muted);text-decoration:underline;}
+  </style>
+</head>
+<body>
+<div id="app">
+  <div class="screen">
+    <div class="logo-wrap">
+      <div class="logo-ic">🫂</div>
+      <div class="logo-name">Ral<span>ly</span></div>
+    </div>
+
+    <h2>Join Rally</h2>
+    <div class="sub">Create an account to start keeping your friends safe.</div>
+
+    <div class="error-msg" id="error-msg"></div>
+
+    <div class="divider-label">Your info</div>
+
+    <div class="input-group">
+      <label class="input-label" for="name">Full Name</label>
+      <input class="input" id="name" type="text" placeholder="Sophie Chen" autocomplete="name">
+    </div>
+    <div class="input-group">
+      <label class="input-label" for="email">Email</label>
+      <input class="input" id="email" type="email" placeholder="you@example.com" autocomplete="email">
+    </div>
+    <div class="input-group">
+      <label class="input-label" for="phone">Phone Number</label>
+      <input class="input" id="phone" type="tel" placeholder="(555) 123-4567" autocomplete="tel">
+    </div>
+
+    <div class="divider-label" style="margin-top:4px">Security</div>
+
+    <div class="input-group">
+      <label class="input-label" for="password">Password</label>
+      <input class="input" id="password" type="password" placeholder="Min. 8 characters" autocomplete="new-password">
+    </div>
+    <div class="input-group">
+      <label class="input-label" for="confirm">Confirm Password</label>
+      <input class="input" id="confirm" type="password" placeholder="••••••••" autocomplete="new-password">
+    </div>
+
+    <button class="btn-submit" onclick="signUp()">Create Account</button>
+
+    <div class="terms">By signing up you agree to Rally's <a href="#">Terms</a> and <a href="#">Privacy Policy</a>.</div>
+    <div class="foot">Already have an account? <a href="login.html">Sign in</a></div>
+  </div>
+</div>
+
+<script>
+function signUp(){
+  const name     = document.getElementById('name').value.trim();
+  const email    = document.getElementById('email').value.trim();
+  const phone    = document.getElementById('phone').value.trim();
+  const password = document.getElementById('password').value;
+  const confirm  = document.getElementById('confirm').value;
+  const errEl    = document.getElementById('error-msg');
+  errEl.classList.remove('show');
+
+  if(!name || !email || !password){ errEl.textContent='Please fill in all required fields.'; errEl.classList.add('show'); return; }
+  if(password.length < 8){ errEl.textContent='Password must be at least 8 characters.'; errEl.classList.add('show'); return; }
+  if(password !== confirm){ errEl.textContent='Passwords do not match.'; errEl.classList.add('show'); return; }
+
+  localStorage.setItem('rally_user', JSON.stringify({
+    name, email, phone, password, avatar: null,
+    emergencyContact: {name:'', phone:''}
+  }));
+
+  window.location.href='index.html';
+}
+
+document.addEventListener('keydown', e=>{ if(e.key==='Enter') signUp(); });
+
+// Already logged in → skip to app
+if(localStorage.getItem('rally_user')) window.location.href='index.html';
+</script>
+</body>
+</html>

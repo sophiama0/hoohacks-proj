@@ -120,3 +120,14 @@ html,body{
 .mbtn.ghost{background:rgba(255,255,255,0.05);color:var(--text-muted);border:1px solid var(--border);}
 .mbtn.danger-soft{background:rgba(239,68,68,0.12);color:#f87171;border:1px solid rgba(239,68,68,0.3);}
 .mbtn.purple-soft{background:rgba(124,58,237,0.12);color:#a78bfa;border:1px solid rgba(124,58,237,0.3);}
+
+/* ─── Form inputs (login, signup, profile) ───────────────────── */
+.input-group{margin-bottom:16px;}
+.input-label{display:block;font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:7px;}
+.input{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:13px 14px;font-size:15px;color:var(--text);font-family:inherit;outline:none;transition:border-color 0.2s;}
+.input:focus{border-color:var(--primary);}
+.input::placeholder{color:var(--text-faint);}
+.input-hint{font-size:11px;color:var(--text-faint);margin-top:5px;}
+.btn-submit{width:100%;padding:15px;border:none;border-radius:50px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;background:var(--primary);color:white;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:8px;}
+.btn-submit:hover{opacity:0.9;transform:translateY(-1px);}
+.btn-submit:disabled{opacity:0.45;cursor:default;transform:none;}

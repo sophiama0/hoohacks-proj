@@ -90,4 +90,20 @@ document.getElementById('main').addEventListener('click', ()=>{
   if(document.getElementById('sidebar').classList.contains('open')) toggleSidebar();
 });
 
+// Populate sidebar with user info from localStorage
+(function(){
+  const user = JSON.parse(localStorage.getItem('rally_user') || 'null');
+  if(!user) return;
+  const avEl   = document.getElementById('sidebar-av');
+  const nameEl = document.getElementById('sidebar-uname');
+  if(nameEl) nameEl.textContent = user.name || 'Your Profile';
+  if(avEl){
+    if(user.avatar){
+      avEl.innerHTML = `<img src="${user.avatar}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
+    } else {
+      avEl.textContent = (user.name||'?').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+    }
+  }
+})();
+
 initMap();
