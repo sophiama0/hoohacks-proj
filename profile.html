@@ -6,10 +6,10 @@
   <title>Rally — Profile</title>
   <link rel="stylesheet" href="css/shared.css">
   <style>
-    .content{position:absolute;top:104px;bottom:0;left:0;right:0;overflow-y:auto;padding:20px 18px 40px;display:flex;flex-direction:column;gap:22px;}
+    .content{position:absolute;top:104px;bottom:0;left:0;right:0;overflow-y:auto;padding:24px 28px 48px;}
 
     /* Avatar */
-    .avatar-section{display:flex;flex-direction:column;align-items:center;gap:12px;padding:8px 0 4px;}
+    .avatar-section{display:flex;flex-direction:column;align-items:center;gap:12px;padding:8px 0 28px;}
     .avatar-wrap{position:relative;cursor:pointer;}
     .avatar{width:88px;height:88px;border-radius:50%;background:var(--primary);display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:700;color:white;border:3px solid rgba(53,94,59,0.4);box-shadow:0 0 24px rgba(53,94,59,0.3);overflow:hidden;}
     .avatar img{width:100%;height:100%;object-fit:cover;}
@@ -18,23 +18,11 @@
     .avatar-email{font-size:12px;color:var(--text-muted);}
     #photo-input{display:none;}
 
-    /* Section groups */
-    .group{background:var(--surface);border:1px solid var(--border);border-radius:18px;overflow:hidden;}
-    .group-title{font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;padding:13px 16px 0;}
-    .group .input-group{padding:10px 16px 0;}
-    .group .input-group:last-child{padding-bottom:14px;}
-    .group .input{border-radius:10px;padding:11px 13px;font-size:14px;}
-
-    /* Row item (for emergency contact) */
-    .row-item{display:flex;align-items:center;gap:12px;padding:13px 16px;border-bottom:1px solid var(--border);}
-    .row-item:last-child{border-bottom:none;}
-    .row-ic{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;}
-    .row-body{flex:1;}
-    .row-title{font-size:13px;font-weight:600;color:var(--text);}
-    .row-sub{font-size:11px;color:var(--text-muted);margin-top:1px;}
+    /* Section divider label */
+    .divider-label{font-size:10px;font-weight:600;color:var(--text-faint);text-transform:uppercase;letter-spacing:1px;margin:4px 0 16px;}
 
     /* Toggle row */
-    .toggle-row{display:flex;align-items:center;justify-content:space-between;padding:13px 16px;border-bottom:1px solid var(--border);}
+    .toggle-row{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.05);}
     .toggle-row:last-child{border-bottom:none;}
     .toggle-label{font-size:14px;color:var(--text);}
     .toggle-sub{font-size:11px;color:var(--text-muted);margin-top:1px;}
@@ -43,8 +31,8 @@
     .toggle::after{content:'';position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:white;transition:transform 0.25s;box-shadow:0 1px 4px rgba(0,0,0,0.3);}
     .toggle.on::after{transform:translateX(20px);}
 
-    /* Danger zone */
-    .sign-out-btn{width:100%;padding:14px;border:none;border-radius:50px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;background:rgba(239,68,68,0.1);color:#f87171;border:1px solid rgba(239,68,68,0.25);transition:all 0.2s;}
+    /* Sign out */
+    .sign-out-btn{width:100%;padding:14px;border:none;border-radius:50px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;background:rgba(239,68,68,0.1);color:#f87171;border:1px solid rgba(239,68,68,0.25);transition:all 0.2s;margin-top:8px;}
     .sign-out-btn:hover{background:rgba(239,68,68,0.18);}
 
     /* Save button in header */
@@ -78,72 +66,63 @@
     </div>
 
     <!-- Personal Info -->
-    <div class="group">
-      <div class="group-title">Personal Info</div>
-      <div class="input-group">
-        <label class="input-label" for="name">Full Name</label>
-        <input class="input" id="name" type="text" placeholder="Your name">
-      </div>
-      <div class="input-group">
-        <label class="input-label" for="email">Email</label>
-        <input class="input" id="email" type="email" placeholder="you@example.com">
-      </div>
-      <div class="input-group">
-        <label class="input-label" for="phone">Phone Number</label>
-        <input class="input" id="phone" type="tel" placeholder="(555) 123-4567">
-      </div>
+    <div class="divider-label">Your Info</div>
+    <div class="input-group">
+      <label class="input-label" for="name">Full Name</label>
+      <input class="input" id="name" type="text" placeholder="Your name">
+    </div>
+    <div class="input-group">
+      <label class="input-label" for="email">Email</label>
+      <input class="input" id="email" type="email" placeholder="you@example.com">
+    </div>
+    <div class="input-group">
+      <label class="input-label" for="phone">Phone Number</label>
+      <input class="input" id="phone" type="tel" placeholder="(555) 123-4567">
     </div>
 
     <!-- Emergency Contact -->
-    <div class="group">
-      <div class="group-title">Emergency Contact</div>
-      <div class="input-group">
-        <label class="input-label" for="ec-name">Contact Name</label>
-        <input class="input" id="ec-name" type="text" placeholder="e.g. Mom, Dad">
-      </div>
-      <div class="input-group">
-        <label class="input-label" for="ec-phone">Contact Phone</label>
-        <input class="input" id="ec-phone" type="tel" placeholder="(555) 867-5309">
-        <div class="input-hint">This number is called when you tap "Call Emergency Contact"</div>
-      </div>
+    <div class="divider-label" style="margin-top:8px">Emergency Contact</div>
+    <div class="input-group">
+      <label class="input-label" for="ec-name">Emergency Contact Name</label>
+      <input class="input" id="ec-name" type="text" placeholder="e.g. Mom, Dad">
+    </div>
+    <div class="input-group">
+      <label class="input-label" for="ec-phone">Emergency Contact Number</label>
+      <input class="input" id="ec-phone" type="tel" placeholder="(555) 867-5309">
     </div>
 
-    <!-- Change Password -->
-    <div class="group">
-      <div class="group-title">Security</div>
-      <div class="input-group">
-        <label class="input-label" for="current-pw">Current Password</label>
-        <input class="input" id="current-pw" type="password" placeholder="••••••••">
-      </div>
-      <div class="input-group">
-        <label class="input-label" for="new-pw">New Password</label>
-        <input class="input" id="new-pw" type="password" placeholder="Min. 8 characters">
-      </div>
-      <div class="input-group">
-        <label class="input-label" for="confirm-pw">Confirm New Password</label>
-        <input class="input" id="confirm-pw" type="password" placeholder="••••••••">
-      </div>
+    <!-- Security -->
+    <div class="divider-label" style="margin-top:8px">Security</div>
+    <div class="input-group">
+      <label class="input-label" for="current-pw">Current Password</label>
+      <input class="input" id="current-pw" type="password" placeholder="••••••••">
+    </div>
+    <div class="input-group">
+      <label class="input-label" for="new-pw">New Password</label>
+      <input class="input" id="new-pw" type="password" placeholder="Min. 8 characters">
+    </div>
+    <div class="input-group">
+      <label class="input-label" for="confirm-pw">Confirm New Password</label>
+      <input class="input" id="confirm-pw" type="password" placeholder="••••••••">
     </div>
 
     <!-- Notifications -->
-    <div class="group">
-      <div class="group-title" style="padding-bottom:4px">Notifications</div>
-      <div class="toggle-row">
-        <div><div class="toggle-label">Gait alerts from friends</div><div class="toggle-sub">Notified when a friend hits 60%, 80%, 95%</div></div>
-        <button class="toggle on" id="notif-gait" onclick="this.classList.toggle('on')"></button>
-      </div>
-      <div class="toggle-row">
-        <div><div class="toggle-label">Safe place arrivals</div><div class="toggle-sub">When friends reach their safe place</div></div>
-        <button class="toggle on" id="notif-safe" onclick="this.classList.toggle('on')"></button>
-      </div>
-      <div class="toggle-row">
-        <div><div class="toggle-label">Hydration reminders</div><div class="toggle-sub">Group water reminders every 45 min</div></div>
-        <button class="toggle on" id="notif-water" onclick="this.classList.toggle('on')"></button>
-      </div>
-      <div class="toggle-row">
-        <div><div class="toggle-label">Low battery warnings</div><div class="toggle-sub">When a friend's battery drops below 20%</div></div>
-        <button class="toggle" id="notif-batt" onclick="this.classList.toggle('on')"></button>
-      </div>
+    <div class="divider-label" style="margin-top:8px">Notifications</div>
+    <div class="toggle-row">
+      <div class="toggle-label">Alerts from Friends</div>
+      <button class="toggle on" id="notif-gait" onclick="this.classList.toggle('on')"></button>
+    </div>
+    <div class="toggle-row">
+      <div class="toggle-label">Safe place arrivals</div>
+      <button class="toggle on" id="notif-safe" onclick="this.classList.toggle('on')"></button>
+    </div>
+    <div class="toggle-row">
+      <div class="toggle-label">Hydration reminders</div>
+      <button class="toggle on" id="notif-water" onclick="this.classList.toggle('on')"></button>
+    </div>
+    <div class="toggle-row">
+      <div class="toggle-label">Low battery warnings</div>
+      <button class="toggle" id="notif-batt" onclick="this.classList.toggle('on')"></button>
     </div>
 
     <!-- Sign out -->
