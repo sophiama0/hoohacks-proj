@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Rally — Log In</title>
+  <link rel="stylesheet" href="css/shared.css">
+  <style>
+    .screen{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;padding:0 28px 40px;overflow-y:auto;}
+    .top{margin-bottom:36px;}
+    .back-btn{display:inline-flex;align-items:center;gap:6px;font-size:14px;color:var(--text-muted);text-decoration:none;margin-bottom:28px;}
+    .back-btn:hover{color:var(--text);}
+    .page-title{font-size:28px;font-weight:800;color:var(--text);letter-spacing:-0.5px;}
+    .page-sub{font-size:13px;color:var(--text-muted);margin-top:4px;}
+
+    .error-msg{background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);border-radius:10px;padding:10px 14px;font-size:13px;color:#f87171;margin-bottom:14px;display:none;}
+    .error-msg.show{display:block;}
+
+    .forgot{display:block;text-align:right;font-size:12px;color:var(--text-muted);text-decoration:none;margin-top:-8px;margin-bottom:24px;}
+    .forgot:hover{color:var(--text);}
+
+    .btn-submit{width:100%;padding:15px;border:none;border-radius:50px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;background:var(--primary);color:white;transition:all 0.2s;}
+    .btn-submit:hover{opacity:0.9;transform:translateY(-1px);}
+  </style>
+</head>
+<body>
+<div id="app">
+  <div class="screen">
+    <div class="top">
+      <a class="back-btn" href="login.html">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M15 18l-6-6 6-6"/>
+        </svg>
+        Back
+      </a>
+      <div class="page-title">Welcome back</div>
+      <div class="page-sub">Log in to your Rally account</div>
+    </div>
+
+    <div class="error-msg" id="error-msg"></div>
+
+    <div class="input-group">
+      <label class="input-label" for="email">Email</label>
+      <input class="input" id="email" type="email" placeholder="you@example.com" autocomplete="email">
+    </div>
+    <div class="input-group">
+      <label class="input-label" for="password">Password</label>
+      <input class="input" id="password" type="password" placeholder="••••••••" autocomplete="current-password">
+    </div>
+
+    <a class="forgot" href="#">Forgot password?</a>
+
+    <button class="btn-submit" id="sign-in-btn" onclick="signIn()">Log In</button>
+  </div>
+</div>
+
+<script>
+document.addEventListener('keydown', e => { if(e.key === 'Enter') signIn(); });
+
+function signIn(){
+  const email    = document.getElementById('email').value.trim();
+  const password = document.getElementById('password').value;
+  const errEl    = document.getElementById('error-msg');
+  errEl.classList.remove('show');
+
+  if(!email || !password){
+    errEl.textContent = 'Please fill in all fields.';
+    errEl.classList.add('show');
+    return;
+  }
+
+  const stored = JSON.parse(localStorage.getItem('rally_user') || 'null');
+
+  if(!stored){
+    localStorage.setItem('rally_user', JSON.stringify({
+      name:'Friend', email, password, phone:'', avatar:null,
+      emergencyContact:{name:'', phone:''}
+    }));
+    window.location.href = 'index.html';
+  } else if(stored.email === email && stored.password === password){
+    window.location.href = 'index.html';
+  } else {
+    errEl.textContent = 'Incorrect email or password.';
+    errEl.classList.add('show');
+    document.getElementById('password').value = '';
+  }
+}
+
+if(localStorage.getItem('rally_user')) window.location.href = 'index.html';
+</script>
+</body>
+</html>

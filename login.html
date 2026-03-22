@@ -6,18 +6,26 @@
   <title>Rally — Sign In</title>
   <link rel="stylesheet" href="css/shared.css">
   <style>
-    .screen{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;padding:0 28px 40px;overflow-y:auto;}
-    .logo-wrap{text-align:center;margin-bottom:40px;}
-    .logo-ic{width:64px;height:64px;border-radius:18px;background:var(--primary);display:inline-flex;align-items:center;justify-content:center;font-size:30px;box-shadow:0 0 36px rgba(53,94,59,0.4);margin-bottom:14px;}
-    .logo-name{font-size:28px;font-weight:800;color:var(--text);letter-spacing:-1px;}
+    .screen{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:space-between;padding:190px 28px 80px;overflow-y:auto;}
+    .logo-wrap{text-align:center;}
+    .logo-name{font-size:62px;font-weight:800;color:var(--text);letter-spacing:-2px;}
     .logo-name span{color:var(--primary);}
-    .logo-tag{font-size:13px;color:var(--text-muted);margin-top:4px;}
-    h2{font-size:22px;font-weight:700;color:var(--text);margin-bottom:20px;}
-    .error-msg{background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);border-radius:10px;padding:10px 14px;font-size:13px;color:#f87171;margin-bottom:14px;display:none;}
-    .error-msg.show{display:block;}
-    .forgot{display:block;text-align:right;font-size:12px;color:var(--text-muted);text-decoration:none;margin-top:-8px;margin-bottom:20px;}
-    .forgot:hover{color:var(--text);}
-    .foot{text-align:center;margin-top:24px;font-size:13px;color:var(--text-muted);}
+    .logo-tag{font-size:16px;color:var(--text-muted);margin-top:8px;}
+    .btn-section{}
+
+    .auth-btn{
+      width:100%;padding:11px 20px;border-radius:50px;font-size:15px;font-weight:600;
+      cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;
+      gap:10px;margin-bottom:12px;border:none;transition:all 0.2s;
+    }
+    .auth-btn:hover{opacity:0.9;transform:translateY(-1px);}
+    .auth-btn.white{background:#ffffff;color:#1a1a1a;box-shadow:0 2px 12px rgba(0,0,0,0.3);}
+    .auth-btn.green{background:var(--primary);color:#ffffff;}
+
+    .auth-icon{width:20px;height:20px;flex-shrink:0;}
+    .auth-icon.lg{width:26px;height:26px;}
+
+    .foot{text-align:center;margin-top:28px;font-size:13px;color:var(--text-muted);}
     .foot a{color:var(--primary);text-decoration:none;font-weight:600;}
   </style>
 </head>
@@ -25,63 +33,61 @@
 <div id="app">
   <div class="screen">
     <div class="logo-wrap">
-      <div class="logo-ic"></div>
-      <div class="logo-name">Ral<span>ly</span></div>
+      <div class="logo-name">R<span>all</span>y</div>
       <div class="logo-tag">Stay safe. Stay together.</div>
     </div>
 
-    <h2>Welcome back</h2>
+    <div class="btn-section">
+    <!-- Google -->
+    <button class="auth-btn white" onclick="continueWithGoogle()">
+      <svg class="auth-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+        <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+        <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/>
+        <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+      </svg>
+      Continue with Google
+    </button>
 
-    <div class="error-msg" id="error-msg"></div>
+    <!-- Apple -->
+    <button class="auth-btn white" onclick="continueWithApple()">
+      <svg class="auth-icon lg" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.7 9.05 7.42c1.39.07 2.35.74 3.17.8 1.21-.24 2.37-.93 3.67-.84 1.56.13 2.74.78 3.5 1.96-3.22 1.93-2.46 5.78.64 6.91-.56 1.39-1.27 2.76-3 4.03M12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z" fill="#000000"/>
+      </svg>
+      Continue with Apple
+    </button>
 
-    <div class="input-group">
-      <label class="input-label" for="email">Email</label>
-      <input class="input" id="email" type="email" placeholder="you@example.com" autocomplete="email">
+    <!-- Email signup -->
+    <button class="auth-btn green" onclick="signUpWithEmail()">
+      <span style="font-size:16px;font-weight:700;">@</span>
+      Sign up with email
+    </button>
+
+    <div class="foot">Already have an account? <a href="login-form.html">Log in</a></div>
     </div>
-    <div class="input-group">
-      <label class="input-label" for="password">Password</label>
-      <input class="input" id="password" type="password" placeholder="••••••••" autocomplete="current-password">
-    </div>
-
-    <a class="forgot" href="#">Forgot password?</a>
-
-    <button class="btn-submit" id="sign-in-btn" onclick="signIn()">Sign In</button>
-
-    <div class="foot">New to Rally? <a href="signup.html">Create account</a></div>
   </div>
 </div>
 
 <script>
-document.addEventListener('keydown', e=>{ if(e.key==='Enter') signIn(); });
+function continueWithGoogle(){
+  // Placeholder — wire up real OAuth later
+  alert('Google sign-in coming soon!');
+}
 
-function signIn(){
-  const email    = document.getElementById('email').value.trim();
-  const password = document.getElementById('password').value;
-  const errEl    = document.getElementById('error-msg');
-  errEl.classList.remove('show');
+function continueWithApple(){
+  alert('Apple sign-in coming soon!');
+}
 
-  if(!email || !password){ errEl.textContent='Please fill in all fields.'; errEl.classList.add('show'); return; }
+function signUpWithEmail(){
+  window.location.href = 'signup.html';
+}
 
-  const stored = JSON.parse(localStorage.getItem('rally_user') || 'null');
-
-  if(!stored){
-    // No account yet — create a minimal one and proceed
-    localStorage.setItem('rally_user', JSON.stringify({
-      name:'Friend', email, password, phone:'', avatar:null,
-      emergencyContact:{name:'', phone:''}
-    }));
-    window.location.href='index.html';
-  } else if(stored.email===email && stored.password===password){
-    window.location.href='index.html';
-  } else {
-    errEl.textContent='Incorrect email or password.';
-    errEl.classList.add('show');
-    document.getElementById('password').value='';
-  }
+function logIn(){
+  window.location.href = 'login-form.html';
 }
 
 // Already logged in → skip to app
-if(localStorage.getItem('rally_user')) window.location.href='index.html';
+if(localStorage.getItem('rally_user')) window.location.href = 'index.html';
 </script>
 </body>
 </html>
