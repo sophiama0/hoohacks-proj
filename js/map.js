@@ -11,6 +11,9 @@ const FRIENDS = [
 ];
 const ME = {lat:38.0535, lng:-78.4870};
 let map, markers = {};
+let pinMode = false;
+let pendingPin = null;
+let friendSafeLayers = [];
 
 function initMap(){
   map = L.map('map', {center:[ME.lat,ME.lng], zoom:16, zoomControl:false, attributionControl:false});
@@ -41,20 +44,35 @@ function initMap(){
 
   // Safe place marker
   L.marker([38.0520,-78.4892], {icon: L.divIcon({
-    html:`<div style="width:36px;height:36px;border-radius:10px;background:#355E3B;border:2px solid white;box-shadow:0 4px 10px rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>`,
+    html:`<div style="width:36px;height:36px;border-radius:10px;background:#4caf6e;border:2px solid white;box-shadow:0 4px 10px rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>`,
     className:'', iconSize:[36,36], iconAnchor:[18,18]
   })}).addTo(map).bindPopup(`
     <div class="rp-card">
-      <div class="rp-name">Safe Place</div>
-      <div class="rp-loc">Your Apartment</div>
-      <div style="background:rgba(53,94,59,0.15);border:1px solid rgba(53,94,59,0.35);border-radius:9px;padding:8px 10px;font-size:11px;color:#6fcf7c;font-family:Inter,sans-serif;">Marked as safe</div>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:11px;">
+        <div style="width:38px;height:38px;border-radius:10px;background:#4caf6e;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;color:white;flex-shrink:0;">S</div>
+        <div>
+          <div class="rp-name">Your Safe Spot</div>
+          <div class="rp-loc" style="margin-top:2px;">Your Apartment</div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:7px;background:rgba(76,175,110,0.12);border:1px solid rgba(76,175,110,0.35);border-radius:9px;padding:8px 11px;">
+        <div style="width:7px;height:7px;border-radius:50%;background:#6fcf7c;flex-shrink:0;"></div>
+        <span style="font-size:12px;font-weight:600;color:#6fcf7c;font-family:Inter,sans-serif;">Marked as safe</span>
+      </div>
     </div>
-  `, {className: 'rp-popup', maxWidth: 220});
+  `, {className: 'rp-popup', maxWidth: 240});
 
   FRIENDS.forEach(addMarker);
   renderChips();
   startSim();
   setTimeout(()=>toast('','Collin Chan — 73% alert','Tap their chip below to see their location'), 1000);
+
+  map.on('click', function(e) {
+    if (!pinMode) return;
+    exitPinMode();
+    pendingPin = {lat: e.latlng.lat, lng: e.latlng.lng};
+    openModal('pin-name-modal');
+  });
 }
 
 function addMarker(f){
@@ -148,5 +166,92 @@ document.getElementById('main').addEventListener('click', ()=>{
     }
   }
 })();
+
+function showFriendSafePins(friends) {
+  hideFriendSafePins();
+  friends.filter(f => f.joined && f.safeSpot).forEach(f => {
+    const safeGreen = '#4caf6e';
+    const icon = L.divIcon({
+      html:`<div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+        <div style="width:32px;height:32px;border-radius:9px;background:${safeGreen};border:2px solid white;box-shadow:0 4px 12px rgba(0,0,0,0.45);display:flex;align-items:center;justify-content:center;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        </div>
+        <div style="font-size:9px;font-weight:700;color:white;background:rgba(0,0,0,0.72);border:1px solid ${safeGreen};border-radius:4px;padding:1px 5px;white-space:nowrap;">${f.initials}</div>
+      </div>`,
+      className:'', iconSize:[32,44], iconAnchor:[16,16]
+    });
+    const m = L.marker([f.safeSpot.lat, f.safeSpot.lng], {icon}).addTo(map)
+      .bindPopup(`<div class="rp-card">
+        <div class="rp-name">${f.name.split(' ')[0]}'s Safe Spot</div>
+        <div class="rp-loc">${f.safeSpot.label}</div>
+        <div style="background:rgba(53,94,59,0.15);border:1px solid rgba(53,94,59,0.35);border-radius:9px;padding:8px 10px;font-size:11px;color:#6fcf7c;font-family:Inter,sans-serif;">Marked as safe</div>
+      </div>`, {className:'rp-popup', maxWidth:220});
+    friendSafeLayers.push(m);
+  });
+}
+
+function hideFriendSafePins() {
+  friendSafeLayers.forEach(l => map.removeLayer(l));
+  friendSafeLayers = [];
+}
+
+function enterPinMode() {
+  pinMode = true;
+  document.getElementById('pin-mode-banner').style.display = 'flex';
+  map.getContainer().style.cursor = 'crosshair';
+}
+
+function exitPinMode() {
+  pinMode = false;
+  document.getElementById('pin-mode-banner').style.display = 'none';
+  map.getContainer().style.cursor = '';
+}
+
+function addSafePin(lat, lng, label) {
+  L.marker([lat, lng], {icon: L.divIcon({
+    html:`<div style="width:36px;height:36px;border-radius:10px;background:#4caf6e;border:2px solid white;box-shadow:0 4px 10px rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>`,
+    className:'', iconSize:[36,36], iconAnchor:[18,18]
+  })}).addTo(map).bindPopup(`
+    <div class="rp-card">
+      <div class="rp-name">Safe Place</div>
+      <div class="rp-loc">${label}</div>
+      <div style="background:rgba(53,94,59,0.15);border:1px solid rgba(53,94,59,0.35);border-radius:9px;padding:8px 10px;font-size:11px;color:#6fcf7c;font-family:Inter,sans-serif;">Marked as safe</div>
+    </div>
+  `, {className:'rp-popup', maxWidth:220}).openPopup();
+}
+
+function startCurrentLocPin() {
+  pendingPin = {lat: ME.lat, lng: ME.lng};
+  openModal('pin-name-modal');
+}
+
+function confirmPin() {
+  const name = document.getElementById('pin-name-input').value.trim() || 'Safe Place';
+  closeModal('pin-name-modal');
+  document.getElementById('pin-name-input').value = '';
+  if (!pendingPin) return;
+  addSafePin(pendingPin.lat, pendingPin.lng, name);
+  pendingPin = null;
+  toast('', 'Safe place saved!', name + ' marked on your map');
+}
+
+function toggleSafeSearch() {
+  const row = document.getElementById('safe-search-row');
+  const visible = row.style.display !== 'none';
+  row.style.display = visible ? 'none' : 'block';
+  if (!visible) document.getElementById('safe-search-input').focus();
+}
+
+function searchAndPin() {
+  const query = document.getElementById('safe-search-input').value.trim();
+  if (!query) return;
+  const center = map.getCenter();
+  pendingPin = {lat: center.lat + (Math.random()-0.5)*0.004, lng: center.lng + (Math.random()-0.5)*0.004};
+  document.getElementById('safe-search-input').value = '';
+  document.getElementById('safe-search-row').style.display = 'none';
+  closeModal('safe-modal');
+  document.getElementById('pin-name-input').value = query;
+  openModal('pin-name-modal');
+}
 
 initMap();

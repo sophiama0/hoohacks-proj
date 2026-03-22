@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>Rally — Alerts</title>
+  <title>Rally - Alerts</title>
   <link rel="stylesheet" href="css/shared.css">
   <style>
     .content{position:absolute;top:104px;bottom:0;left:0;right:0;overflow-y:auto;padding:0 0 24px;}
@@ -97,7 +97,7 @@
         <div class="alert-banner-ic" id="alert-ic"></div>
         <div>
           <div class="alert-banner-title" id="alert-title">All signals normal</div>
-          <div class="alert-banner-sub" id="alert-sub">No alerts sent — your friends are not notified</div>
+          <div class="alert-banner-sub" id="alert-sub">No alerts sent, your friends are not notified</div>
         </div>
         <div class="signal-row" style="margin-left:auto;flex-direction:column;gap:5px;">
           <div style="display:flex;gap:5px;align-items:center">
@@ -175,9 +175,9 @@
     <div class="tab-panel" id="tab-sound">
       <div class="ambient-card">
         <div style="font-size:14px;font-weight:600;color:var(--text)"> AI Ambient Detection</div>
-        <div style="font-size:12px;color:var(--text-muted);margin-top:3px;line-height:1.5">Rally listens to the background noise to detect sudden environment shifts. Going from a loud venue to somewhere quiet is a key safety signal.</div>
+        <div style="font-size:12px;color:var(--text-muted);margin-top:3px;line-height:1.5">Rally listens to the background noise to detect sudden environment shifts.</div>
         <div class="awave" id="awave"></div>
-        <div style="text-align:center;font-size:13px;color:var(--text-muted);margin-bottom:12px">Detected: <strong id="amloc" style="color:var(--text)">Loud venue — likely still at the bar</strong></div>
+        <div style="text-align:center;font-size:13px;color:var(--text-muted);margin-bottom:12px">Detected: <strong id="amloc" style="color:var(--text)">Loud venue, likely still at the bar</strong></div>
         <div class="env-grid">
           <div class="env-item active" id="env-bar" onclick="setEnv('bar',this)">
             <div class="env-icon">
@@ -211,7 +211,7 @@
 
       <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:14px;">
         <div class="section-label" style="margin-bottom:8px">How it works</div>
-        <div style="font-size:12px;color:var(--text-muted);line-height:1.6">Your mic reads ambient decibel levels. A rapid drop from <strong style="color:var(--text)">loud to quiet</strong> mid-rally (e.g. bar to a silent room) is flagged as suspicious. This may cause your friends to be are alerted.</div>
+        <div style="font-size:12px;color:var(--text-muted);line-height:1.6">Your mic reads ambient decibel levels. A rapid drop from <strong style="color:var(--text)">loud to quiet</strong> mid-rally (e.g. bar to a silent room) is flagged as suspicious. This may cause your friends to be alerted.</div>
       </div>
     </div>
 
@@ -328,10 +328,10 @@ setInterval(() => {
 
 // ── Sound / Ambient ────────────────────────────────────
 const envInfo = {
-  bar:     {label: 'Loud venue — likely still at the bar',    loud: true},
-  outside: {label: 'Outside / street — moderate noise',       loud: false},
-  quiet:   {label: 'Very quiet — possibly somewhere alone',   loud: false},
-  ride:    {label: 'In a vehicle — likely heading home',      loud: false},
+  bar:     {label: 'Loud venue, likely still at the bar',    loud: true},
+  outside: {label: 'Outside / street, moderate noise',       loud: false},
+  quiet:   {label: 'Very quiet, possibly somewhere alone',   loud: false},
+  ride:    {label: 'In a vehicle, likely heading home',      loud: false},
 };
 let startedLoud = true; // user began at bar
 
