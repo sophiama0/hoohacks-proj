@@ -30,12 +30,13 @@
     .main.pushed{transform:translateX(260px);}
 
     /*  Topbar  */
-    .topbar{position:absolute;top:0;left:0;right:0;z-index:200;padding:52px 18px 10px;display:flex;align-items:center;justify-content:space-between;pointer-events:none;}
+    .topbar{position:absolute;top:0;left:0;right:0;z-index:200;padding:52px 18px 10px;display:flex;align-items:flex-start;justify-content:space-between;pointer-events:none;}
     .topbar-logo{display:flex;align-items:center;justify-content:center;gap:8px;pointer-events:all;background:rgba(0,0,0,0.55);backdrop-filter:blur(10px);border:1px solid var(--border);border-radius:50px;padding:7px 14px;}
     .topbar-logo-icon{font-size:16px;}
     .topbar-logo-name{font-size:16px;font-weight:800;color:var(--text);letter-spacing:-0.5px;}
     .topbar-logo-name span{color:var(--primary);}
-    .topbar-right{display:flex;gap:8px;pointer-events:all;}
+    .topbar-right{display:flex;flex-direction:column;gap:8px;pointer-events:all;align-items:flex-end;}
+    .topbar-right-row{display:flex;gap:8px;}
     .topbar-icon-btn{width:36px;height:36px;border-radius:50%;background:rgba(0,0,0,0.55);backdrop-filter:blur(10px);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;}
     .hamburger{width:36px;height:36px;border-radius:50%;background:rgba(0,0,0,0.55);backdrop-filter:blur(10px);border:1px solid var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;}
     .hamburger span{display:block;width:14px;height:2px;background:var(--text);border-radius:2px;transition:all 0.25s;}
@@ -77,6 +78,35 @@
 
     /* Toast top override for map (sits above map, below topbar) */
     .toast{top:76px;}
+
+    /* Rally pill badge */
+    .rally-pill{display:none;align-items:center;gap:6px;background:#355E3B;border-radius:50px;padding:6px 12px;cursor:pointer;pointer-events:all;transition:opacity 0.2s;border:1px solid rgba(255,255,255,0.15);}
+    .rally-pill.visible{display:flex;}
+    .rally-pill:active{opacity:0.8;}
+    .rally-pill-dot{width:6px;height:6px;border-radius:50%;background:white;flex-shrink:0;animation:liveblink 1.2s ease-in-out infinite;}
+    .rally-pill-text{font-size:11px;font-weight:700;color:white;white-space:nowrap;letter-spacing:0.1px;}
+
+    /* Rally Together button */
+    .rally-fab{width:52px;height:52px;border-radius:50%;background:#355E3B;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;animation:rallypulse 2s ease-in-out infinite;transition:transform 0.2s;}
+    .rally-fab:hover{transform:scale(1.08);}
+    @keyframes rallypulse{0%,100%{box-shadow:0 0 14px rgba(53,94,59,0.6);}50%{box-shadow:0 0 28px rgba(53,94,59,1),0 0 0 8px rgba(53,94,59,0.22);}}
+
+    /* Rally Modal */
+    .rally-member-list{display:flex;flex-direction:column;gap:8px;margin:4px 0 16px;}
+    .rally-member{display:flex;align-items:center;gap:12px;padding:10px 12px;background:rgba(53,94,59,0.12);border:1px solid rgba(53,94,59,0.3);border-radius:12px;}
+    .rally-member.pending{background:rgba(255,255,255,0.05);border-color:var(--border);opacity:0.6;}
+    .rally-av{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:white;flex-shrink:0;}
+    .rally-member-info{flex:1;}
+    .rally-member-name{font-size:13px;font-weight:600;color:var(--text);}
+    .rally-member-status{font-size:11px;color:var(--text-muted);margin-top:1px;}
+    .rally-status-dot{width:8px;height:8px;border-radius:50%;background:#355E3B;flex-shrink:0;}
+    .rally-status-dot.pending{background:rgba(255,255,255,0.25);}
+    .rally-active-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(53,94,59,0.2);border:1px solid rgba(53,94,59,0.5);border-radius:50px;padding:5px 12px;font-size:11px;font-weight:700;color:#6fcf7c;margin-bottom:14px;width:fit-content;}
+    .rally-active-badge .live-dot{width:7px;height:7px;border-radius:50%;background:#6fcf7c;animation:liveblink 1.2s ease-in-out infinite;}
+    @keyframes liveblink{0%,100%{opacity:1;}50%{opacity:0.3;}}
+    .rally-empty{text-align:center;padding:24px 0 8px;color:var(--text-muted);font-size:13px;}
+    .rally-empty-icon{font-size:32px;margin-bottom:8px;}
+    .rally-count{font-size:11px;font-weight:700;color:var(--text-faint);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;}
   </style>
 </head>
 <body>
@@ -149,19 +179,35 @@
         <div class="topbar-logo">
           <span class="topbar-logo-name">R<span>all</span>y</span>
         </div>
+        <div class="rally-pill" id="rallyBar" onclick="openModal('rally-modal')">
+          <div class="rally-pill-dot"></div>
+          <span class="rally-pill-text">Active Rally</span>
+          <span id="rallyPillTime" style="font-size:11px;font-weight:600;color:rgba(255,255,255,0.8);font-variant-numeric:tabular-nums;">0:00</span>
+        </div>
       </div>
       <div class="topbar-right">
-        <div class="topbar-icon-btn" onclick="centerMap()" title="My location">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/></svg>
+        <div class="topbar-right-row">
+          <div class="topbar-icon-btn" onclick="centerMap()" title="My location">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/></svg>
+          </div>
+          <div class="topbar-icon-btn" onclick="openModal('safe-modal')" title="Safe places">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          </div>
         </div>
-        <div class="topbar-icon-btn" onclick="openModal('safe-modal')" title="Safe places">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-        </div>
+        <button class="rally-fab" id="rallyFab" onclick="openModal('rally-modal')" title="Rally Together">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M2 21L10 13" stroke="white" stroke-width="2" stroke-linecap="round"/>
+            <path d="M10 13L17 4L20 7L11 14Z" stroke="white" stroke-width="1.8" stroke-linejoin="round" fill="rgba(255,255,255,0.25)"/>
+            <circle cx="18" cy="2" r="1.2" fill="white"/>
+            <circle cx="22" cy="6" r="1" fill="white"/>
+            <circle cx="21" cy="11" r="0.9" fill="white"/>
+            <circle cx="15" cy="1" r="0.9" fill="white"/>
+          </svg>
+        </button>
       </div>
     </div>
 
     <div id="map"></div>
-
 
     <div class="map-bottom">
       <button class="action-primary" onclick="openModal('helpme-modal')"> Come Help Me</button>
@@ -232,6 +278,34 @@
       </div>
     </div>
 
+    <!-- Rally Together Modal -->
+    <div class="modal-overlay" id="rally-modal">
+      <div class="modal-sheet">
+        <div class="mhandle"></div>
+        <div class="mtitle"> Rally Together</div>
+        <div class="msub" id="rally-msub">Start a rally to let your friends know you're going out. They can join and track each other through the night.</div>
+
+        <div id="rally-active-state" style="display:none">
+          <div class="rally-active-badge">
+            <span class="live-dot"></span>
+            Rally is Live
+          </div>
+          <div class="rally-count" id="rally-count-label">3 people in your rally</div>
+          <div class="rally-member-list" id="rally-member-list"></div>
+        </div>
+
+        <div id="rally-inactive-state">
+          <div class="rally-empty">
+            <div>Start a rally and gather your crew!</div>
+          </div>
+        </div>
+
+        <button class="mbtn primary" id="rally-start-btn" onclick="startRally()" style="background:#355E3B;box-shadow:0 0 20px rgba(53,94,59,0.4)"> Start Rally</button>
+        <button class="mbtn danger" id="rally-end-btn" onclick="endRally()" style="display:none"> End Rally</button>
+        <button class="mbtn ghost" onclick="closeModal('rally-modal')">Close</button>
+      </div>
+    </div>
+
     <div class="toast" id="toastEl">
       <div id="tic" style="font-size:20px"></div>
       <div><div id="tt" style="font-size:13px;font-weight:600;color:var(--text)"></div><div id="ts" style="font-size:11px;color:var(--text-muted);margin-top:2px"></div></div>
@@ -243,5 +317,82 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="js/utils.js"></script>
 <script src="js/map.js"></script>
+<script>
+  // Rally Together logic
+  let rallyActive = false;
+  let rallyStartTime = null;
+  let rallyTimerInterval = null;
+
+  function updateRallyTimer() {
+    const elapsed = Math.floor((Date.now() - rallyStartTime) / 1000);
+    const mins = Math.floor(elapsed / 60);
+    const secs = elapsed % 60;
+    document.getElementById('rallyPillTime').textContent = mins + ':' + String(secs).padStart(2, '0');
+  }
+
+  const RALLY_FRIENDS = [
+    {name:'Richard Do',   initials:'RD', color:'#355E3B', joined:true,  status:'Joined the rally'},
+    {name:'Collin Chan',  initials:'CC', color:'#355E3B', joined:true,  status:'Joined the rally'},
+    {name:'Tyler Nguyen',   initials:'TN', color:'#355E3B', joined:false, status:'Invite pending…'},
+    {name:'Sophia Ma', initials:'SM', color:'#355E3B', joined:true,  status:'Joined the rally'},
+  ];
+
+  function renderRallyMembers() {
+    const list = document.getElementById('rally-member-list');
+    const joined = RALLY_FRIENDS.filter(f => f.joined);
+    const pending = RALLY_FRIENDS.filter(f => !f.joined);
+    const all = [...joined, ...pending];
+    list.innerHTML = all.map(f => `
+      <div class="rally-member${f.joined ? '' : ' pending'}">
+        <div class="rally-av" style="background:${f.color}">${f.initials}</div>
+        <div class="rally-member-info">
+          <div class="rally-member-name">${f.name}</div>
+          <div class="rally-member-status">${f.status}</div>
+        </div>
+        <div class="rally-status-dot${f.joined ? '' : ' pending'}"></div>
+      </div>
+    `).join('');
+    const count = joined.length;
+    document.getElementById('rally-count-label').textContent = count + ' ' + (count === 1 ? 'person' : 'people') + ' in your rally';
+  }
+
+  function startRally() {
+    rallyActive = true;
+    // Update FAB
+    document.getElementById('rallyFab').classList.add('active');
+    // Update modal
+    document.getElementById('rally-inactive-state').style.display = 'none';
+    document.getElementById('rally-active-state').style.display = 'block';
+    document.getElementById('rally-start-btn').style.display = 'none';
+    document.getElementById('rally-end-btn').style.display = '';
+    document.getElementById('rally-msub').textContent = "Your rally is live! Friends listed below are in your crew for tonight's night summary.";
+    renderRallyMembers();
+    rallyStartTime = Date.now();
+    updateRallyTimer();
+    document.getElementById('rallyBar').classList.add('visible');
+    rallyTimerInterval = setInterval(updateRallyTimer, 1000);
+    closeModal('rally-modal');
+    toast('🎉','Rally Started!','Emma, Priya & Jordan got your alert and joined the rally');
+  }
+
+  function endRally() {
+    rallyActive = false;
+    // Update FAB
+    document.getElementById('rallyFab').classList.remove('active');
+    // Reset modal
+    document.getElementById('rally-active-state').style.display = 'none';
+    document.getElementById('rally-inactive-state').style.display = '';
+    document.getElementById('rally-start-btn').style.display = '';
+    document.getElementById('rally-end-btn').style.display = 'none';
+    document.getElementById('rally-msub').textContent = "Start a rally to let your friends know you're heading out — they can join and you'll all track each other through the night.";
+    document.getElementById('rallyBar').classList.remove('visible');
+    clearInterval(rallyTimerInterval);
+    rallyTimerInterval = null;
+    rallyStartTime = null;
+    document.getElementById('rallyPillTime').textContent = '0:00';
+    closeModal('rally-modal');
+    toast('','Rally Ended','Tonight\'s night summary has been saved for your crew');
+  }
+</script>
 </body>
 </html>
