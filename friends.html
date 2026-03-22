@@ -3,41 +3,52 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>Rally — Friends &amp; Status</title>
+  <title>Rally — Friends</title>
   <link rel="stylesheet" href="css/shared.css">
   <style>
-    /* Toast sits below the taller header on this page */
-    .toast{top:140px;}
+    .toast{top:120px;}
 
     .header-top{margin-bottom:10px;}
-    .search-bar{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:10px 14px;display:flex;align-items:center;gap:9px;color:var(--text-muted);font-size:14px;}
-    .content{position:absolute;top:132px;bottom:0;left:0;right:0;overflow-y:auto;padding:14px 14px 20px;display:flex;flex-direction:column;gap:10px;}
 
-    /* Friend cards */
-    .card{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:14px;transition:all 0.2s;}
-    .card.danger{border-color:rgba(239,68,68,0.4);background:rgba(239,68,68,0.07);animation:cardglow 2s ease-in-out infinite;}
-    .card.warn{border-color:rgba(245,158,11,0.35);background:rgba(245,158,11,0.05);}
-    @keyframes cardglow{0%,100%{box-shadow:0 0 0 rgba(239,68,68,0);}50%{box-shadow:0 0 20px rgba(239,68,68,0.18);}}
-    .card-top{display:flex;gap:12px;}
-    .av{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:700;color:white;flex-shrink:0;position:relative;}
-    .av-dot{width:11px;height:11px;border-radius:50%;position:absolute;bottom:0;right:0;border:2px solid var(--bg);}
-    .card-body{flex:1;min-width:0;}
-    .card-name{font-size:14px;font-weight:600;color:var(--text);}
-    .card-loc{font-size:12px;color:var(--text-muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-    .gait-row{margin-top:10px;display:flex;align-items:center;gap:8px;}
-    .gait-bg{flex:1;height:5px;background:rgba(255,255,255,0.08);border-radius:3px;overflow:hidden;}
-    .gait-fill{height:100%;border-radius:3px;transition:width 1.2s ease;}
-    .gait-pct{font-size:12px;font-weight:700;width:30px;text-align:right;}
-    .btns{display:flex;gap:6px;margin-top:10px;}
-    .btn{flex:1;padding:8px 6px;border-radius:50px;border:1px solid var(--border);background:var(--surface);color:var(--text-muted);font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:4px;}
-    .btn:hover{background:var(--surface2);color:var(--text);}
-    .btn.red{background:rgba(239,68,68,0.13);border-color:rgba(239,68,68,0.35);color:#f87171;}
-    .btn.blue{background:rgba(59,130,246,0.13);border-color:rgba(59,130,246,0.35);color:#60a5fa;}
-    .card-right{display:flex;flex-direction:column;align-items:flex-end;gap:5px;flex-shrink:0;}
-    .batt{font-size:11px;color:var(--text-muted);display:flex;align-items:center;gap:3px;}
-    .batt.low{color:#f87171;}
-    .status-tag{font-size:10px;font-weight:700;padding:3px 9px;border-radius:50px;}
-    .live-badge{font-size:11px;font-weight:600;padding:3px 9px;border-radius:50px;background:rgba(16,185,129,0.12);color:#10b981;}
+    .header-actions{display:flex;gap:8px;align-items:center;}
+    .add-btn{background:var(--accent);color:white;border:none;border-radius:50px;padding:7px 14px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:5px;}
+    .add-btn:active{opacity:0.85;}
+
+    .search-bar{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:10px 14px;display:flex;align-items:center;gap:9px;font-size:14px;}
+    .search-bar input{background:transparent;border:none;outline:none;color:var(--text);font-size:14px;font-family:inherit;flex:1;min-width:0;}
+    .search-bar input::placeholder{color:var(--text-faint);}
+
+    .content{position:absolute;top:130px;bottom:0;left:0;right:0;overflow-y:auto;padding:14px 14px 30px;display:flex;flex-direction:column;gap:0;}
+
+    .section-label{font-size:11px;font-weight:700;letter-spacing:0.07em;text-transform:uppercase;color:var(--text-faint);padding:0 2px;margin:12px 0 8px;}
+    .section-label:first-child{margin-top:8px;}
+
+    /* Friend row */
+    .friend-row{display:flex;align-items:center;gap:12px;padding:10px 2px;border-bottom:1px solid var(--border);}
+    .friend-row:last-child{border-bottom:none;}
+    .av{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;color:white;flex-shrink:0;position:relative;}
+    .av-dot{width:10px;height:10px;border-radius:50%;position:absolute;bottom:0;right:0;border:2px solid var(--bg);}
+    .friend-info{flex:1;min-width:0;}
+    .friend-name{font-size:14px;font-weight:600;color:var(--text);}
+    .friend-sub{font-size:12px;color:var(--text-muted);margin-top:2px;}
+    .rally-badge{font-size:10px;font-weight:700;padding:4px 10px;border-radius:50px;background:rgba(53,94,59,0.2);color:#6dbf77;white-space:nowrap;flex-shrink:0;margin-left:4px;}
+
+    /* Empty state */
+    .empty{text-align:center;padding:40px 20px;color:var(--text-faint);font-size:14px;}
+
+    /* Add Friend Modal */
+    .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:200;display:flex;align-items:flex-end;opacity:0;pointer-events:none;transition:opacity 0.2s;}
+    .modal-overlay.open{opacity:1;pointer-events:all;}
+    .modal-sheet{background:var(--bg);border-radius:22px 22px 0 0;padding:20px 20px 36px;width:100%;transform:translateY(100%);transition:transform 0.3s ease;}
+    .modal-overlay.open .modal-sheet{transform:translateY(0);}
+    .mhandle{width:36px;height:4px;border-radius:2px;background:var(--border);margin:0 auto 18px;}
+    .modal-title{font-size:17px;font-weight:700;color:var(--text);margin-bottom:16px;}
+    .modal-input{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px 14px;font-size:14px;color:var(--text);font-family:inherit;box-sizing:border-box;outline:none;}
+    .modal-input:focus{border-color:var(--accent);}
+    .mbtn{width:100%;padding:13px;border-radius:50px;border:none;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;margin-top:10px;transition:all 0.2s;}
+    .mbtn.primary{background:var(--accent);color:white;}
+    .mbtn.primary:active{opacity:0.85;}
+    .mbtn.ghost{background:transparent;border:1px solid var(--border);color:var(--text-muted);}
   </style>
 </head>
 <body>
@@ -46,38 +57,26 @@
     <div class="header-top">
       <a class="back" href="index.html">‹ Back</a>
       <div class="header-title">Friends</div>
-      <div class="live-badge">LIVE</div>
+      <div class="header-actions">
+        <button class="add-btn" onclick="openModal('add-modal')">+ Add</button>
+      </div>
     </div>
-    <div class="search-bar">🔍 <span style="color:var(--text-faint)">Search friends…</span></div>
+    <div class="search-bar">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color:var(--text-faint);flex-shrink:0"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input id="search-input" type="text" placeholder="Search friends…" oninput="render()">
+    </div>
   </div>
 
-  <div class="content">
-    <div class="section-label">⚠️ Needs Attention</div>
-    <div id="alert-list"></div>
-    <div class="section-label" style="margin-top:4px">✅ All Good</div>
-    <div id="safe-list"></div>
-  </div>
+  <div class="content" id="content"></div>
 
-  <!-- Profile Modal -->
-  <div class="modal-overlay" id="profile-modal">
+  <!-- Add Friend Modal -->
+  <div class="modal-overlay" id="add-modal">
     <div class="modal-sheet">
       <div class="mhandle"></div>
-      <div style="display:flex;align-items:center;gap:14px;margin-bottom:16px">
-        <div id="modal-av" style="width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;color:white;flex-shrink:0"></div>
-        <div>
-          <div id="modal-name" style="font-size:18px;font-weight:700;color:var(--text)"></div>
-          <div id="modal-loc" style="font-size:13px;color:var(--text-muted);margin-top:2px"></div>
-        </div>
-      </div>
-      <div class="loc-box">
-        <div style="display:flex;justify-content:space-between;margin-bottom:8px"><span style="font-size:12px;color:var(--text-muted)">Gait Index</span><span id="modal-gait" style="font-size:12px;font-weight:700"></span></div>
-        <div style="height:6px;background:rgba(255,255,255,0.08);border-radius:3px;overflow:hidden;margin-bottom:10px"><div id="modal-gait-bar" style="height:100%;border-radius:3px;transition:width 0.5s"></div></div>
-        <div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="font-size:12px;color:var(--text-muted)">Battery</span><span id="modal-batt" style="font-size:12px;font-weight:600;color:var(--text)"></span></div>
-        <div style="display:flex;justify-content:space-between"><span style="font-size:12px;color:var(--text-muted)">Last seen</span><span style="font-size:12px;color:var(--text)">just now</span></div>
-      </div>
-      <button id="modal-checkin-btn" class="mbtn primary"></button>
-      <button id="modal-alert-btn" class="mbtn danger-soft" style="display:none"></button>
-      <button class="mbtn ghost" onclick="closeModal('profile-modal')">Close</button>
+      <div class="modal-title">Add a Friend</div>
+      <input class="modal-input" id="add-input" type="text" placeholder="Name or username…">
+      <button class="mbtn primary" onclick="addFriend()">Send Friend Request</button>
+      <button class="mbtn ghost" onclick="closeModal('add-modal')">Cancel</button>
     </div>
   </div>
 
@@ -89,92 +88,91 @@
 
 <script src="js/utils.js"></script>
 <script>
-const FRIENDS=[
-  {id:'alex',  name:'Collin Chan',     ini:'CC',color:'#355E3B',gait:73,loc:"Near Trinity Irish Pub", batt:24,lastSeen:'2 min ago'},
-  {id:'jordan',name:'Jordan Kim',     ini:'JK',color:'#355E3B',gait:87,loc:'Walking on Wertland St',batt:61,lastSeen:'just now'},
-  {id:'maya',  name:'Maya Rodriguez', ini:'MR',color:'#355E3B',gait:15,loc:'At Boylan Heights',    batt:88,lastSeen:'1 min ago'},
-  {id:'richard',name:'Richard Do',    ini:'RD',color:'#355E3B',gait:41,loc:'At Bodos Bagles',      batt:52,lastSeen:'just now'},
+// Simulated friends list
+const FRIENDS = [
+  {id:'collin',  name:'Collin Chan',     ini:'CC', color:'#355E3B', lastSeen:'2 min ago',  online:true},
+  {id:'jordan',  name:'Jordan Kim',      ini:'JK', color:'#2d6a4f', lastSeen:'just now',   online:true},
+  {id:'maya',    name:'Maya Rodriguez',  ini:'MR', color:'#1b4332', lastSeen:'1 min ago',  online:true},
+  {id:'richard', name:'Richard Do',      ini:'RD', color:'#40916c', lastSeen:'just now',   online:true},
+  {id:'priya',   name:'Priya Patel',     ini:'PP', color:'#52b788', lastSeen:'10 min ago', online:false},
+  {id:'sam',     name:'Sam Torres',      ini:'ST', color:'#74c69d', lastSeen:'1 hr ago',   online:false},
 ];
 
-function gl(g){return g>=95?'🆘 Critical':g>=80?'⚠️ Concerning':g>=60?'👀 Heads up':g>=40?'📡 Monitoring':'✅ Normal';}
+// IDs of friends currently in the active rally session (mock — in reality from session state)
+const RALLY_FRIENDS = new Set(['collin','jordan']);
 
-function render(){
-  const al=document.getElementById('alert-list'), sl=document.getElementById('safe-list');
-  al.innerHTML=''; sl.innerHTML='';
-  [...FRIENDS].sort((a,b)=>b.gait-a.gait).forEach(f=>{
-    const c=document.createElement('div');
-    c.className='card '+(f.gait>=80?'danger':f.gait>=60?'warn':'');
-    const gc_=gc(f.gait);
-    c.innerHTML=`
-      <div class="card-top">
-        <div class="av" style="background:${f.color}">${f.ini}<div class="av-dot" style="background:${gc_}"></div></div>
-        <div class="card-body">
-          <div class="card-name">${f.name}</div>
-          <div class="card-loc">📍 ${f.loc}</div>
-          <div class="gait-row">
-            <div class="gait-bg"><div class="gait-fill" style="width:${f.gait}%;background:${gc_}"></div></div>
-            <div class="gait-pct" style="color:${gc_}">${f.gait}%</div>
-          </div>
-        </div>
-        <div class="card-right">
-          <div class="batt ${f.batt<20?'low':''}">${f.batt<20?'🪫':'🔋'} ${f.batt}%</div>
-          <div style="font-size:10px;color:var(--text-faint)">${f.lastSeen}</div>
-          <div class="status-tag" style="background:${gc_}22;color:${gc_}">${gl(f.gait)}</div>
-        </div>
-      </div>
-      <div class="btns">
-        <button class="btn" onclick="checkin('${f.id}')">✉️ Are you ok?</button>
-        <button class="btn blue" onclick="openProfile('${f.id}')">👤 View</button>
-        ${f.gait>=60?`<button class="btn red" onclick="alertGroup('${f.id}')">🚨 Alert group</button>`:''}
-      </div>`;
-    (f.gait>=60?al:sl).appendChild(c);
-  });
+// Check if a rally is active (read from localStorage or default to true for demo)
+const RALLY_ACTIVE = localStorage.getItem('rallyActive') !== 'false';
+
+function render() {
+  const query = (document.getElementById('search-input').value || '').toLowerCase().trim();
+  const filtered = FRIENDS.filter(f => f.name.toLowerCase().includes(query));
+
+  const rallyGroup  = RALLY_ACTIVE ? filtered.filter(f => RALLY_FRIENDS.has(f.id)) : [];
+  const othersGroup = filtered.filter(f => !RALLY_FRIENDS.has(f.id) || !RALLY_ACTIVE);
+
+  const container = document.getElementById('content');
+  container.innerHTML = '';
+
+  if (filtered.length === 0) {
+    container.innerHTML = '<div class="empty">No friends found</div>';
+    return;
+  }
+
+  if (rallyGroup.length > 0) {
+    const label = document.createElement('div');
+    label.className = 'section-label';
+    label.textContent = 'In Your Rally';
+    container.appendChild(label);
+    rallyGroup.forEach(f => container.appendChild(makeFriendRow(f, true)));
+  }
+
+  if (othersGroup.length > 0) {
+    if (rallyGroup.length > 0) {
+      const label = document.createElement('div');
+      label.className = 'section-label';
+      label.textContent = 'Friends';
+      container.appendChild(label);
+    }
+    othersGroup.forEach(f => container.appendChild(makeFriendRow(f, false)));
+  }
 }
 
-function checkin(id){
-  const f=FRIENDS.find(x=>x.id===id);
-  toast('✉️',`Sent to ${f.name.split(' ')[0]}`,'"Are you okay?" notification delivered');
+function makeFriendRow(f, inRally) {
+  const row = document.createElement('div');
+  row.className = 'friend-row';
+  row.innerHTML = `
+    <div class="av" style="background:${f.color}">
+      ${f.ini}
+      <div class="av-dot" style="background:${f.online ? '#10b981' : '#6b7280'}"></div>
+    </div>
+    <div class="friend-info">
+      <div class="friend-name">${f.name}</div>
+      <div class="friend-sub">${f.online ? 'Active now' : 'Last seen ' + f.lastSeen}</div>
+    </div>
+    ${inRally ? '<div class="rally-badge">In your rally</div>' : ''}
+  `;
+  return row;
 }
-function alertGroup(id){
-  const f=FRIENDS.find(x=>x.id===id);
-  toast('🚨',`Alert for ${f.name.split(' ')[0]}`,'All friends have been notified to check on them');
+
+function addFriend() {
+  const input = document.getElementById('add-input');
+  const name = input.value.trim();
+  if (!name) return;
+  closeModal('add-modal');
+  input.value = '';
+  toast('✉️', 'Friend request sent', `Request sent to "${name}"`);
 }
-function openProfile(id){
-  const f=FRIENDS.find(x=>x.id===id);
-  const gc_=gc(f.gait);
-  document.getElementById('modal-av').style.background=f.color;
-  document.getElementById('modal-av').textContent=f.ini;
-  document.getElementById('modal-name').textContent=f.name;
-  document.getElementById('modal-loc').textContent='📍 '+f.loc;
-  document.getElementById('modal-gait').textContent=f.gait+'% — '+gl(f.gait);
-  document.getElementById('modal-gait').style.color=gc_;
-  document.getElementById('modal-gait-bar').style.width=f.gait+'%';
-  document.getElementById('modal-gait-bar').style.background=gc_;
-  document.getElementById('modal-batt').textContent=(f.batt<20?'🪫':'🔋')+' '+f.batt+'%';
-  document.getElementById('modal-batt').style.color=f.batt<20?'#f87171':'var(--text)';
-  const btn=document.getElementById('modal-checkin-btn');
-  btn.textContent=`✉️ Send "Are you ok?" to ${f.name.split(' ')[0]}`;
-  btn.onclick=()=>{closeModal('profile-modal');checkin(id);};
-  const abtn=document.getElementById('modal-alert-btn');
-  if(f.gait>=60){abtn.style.display='flex';abtn.textContent=`🚨 Alert group about ${f.name.split(' ')[0]}`;abtn.onclick=()=>{closeModal('profile-modal');alertGroup(id);};}
-  else abtn.style.display='none';
-  openModal('profile-modal');
-}
+
+function openModal(id)  { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+// Close modal on backdrop tap
+document.getElementById('add-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeModal('add-modal');
+});
 
 render();
-setInterval(()=>{
-  FRIENDS.forEach(f=>{
-    f.gait=Math.max(5,Math.min(99,Math.round(f.gait+(Math.random()-0.45)*4)));
-    if(f.batt>5&&Math.random()<0.05) f.batt--;
-  });
-  render();
-  const crit=FRIENDS.find(f=>f.gait>93);
-  if(crit&&Math.random()<0.05) toast('🚨',`${crit.name.split(' ')[0]} needs help!`,'Gait critical — consider going to find them');
-  const low=FRIENDS.find(f=>f.batt<20);
-  if(low&&Math.random()<0.04) toast('🪫',`${low.name.split(' ')[0]}'s battery is low`,`${low.batt}% — they may go offline soon`);
-},3000);
-
-setTimeout(()=>toast('⚠️','Jordan Kim — 87% alert','Their gait is very irregular!'),1200);
 </script>
 </body>
 </html>
