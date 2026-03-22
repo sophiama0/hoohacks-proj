@@ -15,7 +15,7 @@ Rally is a real-time safety application for groups going out at night. It monito
 
 ## Risk Scoring
 
-Each factor contributes points to a running safety score. Once the score exceeds 60, it is sent to Claude to analyze whether the user is safe or unsafe using factors such as the combination of signals (e.g. gait impairment AND isolation AND late hour), the severity and pattern of each reading, context like time of night and distance from safe spots, and whether the situation is worsening over time.
+Each factor contributes points to a running safety score. Once the score exceeds 60, it is sent to Claude to analyze whether the user is safe or unsafe using factors such as the combination of signals (e.g. gait impairment AND isolation AND late hour), context from past user patterns, the severity and pattern of each reading, context like time of night and distance from safe spots, and whether the situation is worsening over time.
 
 ### Scoring Breakdown
 
