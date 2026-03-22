@@ -20,7 +20,22 @@ function initMap(){
   L.marker([ME.lat,ME.lng], {icon: L.divIcon({
     html:`<div style="width:44px;height:44px;border-radius:50%;background:#355E3B;border:3px solid white;box-shadow:0 0 0 3px rgba(53,94,59,0.4),0 4px 12px rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;color:white;font-family:Inter,sans-serif">S</div>`,
     className:'', iconSize:[44,44], iconAnchor:[22,22]
-  })}).addTo(map).bindPopup('<b>Sophie (You)</b><br>Your location');
+  })}).addTo(map).bindPopup(`
+    <div class="rp-card">
+      <div class="rp-name">Sophie (You)</div>
+      <div class="rp-loc">📍 Near Trinity Irish Pub</div>
+      <div class="rp-row">
+        <div class="rp-stat">
+          <div class="rp-stat-label">Battery</div>
+          <div class="rp-stat-val" style="color:#6fcf7c">87%</div>
+        </div>
+        <div class="rp-stat">
+          <div class="rp-stat-label">Gait</div>
+          <div class="rp-stat-val" style="color:#6fcf7c">8%</div>
+        </div>
+      </div>
+    </div>
+  `, {className: 'rp-popup', maxWidth: 220});
 
   L.circle([ME.lat,ME.lng], {radius:25, color:'#355E3B', fillColor:'#355E3B', fillOpacity:0.08, weight:1}).addTo(map);
 
@@ -28,12 +43,18 @@ function initMap(){
   L.marker([38.0520,-78.4892], {icon: L.divIcon({
     html:`<div style="width:36px;height:36px;border-radius:10px;background:#355E3B;border:2px solid white;box-shadow:0 4px 10px rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>`,
     className:'', iconSize:[36,36], iconAnchor:[18,18]
-  })}).addTo(map).bindPopup('<b> Safe Place</b><br>My Apartment, Rugby Road');
+  })}).addTo(map).bindPopup(`
+    <div class="rp-card">
+      <div class="rp-name">Safe Place</div>
+      <div class="rp-loc">Your Apartment</div>
+      <div style="background:rgba(53,94,59,0.15);border:1px solid rgba(53,94,59,0.35);border-radius:9px;padding:8px 10px;font-size:11px;color:#6fcf7c;font-family:Inter,sans-serif;">Marked as safe</div>
+    </div>
+  `, {className: 'rp-popup', maxWidth: 220});
 
   FRIENDS.forEach(addMarker);
   renderChips();
   startSim();
-  setTimeout(()=>toast('','Collin Chan — 73% alert','Tap their chip below to fly to their location'), 1000);
+  setTimeout(()=>toast('','Collin Chan — 73% alert','Tap their chip below to see their location'), 1000);
 }
 
 function addMarker(f){
@@ -46,8 +67,30 @@ function addMarker(f){
     className:'', iconSize:[40,40], iconAnchor:[20,20]
   });
   if(markers[f.id]) map.removeLayer(markers[f.id]);
+  const battColor = f.batt <= 20 ? '#ef4444' : f.batt <= 40 ? '#f59e0b' : '#6fcf7c';
+  const battBars = Math.round(f.batt / 25); // 0–4 bars
+  const battIcon = ['🔴','🪫','🔋','🔋','🔋'][battBars] || '🔋';
   markers[f.id] = L.marker([f.lat,f.lng], {icon}).addTo(map)
-    .bindPopup(`<b>${f.name}</b><br>Gait: ${f.gait}%<br> ${f.loc}<br> ${f.batt}%`);
+    .bindPopup(`
+      <div class="rp-card">
+        <div class="rp-name">${f.name}</div>
+        <div class="rp-loc">📍 ${f.loc}</div>
+        <div class="rp-row">
+          <div class="rp-stat">
+            <div class="rp-stat-label">Battery</div>
+            <div class="rp-stat-val" style="color:${battColor}">${f.batt}%</div>
+          </div>
+          <div class="rp-stat">
+            <div class="rp-stat-label">Gait</div>
+            <div class="rp-stat-val" style="color:${gc(f.gait)}">${f.gait}%</div>
+          </div>
+        </div>
+        <a class="rp-dir" href="https://www.google.com/maps/dir/?api=1&destination=${f.lat},${f.lng}" target="_blank">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
+          Get Directions
+        </a>
+      </div>
+    `, {className: 'rp-popup', maxWidth: 220});
 }
 
 function renderChips(){
