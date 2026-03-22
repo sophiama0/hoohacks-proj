@@ -14,7 +14,7 @@ let map, markers = {};
 
 function initMap(){
   map = L.map('map', {center:[ME.lat,ME.lng], zoom:16, zoomControl:false, attributionControl:false});
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {subdomains:'abcd', maxZoom:20}).addTo(map);
+  L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png', {maxZoom:20, attribution:''}).addTo(map);
 
   // "You" marker
   L.marker([ME.lat,ME.lng], {icon: L.divIcon({
