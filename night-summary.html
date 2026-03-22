@@ -55,6 +55,23 @@
     #map-tap-hint{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);z-index:999;font-size:11px;color:rgba(255,255,255,0.4);pointer-events:none;white-space:nowrap;transition:opacity 0.2s;}
     #map-tap-hint.hidden{opacity:0;}
 
+    /* Leaflet popup overrides */
+    .rp-popup .leaflet-popup-content-wrapper{background:#1e1e2e;border:1px solid rgba(255,255,255,0.1);border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,0.55);padding:0;}
+    .rp-popup .leaflet-popup-content{margin:0;width:auto!important;}
+    .rp-popup .leaflet-popup-tip-container{display:none;}
+    .rp-card{padding:14px 16px;font-family:Inter,sans-serif;}
+    .rp-name{font-size:15px;font-weight:700;color:#f8fafc;margin-bottom:0;}
+    .rp-loc{font-size:11px;color:#94a3b8;line-height:1.4;}
+
+    /* Safe spots */
+    .safe-spot-row{display:flex;flex-direction:column;gap:8px;}
+    .safe-spot-card{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--border);border-radius:13px;padding:11px 13px;}
+    .safe-spot-av{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+    .safe-spot-info{flex:1;}
+    .safe-spot-name{font-size:12px;font-weight:600;color:var(--text);}
+    .safe-spot-label{font-size:11px;color:var(--text-muted);margin-top:2px;}
+    .safe-spot-badge{font-size:10px;font-weight:600;color:#6fcf7c;background:rgba(16,185,129,0.12);border:1px solid rgba(16,185,129,0.25);border-radius:50px;padding:3px 8px;white-space:nowrap;}
+
     /* Slide transition */
     .content-fade{animation:cfade 0.22s ease;}
     @keyframes cfade{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
@@ -99,8 +116,8 @@
     <div style="background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:14px;">
       <div class="timeline" id="timeline"></div>
     </div>
-    <div class="section-label">Friends That Night</div>
-    <div class="friend-row" id="friends"></div>
+    <div class="section-label">Safe Spots</div>
+    <div class="safe-spot-row" id="safe-spots"></div>
   </div>
 
   <div class="toast" id="toastEl">
@@ -151,6 +168,13 @@ const RALLIES = [
       {ini:'ST', color:'#3b82f6', name:'Sam'},
       {ini:'S',  color:'#355E3B', name:'Sophie'},
     ],
+    safeSpots:[
+      {name:'Alex',   ini:'AC', color:'#ef4444', lat:38.0525, lng:-78.4888, label:"Alex's Apartment"},
+      {name:'Jordan', ini:'JK', color:'#f59e0b', lat:38.0532, lng:-78.4850, label:"Jordan's Place"},
+      {name:'Maya',   ini:'MR', color:'#10b981', lat:38.0549, lng:-78.4897, label:"Maya's House"},
+      {name:'Sam',    ini:'ST', color:'#3b82f6', lat:38.0543, lng:-78.4869, label:"Sam's Dorm"},
+      {name:'Sophie', ini:'S',  color:'#355E3B', lat:38.0520, lng:-78.4892, label:"Your Apartment"},
+    ],
   },
   {
     dayName:'Saturday', date:'March 14',
@@ -180,6 +204,11 @@ const RALLIES = [
       {ini:'JK', color:'#f59e0b', name:'Jordan'},
       {ini:'MR', color:'#10b981', name:'Maya'},
       {ini:'ST', color:'#3b82f6', name:'Sam'},
+    ],
+    safeSpots:[
+      {name:'Jordan', ini:'JK', color:'#f59e0b', lat:38.0532, lng:-78.4850, label:"Jordan's Place"},
+      {name:'Maya',   ini:'MR', color:'#10b981', lat:38.0549, lng:-78.4897, label:"Maya's House"},
+      {name:'Sam',    ini:'ST', color:'#3b82f6', lat:38.0543, lng:-78.4869, label:"Sam's Dorm"},
     ],
   },
   {
@@ -217,6 +246,12 @@ const RALLIES = [
       {ini:'MR', color:'#10b981', name:'Maya'},
       {ini:'S',  color:'#355E3B', name:'Sophie'},
     ],
+    safeSpots:[
+      {name:'Alex',   ini:'AC', color:'#ef4444', lat:38.0525, lng:-78.4888, label:"Alex's Apartment"},
+      {name:'Jordan', ini:'JK', color:'#f59e0b', lat:38.0532, lng:-78.4850, label:"Jordan's Place"},
+      {name:'Maya',   ini:'MR', color:'#10b981', lat:38.0549, lng:-78.4897, label:"Maya's House"},
+      {name:'Sophie', ini:'S',  color:'#355E3B', lat:38.0520, lng:-78.4892, label:"Your Apartment"},
+    ],
   },
   {
     dayName:'Saturday', date:'Feb 28',
@@ -246,31 +281,42 @@ const RALLIES = [
       {ini:'ST', color:'#3b82f6', name:'Sam'},
       {ini:'S',  color:'#355E3B', name:'Sophie'},
     ],
+    safeSpots:[
+      {name:'Alex',   ini:'AC', color:'#ef4444', lat:38.0525, lng:-78.4888, label:"Alex's Apartment"},
+      {name:'Sam',    ini:'ST', color:'#3b82f6', lat:38.0543, lng:-78.4869, label:"Sam's Dorm"},
+      {name:'Sophie', ini:'S',  color:'#355E3B', lat:38.0520, lng:-78.4892, label:"Your Apartment"},
+    ],
   },
 ];
 
 // ── Map state ─────────────────────────────────────────────────────────────────
-let leafletMap, dynamicLayers=[], polylines=[];
+let leafletMap, dynamicLayers=[], polylines=[], safeSpotMarkers={};
 const venueA=[38.0560,-78.489], venueB=[38.054,-78.486], home=[38.0520,-78.4892];
 
 function clearDynamicLayers(){
   dynamicLayers.forEach(l=>leafletMap.removeLayer(l));
   dynamicLayers=[];
   polylines=[];
+  safeSpotMarkers={};
 }
 
 function resetPaths(){
   polylines.forEach(({pl})=>{pl.setStyle({weight:2.5,opacity:0.8});pl.bringToBack();});
+  Object.values(safeSpotMarkers).forEach(m=>m.setOpacity(1));
   document.getElementById('path-banner').classList.add('hidden');
   document.getElementById('map-tap-hint').classList.remove('hidden');
 }
 
 function selectPath(idx){
   polylines.forEach(({pl},i)=>{
-    if(i===idx){pl.setStyle({weight:4,opacity:1});pl.bringToFront();}
-    else{pl.setStyle({weight:1.5,opacity:0.2});}
+    if(i===idx){pl.setStyle({weight:4.5,opacity:1});pl.bringToFront();}
+    else{pl.setStyle({weight:2,opacity:0.08});}
   });
   const p=polylines[idx].p;
+  // Show only this person's safe spot
+  Object.entries(safeSpotMarkers).forEach(([name,m])=>{
+    m.setOpacity(name===p.name ? 1 : 0);
+  });
   document.getElementById('path-banner-dot').style.background=p.color;
   document.getElementById('path-banner-name').textContent=p.name+"'s route";
   document.getElementById('path-banner').classList.remove('hidden');
@@ -288,9 +334,34 @@ function drawRoutes(rally){
     const cm=L.circleMarker(home,{radius:4,fillColor:p.color,color:'white',weight:1.5,fillOpacity:1}).addTo(leafletMap);
     dynamicLayers.push(cm);
   });
-  if(rally.wanderMarker){
-    const wm=L.marker(rally.wanderMarker,{icon:L.divIcon({html:`<div style="font-size:18px">😵</div>`,className:'',iconSize:[22,22],iconAnchor:[11,11]})}).addTo(leafletMap).bindPopup('Someone wandered here — friends sent directions');
-    dynamicLayers.push(wm);
+  if(rally.safeSpots){
+    rally.safeSpots.forEach(s=>{
+      const sm=L.marker([s.lat,s.lng],{icon:L.divIcon({
+        html:`<div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+          <div style="width:26px;height:26px;border-radius:7px;background:#4caf6e;border:2px solid white;box-shadow:0 3px 8px rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          </div>
+          <div style="font-size:8px;font-weight:700;color:white;background:rgba(0,0,0,0.72);border:1px solid #4caf6e;border-radius:3px;padding:1px 4px;white-space:nowrap;">${s.ini}</div>
+        </div>`,
+        className:'',iconSize:[26,38],iconAnchor:[13,13]
+      })}).addTo(leafletMap).bindPopup(`
+        <div class="rp-card">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:11px;">
+            <div style="width:38px;height:38px;border-radius:10px;background:${s.color};display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:white;flex-shrink:0;">${s.ini}</div>
+            <div>
+              <div class="rp-name">${s.name}</div>
+              <div class="rp-loc" style="margin-top:2px;">${s.label}</div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:7px;background:rgba(76,175,110,0.12);border:1px solid rgba(76,175,110,0.35);border-radius:9px;padding:8px 11px;">
+            <div style="width:7px;height:7px;border-radius:50%;background:#6fcf7c;flex-shrink:0;"></div>
+            <span style="font-size:12px;font-weight:600;color:#6fcf7c;font-family:Inter,sans-serif;">Made it home safely</span>
+          </div>
+        </div>
+      `,{className:'rp-popup',maxWidth:240});
+      safeSpotMarkers[s.name] = sm;
+      dynamicLayers.push(sm);
+    });
   }
 }
 
@@ -359,12 +430,17 @@ function render(idx, dir){
       </div>
     </div>`).join('');
 
-  // Friends
-  document.getElementById('friends').innerHTML=r.friends.map(f=>`
-    <div class="fc-mini">
-      <div class="fc-mini-av" style="background:${f.color}">${f.ini}</div>
-      <div class="fc-mini-name">${f.name}</div>
-      <div class="fc-mini-status" style="color:var(--safe)">✓ Safe</div>
+  // Safe spots
+  document.getElementById('safe-spots').innerHTML=(r.safeSpots||[]).map(s=>`
+    <div class="safe-spot-card">
+      <div class="safe-spot-av" style="background:#4caf6e">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      </div>
+      <div class="safe-spot-info">
+        <div class="safe-spot-name">${s.name}</div>
+        <div class="safe-spot-label">${s.label}</div>
+      </div>
+      <div class="safe-spot-badge">Made it home</div>
     </div>`).join('');
 
   // Map routes

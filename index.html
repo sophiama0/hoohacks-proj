@@ -105,8 +105,8 @@
     @keyframes rallypulse{0%,100%{box-shadow:0 0 14px rgba(53,94,59,0.6);}50%{box-shadow:0 0 28px rgba(53,94,59,1),0 0 0 8px rgba(53,94,59,0.22);}}
 
     /* Rally Modal */
-    .rally-member-list{display:flex;flex-direction:column;gap:8px;margin:4px 0 16px;}
-    .rally-member{display:flex;align-items:center;gap:12px;padding:10px 12px;background:rgba(53,94,59,0.12);border:1px solid rgba(53,94,59,0.3);border-radius:12px;}
+    .rally-member-list{display:flex;flex-direction:column;gap:8px;margin:4px 0 16px;overflow:visible;}
+    .rally-member{display:flex;align-items:center;gap:12px;padding:10px 12px;background:rgba(53,94,59,0.12);border:1px solid rgba(53,94,59,0.3);border-radius:12px;overflow:visible;}
     .rally-member.pending{background:rgba(255,255,255,0.05);border-color:var(--border);opacity:0.6;}
     .rally-av{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:white;flex-shrink:0;}
     .rally-member-info{flex:1;}
@@ -114,6 +114,10 @@
     .rally-member-status{font-size:11px;color:var(--text-muted);margin-top:1px;}
     .rally-status-dot{width:8px;height:8px;border-radius:50%;background:#355E3B;flex-shrink:0;}
     .rally-status-dot.pending{background:rgba(255,255,255,0.25);}
+    .water-btn{width:34px;height:34px;border-radius:50%;background:rgba(56,152,235,0.15);border:1.5px solid rgba(56,152,235,0.4);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:all 0.2s;}
+    .water-btn:hover{background:rgba(56,152,235,0.28);transform:scale(1.1);}
+    .water-btn.sent{background:rgba(56,152,235,0.35);border-color:rgba(56,152,235,0.8);}
+    .water-btn svg{pointer-events:none;}
     .rally-active-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(53,94,59,0.2);border:1px solid rgba(53,94,59,0.5);border-radius:50px;padding:5px 12px;font-size:11px;font-weight:700;color:#6fcf7c;margin-bottom:14px;width:fit-content;}
     .rally-active-badge .live-dot{width:7px;height:7px;border-radius:50%;background:#6fcf7c;animation:liveblink 1.2s ease-in-out infinite;}
     @keyframes liveblink{0%,100%{opacity:1;}50%{opacity:0.3;}}
@@ -215,6 +219,13 @@
 
     <div id="map"></div>
 
+    <!-- Pin mode banner -->
+    <div id="pin-mode-banner" style="display:none;position:absolute;top:112px;left:50%;transform:translateX(-50%);z-index:500;background:rgba(53,94,59,0.95);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.15);border-radius:50px;padding:9px 16px 9px 14px;align-items:center;gap:8px;white-space:nowrap;box-shadow:0 4px 20px rgba(0,0,0,0.4);">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+      <span style="font-size:12px;font-weight:700;color:white;">Tap the map to drop a pin</span>
+      <button onclick="exitPinMode()" style="background:none;border:none;color:rgba(255,255,255,0.6);font-size:18px;cursor:pointer;padding:0;line-height:1;margin-left:2px;">&times;</button>
+    </div>
+
     <div class="map-bottom">
       <div class="action-row">
         <button class="action-btn" onclick="openModal('helpme-modal')" style="background:var(--danger);color:white;border:none;box-shadow:0 0 18px rgba(239,68,68,0.4);flex:1.2"> Request Help</button>
@@ -276,10 +287,26 @@
         <div class="mhandle"></div>
         <div class="mtitle"> Add Safe Place</div>
         <div class="msub">You'll get a notification when you arrive — and so will your friends.</div>
-        <button class="mbtn ghost" style="justify-content:flex-start" onclick="closeModal('safe-modal');toast('','Pin Mode','Tap anywhere on the map to drop a safe place pin')"> Drop a pin on the map</button>
-        <button class="mbtn ghost" style="justify-content:flex-start" onclick="closeModal('safe-modal');toast('','Safe Place Added','Your current location is now marked as safe!')"> Use current location</button>
-        <button class="mbtn ghost" style="justify-content:flex-start" onclick="closeModal('safe-modal');toast('','Search','Enter an address to add a safe place')"> Search for address</button>
-        <button class="mbtn ghost" onclick="closeModal('safe-modal')">Cancel</button>
+        <button class="mbtn ghost" style="justify-content:flex-start" onclick="closeModal('safe-modal');enterPinMode()"> Drop a pin on the map</button>
+        <button class="mbtn ghost" style="justify-content:flex-start" onclick="closeModal('safe-modal');startCurrentLocPin()"> Use current location</button>
+        <button class="mbtn ghost" style="justify-content:flex-start" onclick="toggleSafeSearch()"> Search for address</button>
+        <div id="safe-search-row" style="display:none;margin-bottom:2px;">
+          <input id="safe-search-input" type="text" placeholder="Search for an address..." style="width:100%;padding:13px 16px;background:var(--surface);border:1px solid var(--border);border-radius:16px;font-size:14px;color:var(--text);font-family:inherit;outline:none;box-sizing:border-box;margin-bottom:9px;">
+          <button class="mbtn primary" onclick="searchAndPin()" style="background:#355E3B;"> Find &amp; Drop Pin</button>
+        </div>
+        <button class="mbtn ghost" onclick="closeModal('safe-modal');document.getElementById('safe-search-row').style.display='none'">Cancel</button>
+      </div>
+    </div>
+
+    <!-- Pin Name Modal -->
+    <div class="modal-overlay" id="pin-name-modal">
+      <div class="modal-sheet">
+        <div class="mhandle"></div>
+        <div class="mtitle">Name this safe place</div>
+        <div class="msub">Give this spot a name so you can recognize it on the map.</div>
+        <input id="pin-name-input" type="text" placeholder="e.g. My Apartment, Friend's House" style="width:100%;padding:13px 16px;background:var(--surface);border:1px solid var(--border);border-radius:16px;font-size:14px;color:var(--text);font-family:inherit;outline:none;box-sizing:border-box;margin-bottom:12px;">
+        <button class="mbtn primary" onclick="confirmPin()" style="background:#355E3B;box-shadow:0 0 20px rgba(53,94,59,0.4)"> Save Safe Place</button>
+        <button class="mbtn ghost" onclick="closeModal('pin-name-modal');pendingPin=null;"> Cancel</button>
       </div>
     </div>
 
@@ -336,10 +363,10 @@
   }
 
   const RALLY_FRIENDS = [
-    {name:'Richard Do',   initials:'RD', color:'#355E3B', joined:true,  status:'Joined the rally'},
-    {name:'Collin Chan',  initials:'CC', color:'#355E3B', joined:true,  status:'Joined the rally'},
-    {name:'Tyler Nguyen',   initials:'TN', color:'#355E3B', joined:false, status:'Invite pending…'},
-    {name:'Sophia Ma', initials:'SM', color:'#355E3B', joined:true,  status:'Joined the rally'},
+    {name:'Richard Do',  initials:'RD', color:'#355E3B', joined:true,  status:'Joined the rally', safeSpot:{lat:38.0518, lng:-78.4880, label:"Richard's Apartment"}},
+    {name:'Collin Chan', initials:'CC', color:'#355E3B', joined:true,  status:'Joined the rally', safeSpot:{lat:38.0530, lng:-78.4853, label:"Collin's Place"}},
+    {name:'Tyler Nguyen',initials:'TN', color:'#355E3B', joined:false, status:'Invite pending…',  safeSpot:null},
+    {name:'Sophia Ma',   initials:'SM', color:'#355E3B', joined:true,  status:'Joined the rally', safeSpot:{lat:38.0548, lng:-78.4896, label:"Sophia's Dorm"}},
   ];
 
   function renderRallyMembers() {
@@ -354,11 +381,18 @@
           <div class="rally-member-name">${f.name}</div>
           <div class="rally-member-status">${f.status}</div>
         </div>
-        <div class="rally-status-dot${f.joined ? '' : ' pending'}"></div>
+        ${f.joined ? `<button class="water-btn" title="Remind to drink water" onclick="sendWaterReminder(this, '${f.name}')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3898eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C6 9 4 13.5 4 16a8 8 0 0 0 16 0c0-2.5-2-7-8-14z"/></svg></button>` : `<div class="rally-status-dot pending"></div>`}
       </div>
     `).join('');
     const count = joined.length;
     document.getElementById('rally-count-label').textContent = count + ' ' + (count === 1 ? 'person' : 'people') + ' in your rally';
+  }
+
+  function sendWaterReminder(btn, name) {
+    if (btn.classList.contains('sent')) return;
+    btn.classList.add('sent');
+    toast('', 'Drink water!', 'Reminder sent to ' + name.split(' ')[0]);
+    setTimeout(() => btn.classList.remove('sent'), 4000);
   }
 
   function startRally() {
@@ -376,6 +410,7 @@
     updateRallyTimer();
     document.getElementById('rallyBar').classList.add('visible');
     rallyTimerInterval = setInterval(updateRallyTimer, 1000);
+    showFriendSafePins(RALLY_FRIENDS);
     closeModal('rally-modal');
     toast('Rally Started!','Emma, Priya & Jordan got your alert and joined the rally');
   }
@@ -391,6 +426,7 @@
     document.getElementById('rally-end-btn').style.display = 'none';
     document.getElementById('rally-msub').textContent = "Start a rally to let your friends know you're heading out — they can join and you'll all track each other through the night.";
     document.getElementById('rallyBar').classList.remove('visible');
+    hideFriendSafePins();
     clearInterval(rallyTimerInterval);
     rallyTimerInterval = null;
     rallyStartTime = null;
