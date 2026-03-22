@@ -3,62 +3,80 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>Rally — Gait Detection &amp; Alerts</title>
+  <title>Rally — Alerts</title>
   <link rel="stylesheet" href="css/shared.css">
   <style>
-    .content{position:absolute;top:104px;bottom:0;left:0;right:0;overflow-y:auto;padding:16px 14px 24px;display:flex;flex-direction:column;gap:14px;}
+    .content{position:absolute;top:104px;bottom:0;left:0;right:0;overflow-y:auto;padding:0 0 24px;}
+
+    /* Tab bar */
+    .tab-bar{display:flex;gap:0;padding:0 14px 0;margin-bottom:14px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg);z-index:10;}
+    .tab{flex:1;padding:12px 4px 10px;text-align:center;font-size:12px;font-weight:600;color:var(--text-muted);cursor:pointer;border-bottom:2px solid transparent;transition:all 0.2s;white-space:nowrap;}
+    .tab.active{color:var(--primary);border-bottom-color:var(--primary);}
+
+    /* Tab panels */
+    .tab-panel{display:none;padding:0 14px;flex-direction:column;gap:14px;}
+    .tab-panel.active{display:flex;}
+
+    /* Alert banner */
+    .alert-banner{border-radius:14px;padding:12px 14px;display:flex;align-items:center;gap:12px;}
+    .alert-banner.ok{background:rgba(53,94,59,0.1);border:1px solid rgba(53,94,59,0.35);}
+    .alert-banner.warn{background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.4);}
+    .alert-banner.danger{background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.4);animation:bannerglow 1.6s ease-in-out infinite;}
+    @keyframes bannerglow{0%,100%{box-shadow:none;}50%{box-shadow:0 0 18px rgba(239,68,68,0.2);}}
+    .alert-banner-ic{font-size:22px;flex-shrink:0;}
+    .alert-banner-title{font-size:13px;font-weight:700;color:var(--text);}
+    .alert-banner-sub{font-size:11px;color:var(--text-muted);margin-top:2px;}
+
+    /* Signal dots */
+    .signal-row{display:flex;gap:8px;align-items:center;}
+    .sig-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+    .sig-dot.ok{background:#355E3B;}
+    .sig-dot.warn{background:#f59e0b;}
+    .sig-dot.bad{background:#ef4444;}
+    .sig-dot.off{background:rgba(255,255,255,0.15);}
 
     /* Hero gauge */
     .hero{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:22px;text-align:center;position:relative;overflow:hidden;}
     .hero::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 0%,rgba(53,94,59,0.06),transparent 70%);pointer-events:none;}
-    .gauge-wrap{width:160px;height:160px;margin:0 auto 16px;position:relative;}
+    .gauge-wrap{width:150px;height:150px;margin:0 auto 14px;position:relative;}
     .gauge-wrap svg{width:100%;height:100%;}
     .gauge-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;}
-    .gauge-num{font-size:34px;font-weight:800;letter-spacing:-1px;}
+    .gauge-num{font-size:32px;font-weight:800;letter-spacing:-1px;}
     .gauge-lbl{font-size:11px;color:var(--text-muted);}
-    .hero-title{font-size:16px;font-weight:700;color:var(--text);}
-    .hero-desc{font-size:13px;color:var(--text-muted);margin-top:4px;line-height:1.5;}
-    .slider-wrap{padding:6px 0 2px;}
+    .hero-title{font-size:15px;font-weight:700;color:var(--text);}
+    .hero-desc{font-size:12px;color:var(--text-muted);margin-top:4px;line-height:1.5;}
+    .slider-wrap{padding:6px 0 2px;margin-top:12px;}
     .slider-label{font-size:12px;color:var(--text-muted);margin-bottom:8px;display:flex;justify-content:space-between;}
     input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:6px;border-radius:3px;outline:none;cursor:pointer;}
     input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:var(--primary);border:2px solid white;box-shadow:0 2px 8px rgba(0,0,0,0.3);cursor:pointer;}
 
-    /* Alert stages */
-    .stages{display:flex;flex-direction:column;gap:8px;}
-    .stage{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:13px 14px;display:flex;align-items:center;gap:12px;transition:all 0.3s;}
-    .stage.on{border-color:rgba(245,158,11,0.5);background:rgba(245,158,11,0.07);}
-    .stage.red{border-color:rgba(239,68,68,0.5);background:rgba(239,68,68,0.08);animation:stageglow 1.5s ease-in-out infinite;}
-    @keyframes stageglow{0%,100%{box-shadow:0 0 0 rgba(239,68,68,0);}50%{box-shadow:0 0 16px rgba(239,68,68,0.2);}}
-    .stage-ic{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
-    .stage-body{flex:1;}
-    .stage-t{font-size:13px;font-weight:600;color:var(--text);}
-    .stage-s{font-size:11px;color:var(--text-muted);margin-top:2px;}
-    .stage-badge{font-size:11px;font-weight:700;padding:3px 9px;border-radius:50px;}
+    /* Proximity */
+    .dist-list{display:flex;flex-direction:column;gap:8px;}
+    .dist-row{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:11px;padding:10px 12px;}
+    .dist-row.far{border-color:rgba(239,68,68,0.4);background:rgba(239,68,68,0.06);}
+    .dist-av{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:white;flex-shrink:0;}
+    .dist-name{font-size:13px;font-weight:600;color:var(--text);flex:1;}
+    .dist-val{font-size:12px;font-weight:700;}
 
     /* Ambient sound */
     .ambient-card{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:16px;}
     .awave{display:flex;align-items:center;justify-content:center;gap:3px;height:36px;margin:10px 0;}
     .wbar{width:4px;border-radius:2px;background:var(--primary);animation:wup var(--d) ease-in-out infinite alternate;}
     @keyframes wup{from{height:4px;opacity:0.3;}to{height:var(--h);opacity:1;}}
-    .env-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px;}
+    .env-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px;}
     .env-item{background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:11px;padding:10px;text-align:center;cursor:pointer;transition:all 0.2s;}
     .env-item.active{border-color:var(--primary);background:rgba(53,94,59,0.12);}
+    .env-item.active.suspicious{border-color:#ef4444;background:rgba(239,68,68,0.1);}
     .env-item:hover{background:rgba(255,255,255,0.08);}
-    .env-icon{font-size:20px;margin-bottom:4px;}
+    .env-icon{display:flex;align-items:center;justify-content:center;margin-bottom:4px;opacity:0.7;}
+    .env-item.active .env-icon{opacity:1;}
     .env-label{font-size:11px;color:var(--text-muted);}
     .env-item.active .env-label{color:var(--primary);font-weight:600;}
-
-    /* Hydration */
-    .water-card{background:linear-gradient(135deg,rgba(59,130,246,0.12),rgba(53,94,59,0.08));border:1px solid rgba(59,130,246,0.25);border-radius:18px;padding:15px;display:flex;align-items:center;gap:12px;}
-    .water-btn{margin-left:auto;padding:8px 14px;background:rgba(59,130,246,0.18);border:1px solid rgba(59,130,246,0.3);border-radius:50px;color:#60a5fa;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap;transition:all 0.2s;}
-    .water-btn:hover{background:rgba(59,130,246,0.28);}
-
-    /* Health metrics */
-    .health-card{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:15px;}
-    .metric-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.06);}
-    .metric-row:last-child{border-bottom:none;padding-bottom:0;}
-    .metric-name{font-size:13px;color:var(--text-muted);}
-    .metric-val{font-size:13px;font-weight:600;}
+    .env-item.active.suspicious .env-label{color:#ef4444;}
+    .sound-transition{border-radius:12px;padding:10px 12px;margin-top:12px;font-size:12px;line-height:1.5;display:none;}
+    .sound-transition.visible{display:block;}
+    .sound-transition.ok{background:rgba(53,94,59,0.1);border:1px solid rgba(53,94,59,0.3);color:#6fcf7c;}
+    .sound-transition.bad{background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.3);color:#f87171;}
   </style>
 </head>
 <body>
@@ -66,89 +84,137 @@
   <div class="header">
     <div class="header-top">
       <a class="back" href="index.html">‹ Back</a>
-      <div class="header-title">Gait Detection</div>
+      <div class="header-title">Safety Alerts</div>
       <div style="font-size:11px;font-weight:600;padding:3px 10px;border-radius:50px;background:rgba(16,185,129,0.12);color:#10b981">LIVE</div>
     </div>
   </div>
 
   <div class="content">
-    <div class="hero">
-      <div class="gauge-wrap">
-        <svg viewBox="0 0 160 160">
-          <circle cx="80" cy="80" r="65" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="12"/>
-          <circle id="garc" cx="80" cy="80" r="65" fill="none" stroke="#355E3B" stroke-width="12"
-            stroke-linecap="round" stroke-dasharray="408" stroke-dashoffset="408"
-            transform="rotate(-90 80 80)" style="transition:stroke-dashoffset 0.8s ease,stroke 0.4s"/>
-        </svg>
-        <div class="gauge-center">
-          <div class="gauge-num" id="gpct" style="color:var(--text)">12%</div>
-          <div class="gauge-lbl">gait index</div>
-        </div>
-      </div>
-      <div class="hero-title" id="gtext">Looking good! </div>
-      <div class="hero-desc" id="gdesc">Your walk is steady — no concerns detected.</div>
-      <div class="slider-wrap" style="margin-top:14px">
-        <div class="slider-label">
-          <span>Simulate gait impairment</span>
-          <span id="slider-val" style="color:var(--text);font-weight:600">12%</span>
-        </div>
-        <input type="range" id="gait-slider" min="0" max="99" value="12" oninput="setGait(this.value)">
-      </div>
-    </div>
 
-    <div style="background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:15px;">
-      <div class="section-label" style="margin-bottom:10px">How gait detection works</div>
-      <div style="display:flex;flex-direction:column;gap:8px;">
-        <div style="display:flex;gap:10px;align-items:flex-start"><div style="font-size:16px;flex-shrink:0"></div><div style="font-size:12px;color:var(--text-muted);line-height:1.5"><strong style="color:var(--text)">Accelerometer + Gyroscope</strong> data from Apple HealthKit / Google Fit measures step timing, stride variance, and rotational sway.</div></div>
-        <div style="display:flex;gap:10px;align-items:flex-start"><div style="font-size:16px;flex-shrink:0"></div><div style="font-size:12px;color:var(--text-muted);line-height:1.5"><strong style="color:var(--text)">Your personal baseline</strong> (set during calibration) is compared against live readings. Deviations are scored as a percentage.</div></div>
-        <div style="display:flex;gap:10px;align-items:flex-start"><div style="font-size:16px;flex-shrink:0"></div><div style="font-size:12px;color:var(--text-muted);line-height:1.5">When intoxicated, <strong style="color:var(--text)">the brain loses fine motor control</strong> — causing wider stance, irregular step timing, and increased lateral sway.</div></div>
-      </div>
-    </div>
-
-    <div class="section-label">Progressive Alert Thresholds</div>
-    <div class="stages">
-      <div class="stage" id="s60"><div class="stage-ic" style="background:rgba(245,158,11,0.12)"></div><div class="stage-body"><div class="stage-t">Heads Up</div><div class="stage-s">Friends get a gentle background notification</div></div><div class="stage-badge" style="background:rgba(245,158,11,0.12);color:#f59e0b">60%</div></div>
-      <div class="stage" id="s80"><div class="stage-ic" style="background:rgba(251,146,60,0.12)"></div><div class="stage-body"><div class="stage-t">Check On Them</div><div class="stage-s">Friends are notified to actively check in</div></div><div class="stage-badge" style="background:rgba(251,146,60,0.12);color:#fb923c">80%</div></div>
-      <div class="stage" id="s95"><div class="stage-ic" style="background:rgba(239,68,68,0.12)"></div><div class="stage-body"><div class="stage-t">Go Find Them NOW</div><div class="stage-s">Emergency alert + location sent to all friends</div></div><div class="stage-badge" style="background:rgba(239,68,68,0.12);color:#ef4444">95%</div></div>
-    </div>
-
-    <div class="section-label">Live Health Metrics</div>
-    <div class="health-card">
-      <div class="metric-row"><span class="metric-name">Step regularity</span><span class="metric-val" id="m-regularity" style="color:var(--safe)">Excellent</span></div>
-      <div class="metric-row"><span class="metric-name">Stride variance</span><span class="metric-val" id="m-stride" style="color:var(--safe)">±2.1 cm</span></div>
-      <div class="metric-row"><span class="metric-name">Lateral sway</span><span class="metric-val" id="m-sway" style="color:var(--safe)">Minimal</span></div>
-      <div class="metric-row"><span class="metric-name">Step timing</span><span class="metric-val" id="m-timing" style="color:var(--safe)">Regular</span></div>
-      <div class="metric-row"><span class="metric-name">Data source</span><span class="metric-val" style="color:var(--text-muted);font-size:11px">Apple HealthKit</span></div>
-    </div>
-
-    <div class="section-label">AI Ambient Detection</div>
-    <div class="ambient-card">
-      <div style="display:flex;justify-content:space-between;align-items:flex-start">
+    <!-- Alert banner -->
+    <div style="padding:14px 14px 0">
+      <div class="alert-banner ok" id="alert-banner">
+        <div class="alert-banner-ic" id="alert-ic"></div>
         <div>
-          <div style="font-size:14px;font-weight:600;color:var(--text)"> Mic-Based Environment Inference</div>
-          <div style="font-size:12px;color:var(--text-muted);margin-top:3px;line-height:1.5">Rally listens to ambient noise to infer whether you're still at the bar, outside, or somewhere alone.</div>
+          <div class="alert-banner-title" id="alert-title">All signals normal</div>
+          <div class="alert-banner-sub" id="alert-sub">No alerts sent — your friends are not notified</div>
         </div>
-      </div>
-      <div class="awave" id="awave"></div>
-      <div style="text-align:center;font-size:13px;color:var(--text-muted);margin-bottom:12px">Detected: <strong id="amloc" style="color:var(--text)">Loud venue — likely still at the bar</strong></div>
-      <div class="env-grid">
-        <div class="env-item active" id="env-bar"     onclick="setEnv('bar',this)"><div class="env-icon"></div><div class="env-label">Bar / Venue</div></div>
-        <div class="env-item"        id="env-outside" onclick="setEnv('outside',this)"><div class="env-icon"></div><div class="env-label">Outside / Street</div></div>
-        <div class="env-item"        id="env-quiet"   onclick="setEnv('quiet',this)"><div class="env-icon"></div><div class="env-label">Quiet / Alone</div></div>
-        <div class="env-item"        id="env-ride"    onclick="setEnv('ride',this)"><div class="env-icon"></div><div class="env-label">In a Ride</div></div>
+        <div class="signal-row" style="margin-left:auto;flex-direction:column;gap:5px;">
+          <div style="display:flex;gap:5px;align-items:center">
+            <div class="sig-dot ok" id="sig-gait"></div>
+            <span style="font-size:10px;color:var(--text-muted)">Gait</span>
+          </div>
+          <div style="display:flex;gap:5px;align-items:center">
+            <div class="sig-dot ok" id="sig-prox"></div>
+            <span style="font-size:10px;color:var(--text-muted)">Proximity</span>
+          </div>
+          <div style="display:flex;gap:5px;align-items:center">
+            <div class="sig-dot ok" id="sig-sound"></div>
+            <span style="font-size:10px;color:var(--text-muted)">Sound</span>
+          </div>
+        </div>
       </div>
     </div>
 
-    <div class="section-label">Hydration Reminders</div>
-    <div class="water-card">
-      <div style="font-size:28px"></div>
-      <div>
-        <div style="font-size:14px;font-weight:600;color:var(--text)">Drink Water</div>
-        <div style="font-size:12px;color:var(--text-muted);margin-top:2px">Auto-reminds your whole group every 45 min</div>
-        <div style="font-size:11px;color:var(--text-faint);margin-top:2px">Last sent: 12 minutes ago</div>
-      </div>
-      <button class="water-btn" onclick="toast('','Reminder Sent!','Your friends were reminded to drink water ')">Ping All</button>
+    <!-- Tab bar -->
+    <div class="tab-bar">
+      <div class="tab active" onclick="switchTab('gait',this)"> Gait</div>
+      <div class="tab" onclick="switchTab('prox',this)"> Proximity</div>
+      <div class="tab" onclick="switchTab('sound',this)"> Sound</div>
     </div>
+
+    <!-- TAB 1: Gait Detection -->
+    <div class="tab-panel active" id="tab-gait">
+      <div class="hero">
+        <div class="gauge-wrap">
+          <svg viewBox="0 0 160 160">
+            <circle cx="80" cy="80" r="65" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="12"/>
+            <circle id="garc" cx="80" cy="80" r="65" fill="none" stroke="#355E3B" stroke-width="12"
+              stroke-linecap="round" stroke-dasharray="408" stroke-dashoffset="408"
+              transform="rotate(-90 80 80)" style="transition:stroke-dashoffset 0.8s ease,stroke 0.4s"/>
+          </svg>
+          <div class="gauge-center">
+            <div class="gauge-num" id="gpct" style="color:var(--text)">12%</div>
+            <div class="gauge-lbl">impairment</div>
+          </div>
+        </div>
+        <div class="hero-title" id="gtext">Looking good! </div>
+        <div class="hero-desc" id="gdesc">Your walk is steady, no concerns detected.</div>
+        <div class="slider-wrap">
+          <div class="slider-label">
+            <span>Simulate gait impairment</span>
+            <span id="slider-val" style="color:var(--text);font-weight:600">12%</span>
+          </div>
+          <input type="range" id="gait-slider" min="0" max="99" value="12" oninput="setGait(this.value)">
+        </div>
+      </div>
+
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:14px;">
+        <div class="section-label" style="margin-bottom:10px">How it works</div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <div style="display:flex;gap:10px;align-items:flex-start"><div style="font-size:15px;flex-shrink:0"></div><div style="font-size:12px;color:var(--text-muted);line-height:1.5"><strong style="color:var(--text)">Accelerometer + Gyroscope</strong> measures step timing, stride variance, and rotational sway against your personal baseline.</div></div>
+          <div style="display:flex;gap:10px;align-items:flex-start"><div style="font-size:15px;flex-shrink:0"></div><div style="font-size:12px;color:var(--text-muted);line-height:1.5">Alerts trigger at <strong style="color:var(--text)">60% → 80% → 95%</strong> impairment, escalating from a gentle nudge to an emergency notification.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 2: Proximity -->
+    <div class="tab-panel" id="tab-prox">
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:14px;">
+        <div class="section-label" style="margin-bottom:10px">Rally Members</div>
+        <div class="dist-list" id="dist-list"></div>
+      </div>
+
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:14px;">
+        <div class="section-label" style="margin-bottom:8px">How it works</div>
+        <div style="font-size:12px;color:var(--text-muted);line-height:1.6">If you move more than <strong style="color:var(--text)">150m away</strong> from your rally group, it's flagged as suspicious. Combined with another signal, your friends will be alerted.</div>
+      </div>
+    </div>
+
+    <!-- TAB 3: Sound / Ambient -->
+    <div class="tab-panel" id="tab-sound">
+      <div class="ambient-card">
+        <div style="font-size:14px;font-weight:600;color:var(--text)"> AI Ambient Detection</div>
+        <div style="font-size:12px;color:var(--text-muted);margin-top:3px;line-height:1.5">Rally listens to the background noise to detect sudden environment shifts. Going from a loud venue to somewhere quiet is a key safety signal.</div>
+        <div class="awave" id="awave"></div>
+        <div style="text-align:center;font-size:13px;color:var(--text-muted);margin-bottom:12px">Detected: <strong id="amloc" style="color:var(--text)">Loud venue — likely still at the bar</strong></div>
+        <div class="env-grid">
+          <div class="env-item active" id="env-bar" onclick="setEnv('bar',this)">
+            <div class="env-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 22h8"/><path d="M12 11v11"/><path d="M20 2H4l6 9h4l6-9z"/></svg>
+            </div>
+            <div class="env-label">Bar / Venue</div>
+          </div>
+          <div class="env-item" id="env-outside" onclick="setEnv('outside',this)">
+            <div class="env-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9z"/></svg>
+            </div>
+            <div class="env-label">Outside / Street</div>
+          </div>
+          <div class="env-item" id="env-quiet" onclick="setEnv('quiet',this)">
+            <div class="env-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
+            </div>
+            <div class="env-label">Quiet / Alone</div>
+          </div>
+          <div class="env-item" id="env-ride" onclick="setEnv('ride',this)">
+            <div class="env-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 5v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+            </div>
+            <div class="env-label">In a Car</div>
+          </div>
+        </div>
+        <div class="sound-transition ok visible" id="sound-transition">
+           <strong>No sudden shift detected.</strong> You started at a bar and you are still in a similar environment.
+        </div>
+      </div>
+
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:14px;">
+        <div class="section-label" style="margin-bottom:8px">How it works</div>
+        <div style="font-size:12px;color:var(--text-muted);line-height:1.6">Your mic reads ambient decibel levels. A rapid drop from <strong style="color:var(--text)">loud to quiet</strong> mid-rally (e.g. bar to a silent room) is flagged as suspicious. This may cause your friends to be are alerted.</div>
+      </div>
+    </div>
+
   </div>
 
   <div class="toast" id="toastEl">
@@ -159,62 +225,164 @@
 
 <script src="js/utils.js"></script>
 <script>
+// ── State ──────────────────────────────────────────────
 let currentGait = 12;
-const circumference = 2*Math.PI*65;
+let soundSuspicious = false;
+let proxSuspicious = false;
+const circumference = 2 * Math.PI * 65;
 
-function setGait(val){
+const PROX_FRIENDS = [
+  {ini:'RD', name:'Richard Do',   color:'#355E3B', dist:38,  angle:40},
+  {ini:'CC', name:'Collin Chan',  color:'#355E3B', dist:72,  angle:150},
+  {ini:'SM', name:'Sophia Ma',    color:'#355E3B', dist:110, angle:250},
+  {ini:'TN', name:'Tyler Nguyen', color:'#7c3aed', dist:185, angle:320},
+];
+
+// ── Tabs ───────────────────────────────────────────────
+function switchTab(id, el) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('tab-' + id).classList.add('active');
+}
+
+// ── Alert banner ───────────────────────────────────────
+function updateAlertBanner() {
+  const gaitBad = currentGait >= 60;
+  const suspicious = [gaitBad, proxSuspicious, soundSuspicious].filter(Boolean).length;
+
+  const dot = (ok) => ok ? 'bad' : 'ok';
+  document.getElementById('sig-gait').className  = 'sig-dot ' + (gaitBad        ? 'bad' : 'ok');
+  document.getElementById('sig-prox').className  = 'sig-dot ' + (proxSuspicious  ? 'bad' : 'ok');
+  document.getElementById('sig-sound').className = 'sig-dot ' + (soundSuspicious ? 'bad' : 'ok');
+
+  const banner = document.getElementById('alert-banner');
+  const ic     = document.getElementById('alert-ic');
+  const title  = document.getElementById('alert-title');
+  const sub    = document.getElementById('alert-sub');
+
+  if (suspicious == 3) {
+    banner.className = 'alert-banner danger';
+    title.textContent =  '3/3 Alerts';
+    sub.textContent  = 'Your rally group has been notified of your location. Stay safe and.';
+  } else if (suspicious === 2) {
+    banner.className = 'alert-banner danger';
+    title.textContent =  '2/3 Alerts';
+    sub.textContent  = 'Your rally group has been notified of your location. Stay safe.';
+  } else if (suspicious === 1) {
+    banner.className = 'alert-banner warn';
+    title.textContent = '1/3 Alerts';
+    sub.textContent  = 'One more suspicious alert will alert your friends.';
+  } else {
+    banner.className = 'alert-banner ok';
+    title.textContent = 'All signals normal';
+    sub.textContent  = 'No alerts sent';
+  }
+}
+
+// ── Gait ───────────────────────────────────────────────
+function setGait(val) {
   val = parseInt(val); currentGait = val;
-  document.getElementById('slider-val').textContent = val+'%';
+  document.getElementById('slider-val').textContent = val + '%';
   const arc = document.getElementById('garc');
-  arc.style.strokeDashoffset = circumference-(val/100)*circumference;
+  arc.style.strokeDashoffset = circumference - (val / 100) * circumference;
   arc.style.stroke = gc(val);
   const gpct = document.getElementById('gpct');
-  gpct.textContent = val+'%'; gpct.style.color = gc(val);
-  document.getElementById('gtext').textContent = val<40?'Looking good! ':val<60?'Monitoring your gait ':val<80?'Heads up sent to friends ':val<95?'Friends checking on you ':'FRIENDS COMING NOW ';
-  document.getElementById('gdesc').textContent = val<40?'Your walk is steady — no concerns detected.':val<60?'Slight irregularity — keep it steady!':val<80?'Your friends have been gently notified.':val<95?'Your gait is significantly off. Stay safe!':'Emergency alert sent. Stay where you are!';
-  document.getElementById('s60').className = 'stage'+(val>=60?' on':'');
-  document.getElementById('s80').className = 'stage'+(val>=80?(val>=95?' red':' on'):'');
-  document.getElementById('s95').className = 'stage'+(val>=95?' red':'');
-  const reg = val<40?['Excellent','var(--safe)']:val<60?['Good','#60a5fa']:val<80?['Irregular','var(--warning)']:['Very irregular','var(--danger)'];
-  document.getElementById('m-regularity').textContent = reg[0]; document.getElementById('m-regularity').style.color = reg[1];
-  const sv = Math.round(2+val*0.2*10)/10;
-  document.getElementById('m-stride').textContent = '±'+sv.toFixed(1)+' cm'; document.getElementById('m-stride').style.color = gc(val);
-  const sl = val<40?'Minimal':val<60?'Low':val<80?'Moderate':val<95?'High':'Severe';
-  document.getElementById('m-sway').textContent = sl; document.getElementById('m-sway').style.color = gc(val);
-  const tl = val<40?'Regular':val<60?'Mostly regular':val<80?'Irregular':val<95?'Very irregular':'Severely off';
-  document.getElementById('m-timing').textContent = tl; document.getElementById('m-timing').style.color = gc(val);
-  if(val>=95&&currentGait<95) toast('','CRITICAL','All friends alerted — emergency level');
-  else if(val>=80&&currentGait<80) toast('','Check-in alert sent','Friends notified to check on you');
-  else if(val>=60&&currentGait<60) toast('','Heads up sent','Friends gently notified');
+  gpct.textContent = val + '%'; gpct.style.color = gc(val);
+  document.getElementById('gtext').textContent =
+    val < 40 ? 'Looking good! ' : val < 60 ? 'Slight irregularity ' :
+    val < 80 ? 'Heads up sent to friends ' : val < 95 ? 'Friends checking on you' : 'FRIENDS COMING NOW';
+  document.getElementById('gdesc').textContent =
+    val < 40 ? 'Your walk is steady, no concerns detected.' :
+    val < 60 ? 'Minor irregularity detected.' :
+    val < 80 ? 'Your friends have been notified.' :
+    val < 95 ? 'Your gait is significantly off. Be careful!' :
+    'Emergency alert sent!';
+  updateAlertBanner();
 }
 
+// ── Proximity ──────────────────────────────────────────
+function renderProximity() {
+  const list = document.getElementById('dist-list');
+  list.innerHTML = PROX_FRIENDS.map(f => {
+    const far = f.dist > 150;
+    const col = far ? '#ef4444' : f.dist > 100 ? '#f59e0b' : '#6fcf7c';
+    return `<div class="dist-row${far ? ' far' : ''}">
+      <div class="dist-av" style="background:${f.color}">${f.ini}</div>
+      <span class="dist-name">${f.name}</span>
+      <span class="dist-val" style="color:${col}">${f.dist}m away</span>
+    </div>`;
+  }).join('');
+
+  proxSuspicious = PROX_FRIENDS.some(f => f.dist > 150);
+  updateAlertBanner();
+}
+
+// simulate slow drift
+setInterval(() => {
+  PROX_FRIENDS.forEach(f => {
+    f.dist = Math.max(10, Math.min(220, f.dist + Math.round((Math.random() - 0.45) * 8)));
+  });
+  renderProximity();
+}, 3000);
+
+// ── Sound / Ambient ────────────────────────────────────
 const envInfo = {
-  bar:     {label:'Loud venue — likely still at the bar'},
-  outside: {label:'Outside / street — moderate noise'},
-  quiet:   {label:'Very quiet — possibly alone somewhere'},
-  ride:    {label:'In a vehicle — likely in a ride home'},
+  bar:     {label: 'Loud venue — likely still at the bar',    loud: true},
+  outside: {label: 'Outside / street — moderate noise',       loud: false},
+  quiet:   {label: 'Very quiet — possibly somewhere alone',   loud: false},
+  ride:    {label: 'In a vehicle — likely heading home',      loud: false},
 };
-function setEnv(key, el){
-  document.querySelectorAll('.env-item').forEach(e=>e.classList.remove('active'));
+let startedLoud = true; // user began at bar
+
+function setEnv(key, el) {
+  document.querySelectorAll('.env-item').forEach(e => {
+    e.classList.remove('active', 'suspicious');
+  });
   el.classList.add('active');
   document.getElementById('amloc').textContent = envInfo[key].label;
+
+  const nowLoud = envInfo[key].loud;
+  const shifted = startedLoud && !nowLoud && key !== 'ride';
+  soundSuspicious = shifted;
+
+  if (shifted) {
+    el.classList.add('suspicious');
+  }
+
+  const box = document.getElementById('sound-transition');
+  if (key === 'ride') {
+    box.className = 'sound-transition ok visible';
+    box.innerHTML = ' <strong>Safe transition.</strong> Moving into a ride, expected behavior.';
+  } else if (shifted) {
+    box.className = 'sound-transition bad visible';
+    box.innerHTML = ' <strong>Sudden shift detected!</strong> You went from a loud environment to somewhere quiet. This is flagged as suspicious.';
+  } else {
+    box.className = 'sound-transition ok visible';
+    box.innerHTML = ' <strong>No sudden shift detected.</strong> Environment change looks normal.';
+  }
+  updateAlertBanner();
 }
 
-function initAmbient(){
+function initAmbient() {
   const w = document.getElementById('awave'); w.innerHTML = '';
-  [8,14,22,32,18,36,24,16,30,20,28,12,38,22,16,10].forEach(h=>{
+  [8,14,22,32,18,36,24,16,30,20,28,12,38,22,16,10].forEach(h => {
     const b = document.createElement('div'); b.className = 'wbar';
-    b.style.setProperty('--h', h+'px');
-    b.style.setProperty('--d', (0.35+Math.random()*0.55).toFixed(2)+'s');
-    b.style.height = Math.floor(h*0.4)+'px';
+    b.style.setProperty('--h', h + 'px');
+    b.style.setProperty('--d', (0.35 + Math.random() * 0.55).toFixed(2) + 's');
+    b.style.height = Math.floor(h * 0.4) + 'px';
     w.appendChild(b);
   });
 }
 
-setGait(12); initAmbient();
-setInterval(()=>{
+// ── Init ───────────────────────────────────────────────
+setGait(12);
+initAmbient();
+renderProximity();
+
+setInterval(() => {
   const slider = document.getElementById('gait-slider');
-  const newVal = Math.max(0, Math.min(99, parseInt(slider.value)+Math.round((Math.random()-0.45)*3)));
+  const newVal = Math.max(0, Math.min(99, parseInt(slider.value) + Math.round((Math.random() - 0.45) * 3)));
   slider.value = newVal; setGait(newVal);
 }, 2500);
 </script>
