@@ -117,7 +117,7 @@
 const RALLIES = [
   {
     dayName:'Saturday', date:'March 21',
-    timeRange:'9:00 PM – 1:30 AM', duration:'4h 30m',
+    timeRange:'9:00 PM - 1:30 AM', duration:'4h 30m',
     stats:[
       {val:'4h 30m', lbl:'Time Out'},
       {val:'3',      lbl:'Venues'},
@@ -135,14 +135,14 @@ const RALLIES = [
     ],
     wanderMarker:[38.050,-78.484],
     timeline:[
-      {time:'9:00 PM', dot:'var(--primary)', text:'Group met up at The Corner 🍺', sub:'All 5 friends checked in together', line:true},
-      {time:'9:45 PM', dot:'var(--primary)', text:'Moved to Boylan Heights 🍕', sub:'Group walked 0.2mi together', line:true},
-      {time:'10:30 PM',dot:'var(--warning)', text:'⚠️ Alex flagged — gait at 73%', sub:'"Heads up" notification sent to group', line:true},
-      {time:'10:55 PM',dot:'var(--danger)',  text:'🚨 Alex gait hit 87% — check-in alert', sub:'Maya responded and walked with Alex', line:true},
-      {time:'11:15 PM',dot:'var(--warning)', text:'Jordan wandered 0.3mi from group', sub:'Friends sent directions and met up', line:true},
-      {time:'12:00 AM',dot:'var(--warning)', text:'🔋 Alex battery dropped to 18%', sub:'Low battery alert sent to all friends', line:true},
-      {time:'12:30 AM',dot:'var(--primary)', text:'Group ordered Ubers home 🚗', sub:'Rides pre-filled with home addresses', line:true},
-      {time:'1:30 AM', dot:'var(--safe)',    text:'✅ Everyone made it home safely', sub:'All friends confirmed at their safe places', color:'var(--safe)', line:false},
+      {time:'9:00 PM', dot:'var(--primary)', text:'Group met up at The Corner', sub:'', line:true},
+      {time:'9:45 PM', dot:'var(--primary)', text:'Moved to Boylan Heights', sub:'', line:true},
+      {time:'10:30 PM',dot:'var(--warning)', text:'Alex flagged, gait at 73%', sub:'', line:true},
+      {time:'10:55 PM',dot:'var(--danger)',  text:'Alex gait hit 87%, check-in alert', sub:'', line:true},
+      {time:'11:15 PM',dot:'var(--warning)', text:'Jordan wandered 0.3mi from group', sub:'', line:true},
+      {time:'12:00 AM',dot:'var(--warning)', text:'Alex battery dropped to 18%', sub:'', line:true},
+      {time:'12:30 AM',dot:'var(--primary)', text:'Group ordered Ubers home', sub:'', line:true},
+      {time:'1:30 AM', dot:'var(--safe)',    text:'Everyone made it home safely', sub:'', color:'var(--safe)', line:false},
     ],
     friends:[
       {ini:'AC', color:'#ef4444', name:'Alex'},
@@ -154,7 +154,7 @@ const RALLIES = [
   },
   {
     dayName:'Saturday', date:'March 14',
-    timeRange:'10:00 PM – 1:00 AM', duration:'3h 00m',
+    timeRange:'10:00 PM - 1:00 AM', duration:'3h 00m',
     stats:[
       {val:'3h 00m', lbl:'Time Out'},
       {val:'2',      lbl:'Venues'},
@@ -170,11 +170,11 @@ const RALLIES = [
     ],
     wanderMarker:null,
     timeline:[
-      {time:'10:00 PM',dot:'var(--primary)', text:'Group met at Boylan Heights 🍕', sub:'Jordan, Maya, Sam all checked in', line:true},
-      {time:'11:20 PM',dot:'var(--primary)', text:'Moved to The Corner 🍺', sub:'Group walked together', line:true},
-      {time:'11:50 PM',dot:'var(--warning)', text:'⚠️ Sam flagged — gait at 64%', sub:'"Heads up" sent to Jordan and Maya', line:true},
-      {time:'12:30 AM',dot:'var(--primary)', text:'Group ordered rides home 🚗', sub:'All three in the same Uber', line:true},
-      {time:'1:00 AM', dot:'var(--safe)',    text:'✅ Everyone made it home safely', sub:'All friends confirmed at their safe places', color:'var(--safe)', line:false},
+      {time:'10:00 PM',dot:'var(--primary)', text:'Group met at Boylan Heights', sub:'', line:true},
+      {time:'11:20 PM',dot:'var(--primary)', text:'Moved to The Corner', sub:'', line:true},
+      {time:'11:50 PM',dot:'var(--warning)', text:'Sam flagged, gait at 64%', sub:'', line:true},
+      {time:'12:30 AM',dot:'var(--primary)', text:'Group ordered rides home', sub:'', line:true},
+      {time:'1:00 AM', dot:'var(--safe)',    text:'Everyone made it home safely', sub:'', color:'var(--safe)', line:false},
     ],
     friends:[
       {ini:'JK', color:'#f59e0b', name:'Jordan'},
@@ -184,7 +184,7 @@ const RALLIES = [
   },
   {
     dayName:'Saturday', date:'March 7',
-    timeRange:'9:30 PM – 2:30 AM', duration:'5h 00m',
+    timeRange:'9:30 PM - 2:30 AM', duration:'5h 00m',
     stats:[
       {val:'5h 00m', lbl:'Time Out'},
       {val:'3',      lbl:'Venues'},
@@ -201,15 +201,15 @@ const RALLIES = [
     ],
     wanderMarker:[38.0490,-78.4830],
     timeline:[
-      {time:'9:30 PM', dot:'var(--primary)', text:'Group met at Trinity Irish Pub 🍺', sub:'All 4 friends checked in', line:true},
-      {time:'10:15 PM',dot:'var(--primary)', text:'Moved to The Corner 🍻', sub:'Group walked 0.3mi together', line:true},
-      {time:'10:45 PM',dot:'var(--warning)', text:'⚠️ Alex gait flagged at 78%', sub:'Group notified', line:true},
-      {time:'11:30 PM',dot:'var(--danger)',  text:'🚨 Alex gait hit 91% — check-in alert', sub:'Sophie stayed with Alex', line:true},
-      {time:'11:50 PM',dot:'var(--danger)',  text:'🚨 Jordan separated — 0.6mi from group', sub:'Emergency check-in triggered', line:true},
-      {time:'12:10 AM',dot:'var(--warning)', text:'Jordan located — walking on Rugby Rd', sub:'Maya and Sam went to meet Jordan', line:true},
-      {time:'12:45 AM',dot:'var(--primary)', text:"Moved to Bodo's Bagels 🥯", sub:'Group reunited, food run', line:true},
-      {time:'1:30 AM', dot:'var(--primary)', text:'Group split into two Ubers 🚗', sub:'', line:true},
-      {time:'2:30 AM', dot:'var(--safe)',    text:'✅ Everyone made it home safely', sub:'All friends confirmed at their safe places', color:'var(--safe)', line:false},
+      {time:'9:30 PM', dot:'var(--primary)', text:'Group met at Trinity Irish Pub', sub:'', line:true},
+      {time:'10:15 PM',dot:'var(--primary)', text:'Moved to The Corner', sub:'', line:true},
+      {time:'10:45 PM',dot:'var(--warning)', text:'Alex gait flagged at 78%', sub:'', line:true},
+      {time:'11:30 PM',dot:'var(--danger)',  text:'Alex gait hit 91%, check-in alert', sub:'', line:true},
+      {time:'11:50 PM',dot:'var(--danger)',  text:'Jordan separated, 0.6mi from group', sub:'', line:true},
+      {time:'12:10 AM',dot:'var(--warning)', text:'Jordan located, walking on Rugby Rd', sub:'', line:true},
+      {time:'12:45 AM',dot:'var(--primary)', text:"Moved to Bodo's Bagels", sub:'', line:true},
+      {time:'1:30 AM', dot:'var(--primary)', text:'Group split into two Ubers', sub:'', line:true},
+      {time:'2:30 AM', dot:'var(--safe)',    text:'Everyone made it home safely', sub:'', color:'var(--safe)', line:false},
     ],
     friends:[
       {ini:'AC', color:'#ef4444', name:'Alex'},
@@ -220,7 +220,7 @@ const RALLIES = [
   },
   {
     dayName:'Saturday', date:'Feb 28',
-    timeRange:'10:00 PM – 12:45 AM', duration:'2h 45m',
+    timeRange:'10:00 PM - 12:45 AM', duration:'2h 45m',
     stats:[
       {val:'2h 45m', lbl:'Time Out'},
       {val:'1',      lbl:'Venues'},
@@ -236,10 +236,10 @@ const RALLIES = [
     ],
     wanderMarker:null,
     timeline:[
-      {time:'10:00 PM',dot:'var(--primary)', text:'Group met at Boylan Heights 🍕', sub:'Alex, Sam, Sophie checked in', line:true},
-      {time:'11:30 PM',dot:'var(--primary)', text:'Still at Boylan — chill night 😌', sub:'No alerts, group stayed together all night', line:true},
-      {time:'12:15 AM',dot:'var(--primary)', text:'Walked home together 🚶', sub:'All three live nearby', line:true},
-      {time:'12:45 AM',dot:'var(--safe)',    text:'✅ Everyone made it home safely', sub:'No incidents — perfect night', color:'var(--safe)', line:false},
+      {time:'10:00 PM',dot:'var(--primary)', text:'Group met at Boylan Heights', sub:'', line:true},
+      {time:'11:30 PM',dot:'var(--primary)', text:'Still at Boylan, chill night', sub:'', line:true},
+      {time:'12:15 AM',dot:'var(--primary)', text:'Walked home together', sub:'', line:true},
+      {time:'12:45 AM',dot:'var(--safe)',    text:'Everyone made it home safely', sub:'', color:'var(--safe)', line:false},
     ],
     friends:[
       {ini:'AC', color:'#ef4444', name:'Alex'},
@@ -296,10 +296,10 @@ function drawRoutes(rally){
 
 function initMap(){
   leafletMap=L.map('map',{center:[38.054,-78.487],zoom:15,zoomControl:false,attributionControl:false,dragging:true,scrollWheelZoom:false});
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{subdomains:'abcd'}).addTo(leafletMap);
-  const mkV=(ll,label,ic)=>L.marker(ll,{icon:L.divIcon({html:`<div style="font-size:18px;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.5))">${ic}</div>`,className:'',iconSize:[24,24],iconAnchor:[12,12]})}).addTo(leafletMap).bindPopup(label);
-  mkV([38.0558,-78.489],'The Corner 🍺','🏠');
-  mkV([38.0540,-78.486],'Boylan Heights 🍕','🏠');
+  L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png',{maxZoom:20,attribution:''}).addTo(leafletMap);
+  const dotIcon=L.divIcon({html:`<div style="width:12px;height:12px;border-radius:50%;background:white;border:2.5px solid rgba(255,255,255,0.9);box-shadow:0 0 0 2px rgba(0,0,0,0.5),0 2px 6px rgba(0,0,0,0.6);"></div>`,className:'',iconSize:[12,12],iconAnchor:[6,6]});
+  L.marker([38.0558,-78.489],{icon:dotIcon}).addTo(leafletMap).bindPopup('The Corner');
+  L.marker([38.0540,-78.486],{icon:dotIcon}).addTo(leafletMap).bindPopup('Boylan Heights');
   L.marker(home,{icon:L.divIcon({html:`<div style="width:28px;height:28px;border-radius:8px;background:#10b981;border:2px solid white;box-shadow:0 4px 10px rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>`,className:'',iconSize:[28,28],iconAnchor:[14,14]})}).addTo(leafletMap).bindPopup('<b>🏠 Home</b><br>Everyone arrived safely');
   leafletMap.on('click',resetPaths);
 }
