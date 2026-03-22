@@ -65,7 +65,6 @@ function initMap(){
   FRIENDS.forEach(addMarker);
   renderChips();
   startSim();
-  setTimeout(()=>toast('','Collin Chan — 73% alert','Tap their chip below to see their location'), 1000);
 
   map.on('click', function(e) {
     if (!pinMode) return;

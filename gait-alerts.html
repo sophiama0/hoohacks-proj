@@ -6,84 +6,122 @@
   <title>Rally - Alerts</title>
   <link rel="stylesheet" href="css/shared.css">
   <style>
-    .content{position:absolute;top:104px;bottom:0;left:0;right:0;overflow-y:auto;padding:0 0 24px;}
-
-    /* Tab bar */
-    .tab-bar{display:flex;gap:0;padding:0 14px 0;margin-bottom:14px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg);z-index:10;}
-    .tab{flex:1;padding:12px 4px 10px;text-align:center;font-size:12px;font-weight:600;color:var(--text-muted);cursor:pointer;border-bottom:2px solid transparent;transition:all 0.2s;white-space:nowrap;}
-    .tab.active{color:var(--primary);border-bottom-color:var(--primary);}
-
-    /* Tab panels */
-    .tab-panel{display:none;padding:0 14px;flex-direction:column;gap:14px;}
-    .tab-panel.active{display:flex;}
+    .content{position:absolute;top:104px;bottom:0;left:0;right:0;overflow-y:auto;padding:0 0 32px;}
 
     /* Alert banner */
-    .alert-banner{border-radius:14px;padding:12px 14px;display:flex;align-items:center;gap:12px;}
+    .alert-banner{margin:14px 14px 0;border-radius:14px;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;transition:background 0.3s,border 0.3s;}
     .alert-banner.ok{background:rgba(53,94,59,0.1);border:1px solid rgba(53,94,59,0.35);}
     .alert-banner.warn{background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.4);}
     .alert-banner.danger{background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.4);animation:bannerglow 1.6s ease-in-out infinite;}
     @keyframes bannerglow{0%,100%{box-shadow:none;}50%{box-shadow:0 0 18px rgba(239,68,68,0.2);}}
-    .alert-banner-ic{font-size:22px;flex-shrink:0;}
-    .alert-banner-title{font-size:13px;font-weight:700;color:var(--text);}
-    .alert-banner-sub{font-size:11px;color:var(--text-muted);margin-top:2px;}
-
-    /* Signal dots */
-    .signal-row{display:flex;gap:8px;align-items:center;}
-    .sig-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+    .alert-count{font-size:15px;font-weight:800;color:var(--text);}
+    .alert-sub{font-size:11px;color:var(--text-muted);margin-top:2px;}
+    .signal-dots{display:flex;flex-direction:column;gap:5px;align-items:flex-end;}
+    .sig-row{display:flex;gap:6px;align-items:center;}
+    .sig-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;transition:background 0.3s;}
     .sig-dot.ok{background:#355E3B;}
-    .sig-dot.warn{background:#f59e0b;}
     .sig-dot.bad{background:#ef4444;}
-    .sig-dot.off{background:rgba(255,255,255,0.15);}
+    .sig-lbl{font-size:10px;color:var(--text-muted);}
 
-    /* Hero gauge */
-    .hero{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:22px;text-align:center;position:relative;overflow:hidden;}
-    .hero::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 0%,rgba(53,94,59,0.06),transparent 70%);pointer-events:none;}
-    .gauge-wrap{width:150px;height:150px;margin:0 auto 14px;position:relative;}
+    /* Tabs */
+    .tab-bar{display:flex;padding:0 14px;margin:14px 0 0;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg);z-index:10;}
+    .tab{flex:1;padding:11px 4px 10px;text-align:center;font-size:12px;font-weight:600;color:var(--text-muted);cursor:pointer;border-bottom:2px solid transparent;transition:all 0.2s;}
+    .tab.active{color:var(--primary);border-bottom-color:var(--primary);}
+    .tab-panel{display:none;padding:14px 14px 0;flex-direction:column;gap:14px;}
+    .tab-panel.active{display:flex;}
+
+    /* Card */
+    .card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:16px;}
+
+    /* Gauge */
+    .gauge-wrap{width:148px;height:148px;margin:0 auto 14px;position:relative;}
     .gauge-wrap svg{width:100%;height:100%;}
     .gauge-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;}
-    .gauge-num{font-size:32px;font-weight:800;letter-spacing:-1px;}
+    .gauge-num{font-size:34px;font-weight:800;letter-spacing:-1px;transition:color 0.3s;}
     .gauge-lbl{font-size:11px;color:var(--text-muted);}
-    .hero-title{font-size:15px;font-weight:700;color:var(--text);}
-    .hero-desc{font-size:12px;color:var(--text-muted);margin-top:4px;line-height:1.5;}
-    .slider-wrap{padding:6px 0 2px;margin-top:12px;}
-    .slider-label{font-size:12px;color:var(--text-muted);margin-bottom:8px;display:flex;justify-content:space-between;}
-    input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:6px;border-radius:3px;outline:none;cursor:pointer;}
-    input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:var(--primary);border:2px solid white;box-shadow:0 2px 8px rgba(0,0,0,0.3);cursor:pointer;}
+    .hero-title{font-size:15px;font-weight:700;color:var(--text);text-align:center;}
+    .hero-desc{font-size:12px;color:var(--text-muted);text-align:center;margin-top:4px;line-height:1.5;}
 
-    /* Proximity */
-    .dist-list{display:flex;flex-direction:column;gap:8px;}
-    .dist-row{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:11px;padding:10px 12px;}
+    /* Slider */
+    .sim-label{font-size:11px;color:var(--text-muted);font-style:italic;margin-bottom:8px;}
+    .slider-row{display:flex;justify-content:space-between;font-size:12px;color:var(--text-muted);margin-bottom:6px;}
+    .slider-row strong{color:var(--text);}
+    input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:6px;border-radius:3px;outline:none;cursor:pointer;background:rgba(255,255,255,0.1);}
+    input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:var(--primary);border:2px solid white;box-shadow:0 2px 8px rgba(0,0,0,0.3);cursor:pointer;}
+
+    /* Friend rows */
+    .section-lbl{font-size:10px;font-weight:700;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;}
+    .dist-list{display:flex;flex-direction:column;gap:7px;}
+    .dist-row{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:11px;padding:10px 12px;transition:border-color 0.3s,background 0.3s;}
     .dist-row.far{border-color:rgba(239,68,68,0.4);background:rgba(239,68,68,0.06);}
+    .dist-row.you{border-color:rgba(124,58,237,0.4);background:rgba(124,58,237,0.06);}
+    .dist-row.you.far{border-color:rgba(239,68,68,0.5);background:rgba(239,68,68,0.09);}
     .dist-av{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:white;flex-shrink:0;}
     .dist-name{font-size:13px;font-weight:600;color:var(--text);flex:1;}
     .dist-val{font-size:12px;font-weight:700;}
 
-    /* Ambient sound */
-    .ambient-card{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:16px;}
+    /* Ambient */
     .awave{display:flex;align-items:center;justify-content:center;gap:3px;height:36px;margin:10px 0;}
     .wbar{width:4px;border-radius:2px;background:var(--primary);animation:wup var(--d) ease-in-out infinite alternate;}
     @keyframes wup{from{height:4px;opacity:0.3;}to{height:var(--h);opacity:1;}}
-    .env-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px;}
+    .env-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
     .env-item{background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:11px;padding:10px;text-align:center;cursor:pointer;transition:all 0.2s;}
     .env-item.active{border-color:var(--primary);background:rgba(53,94,59,0.12);}
-    .env-item.active.suspicious{border-color:#ef4444;background:rgba(239,68,68,0.1);}
-    .env-item:hover{background:rgba(255,255,255,0.08);}
+    .env-item.active.flagged{border-color:#ef4444;background:rgba(239,68,68,0.1);}
     .env-icon{display:flex;align-items:center;justify-content:center;margin-bottom:4px;opacity:0.7;}
     .env-item.active .env-icon{opacity:1;}
-    .env-label{font-size:11px;color:var(--text-muted);}
-    .env-item.active .env-label{color:var(--primary);font-weight:600;}
-    .env-item.active.suspicious .env-label{color:#ef4444;}
-    .sound-transition{border-radius:12px;padding:10px 12px;margin-top:12px;font-size:12px;line-height:1.5;display:none;}
-    .sound-transition.visible{display:block;}
-    .sound-transition.ok{background:rgba(53,94,59,0.1);border:1px solid rgba(53,94,59,0.3);color:#6fcf7c;}
-    .sound-transition.bad{background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.3);color:#f87171;}
+    .env-lbl{font-size:11px;color:var(--text-muted);}
+    .env-item.active .env-lbl{color:var(--primary);font-weight:600;}
+    .env-item.active.flagged .env-lbl{color:#ef4444;}
+    .shift-box{border-radius:11px;padding:10px 12px;margin-top:10px;font-size:12px;line-height:1.5;}
+    .shift-box.ok{background:rgba(53,94,59,0.1);border:1px solid rgba(53,94,59,0.3);color:#6fcf7c;}
+    .shift-box.warn{background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.3);color:#fbbf24;}
+    .shift-box.bad{background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.3);color:#f87171;}
+
+    /* Risk score panel */
+    .risk-panel{border-radius:16px;padding:15px 16px;border:1px solid var(--border);background:var(--surface);}
+    .risk-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+    .risk-title{font-size:12px;font-weight:700;color:var(--text-muted);letter-spacing:0.5px;text-transform:uppercase;}
+    .risk-score-wrap{display:flex;align-items:baseline;gap:4px;}
+    .risk-score{font-size:26px;font-weight:800;transition:color 0.3s;}
+    .risk-score-max{font-size:13px;color:var(--text-muted);}
+    .risk-bar-track{height:7px;background:rgba(255,255,255,0.08);border-radius:4px;overflow:hidden;margin-bottom:10px;}
+    .risk-bar-fill{height:100%;border-radius:4px;transition:width 0.5s ease,background 0.3s;}
+    .risk-breakdown{display:flex;flex-direction:column;gap:5px;}
+    .risk-item{display:flex;justify-content:space-between;font-size:11px;color:var(--text-muted);}
+    .risk-item span:last-child{font-weight:700;}
+    .risk-item span:last-child.active{color:#f59e0b;}
+    .risk-multiplier{font-size:11px;color:var(--text-muted);margin-top:6px;border-top:1px solid var(--border);padding-top:6px;}
+    .ai-reasoning{margin-top:12px;border-radius:11px;padding:11px 12px;font-size:12px;line-height:1.6;}
+    .ai-reasoning.tier1{background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.3);color:#fbbf24;}
+    .ai-reasoning.tier2{background:rgba(249,115,22,0.11);border:1px solid rgba(249,115,22,0.45);color:#f97316;}
+    .ai-reasoning.tier3{background:rgba(220,38,38,0.14);border:1px solid rgba(220,38,38,0.65);color:#ef4444;}
+    .ai-reasoning-label{font-size:10px;font-weight:700;letter-spacing:0.8px;text-transform:uppercase;opacity:0.7;margin-bottom:6px;}
+    .ai-reasoning-tier{font-size:11px;font-weight:700;margin-bottom:5px;}
+
+    /* Notification log */
+    .log-empty{text-align:center;color:var(--text-muted);font-size:12px;padding:28px 0;}
+    .log-entry{background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:11px;padding:12px 13px;}
+    .log-entry-top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;}
+    .log-entry-tier{font-size:10px;font-weight:700;letter-spacing:0.6px;text-transform:uppercase;padding:2px 8px;border-radius:20px;white-space:nowrap;flex-shrink:0;}
+    .log-entry-tier.tier1{background:rgba(245,158,11,0.15);color:#f59e0b;}
+    .log-entry-tier.tier2{background:rgba(249,115,22,0.18);color:#f97316;}
+    .log-entry-tier.tier3{background:rgba(220,38,38,0.2);color:#ef4444;font-weight:800;}
+    .log-entry-time{font-size:10px;color:var(--text-muted);text-align:right;line-height:1.4;}
+    .log-entry-signals{display:flex;gap:5px;flex-wrap:wrap;margin-top:7px;}
+    .log-signal-chip{font-size:10px;padding:2px 7px;border-radius:20px;background:rgba(255,255,255,0.06);color:var(--text-muted);}
+    .log-signal-chip.active{background:rgba(239,68,68,0.12);color:#fca5a5;}
+    .log-entry-blurb{font-size:11px;color:var(--text-muted);margin-top:6px;line-height:1.5;font-style:italic;}
+    .log-score{font-size:11px;font-weight:700;color:var(--text-muted);margin-top:5px;}
+    .log-header-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
+    .log-clear{font-size:11px;color:var(--text-muted);cursor:pointer;padding:3px 9px;border:1px solid var(--border);border-radius:20px;}
   </style>
 </head>
 <body>
 <div id="app">
   <div class="header">
     <div class="header-top">
-      <a class="back" href="index.html">‹ Back</a>
+      <a class="back" href="index.html">&#8249; Back</a>
       <div class="header-title">Safety Alerts</div>
       <div style="font-size:11px;font-weight:600;padding:3px 10px;border-radius:50px;background:rgba(16,185,129,0.12);color:#10b981">LIVE</div>
     </div>
@@ -92,127 +130,136 @@
   <div class="content">
 
     <!-- Alert banner -->
-    <div style="padding:14px 14px 0">
-      <div class="alert-banner ok" id="alert-banner">
-        <div class="alert-banner-ic" id="alert-ic"></div>
-        <div>
-          <div class="alert-banner-title" id="alert-title">All signals normal</div>
-          <div class="alert-banner-sub" id="alert-sub">No alerts sent, your friends are not notified</div>
-          <div id="ai-blurb" style="display:none;font-size:11px;color:#fbbf24;margin-top:5px;line-height:1.4;font-style:italic;"></div>
+    <div class="alert-banner ok" id="alert-banner">
+      <div style="flex:1;min-width:0;">
+        <div class="alert-count" id="alert-count">0/3 Alerts</div>
+        <div class="alert-sub" id="alert-sub">All signals normal. No alerts sent.</div>
+      </div>
+      <div class="signal-dots">
+        <div class="sig-row">
+          <span class="sig-lbl">Gait</span>
+          <div class="sig-dot ok" id="sig-gait"></div>
         </div>
-        <div class="signal-row" style="margin-left:auto;flex-direction:column;gap:5px;">
-          <div style="display:flex;gap:5px;align-items:center">
-            <div class="sig-dot ok" id="sig-gait"></div>
-            <span style="font-size:10px;color:var(--text-muted)">Gait</span>
-          </div>
-          <div style="display:flex;gap:5px;align-items:center">
-            <div class="sig-dot ok" id="sig-prox"></div>
-            <span style="font-size:10px;color:var(--text-muted)">Proximity</span>
-          </div>
-          <div style="display:flex;gap:5px;align-items:center">
-            <div class="sig-dot ok" id="sig-sound"></div>
-            <span style="font-size:10px;color:var(--text-muted)">Sound</span>
-          </div>
+        <div class="sig-row">
+          <span class="sig-lbl">Proximity</span>
+          <div class="sig-dot ok" id="sig-prox"></div>
+        </div>
+        <div class="sig-row">
+          <span class="sig-lbl">Sound</span>
+          <div class="sig-dot ok" id="sig-sound"></div>
         </div>
       </div>
     </div>
 
     <!-- Tab bar -->
     <div class="tab-bar">
-      <div class="tab active" onclick="switchTab('gait',this)"> Gait</div>
-      <div class="tab" onclick="switchTab('prox',this)"> Proximity</div>
-      <div class="tab" onclick="switchTab('sound',this)"> Sound</div>
+      <div class="tab active" onclick="switchTab('gait',this)">Gait</div>
+      <div class="tab" onclick="switchTab('prox',this)">Proximity</div>
+      <div class="tab" onclick="switchTab('sound',this)">Sound</div>
+      <div class="tab" onclick="switchTab('log',this)">Log</div>
     </div>
 
-    <!-- TAB 1: Gait Detection -->
+    <!-- TAB 1: Gait -->
     <div class="tab-panel active" id="tab-gait">
-      <div class="hero">
+
+      <div class="card" style="text-align:center;position:relative;overflow:hidden;">
+        <div style="position:absolute;inset:0;background:radial-gradient(circle at 50% 0%,rgba(53,94,59,0.06),transparent 70%);pointer-events:none;"></div>
         <div class="gauge-wrap">
           <svg viewBox="0 0 160 160">
-            <circle cx="80" cy="80" r="65" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="12"/>
+            <circle cx="80" cy="80" r="65" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="12"/>
             <circle id="garc" cx="80" cy="80" r="65" fill="none" stroke="#355E3B" stroke-width="12"
               stroke-linecap="round" stroke-dasharray="408" stroke-dashoffset="408"
-              transform="rotate(-90 80 80)" style="transition:stroke-dashoffset 0.8s ease,stroke 0.4s"/>
+              transform="rotate(-90 80 80)" style="transition:stroke-dashoffset 0.7s ease,stroke 0.3s;"/>
           </svg>
           <div class="gauge-center">
-            <div class="gauge-num" id="gpct" style="color:var(--text)">12%</div>
+            <div class="gauge-num" id="gpct" style="color:#10b981">12%</div>
             <div class="gauge-lbl">impairment</div>
           </div>
         </div>
-        <div class="hero-title" id="gtext">Looking good! </div>
-        <div class="hero-desc" id="gdesc">Your walk is steady, no concerns detected.</div>
-        <div class="slider-wrap">
-          <div class="slider-label">
-            <span>Simulate gait impairment</span>
-            <span id="slider-val" style="color:var(--text);font-weight:600">12%</span>
-          </div>
-          <input type="range" id="gait-slider" min="0" max="99" value="12" oninput="setGait(this.value)">
-        </div>
+        <div class="hero-title" id="gtext">Looking good!</div>
+        <div class="hero-desc" id="gdesc">Your walk is steady. No concerns detected.</div>
       </div>
 
-      <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:14px;">
-        <div class="section-label" style="margin-bottom:10px">How it works</div>
-        <div style="display:flex;flex-direction:column;gap:8px;">
-          <div style="display:flex;gap:10px;align-items:flex-start"><div style="font-size:15px;flex-shrink:0"></div><div style="font-size:12px;color:var(--text-muted);line-height:1.5"><strong style="color:var(--text)">Accelerometer + Gyroscope</strong> measures step timing, stride variance, and rotational sway against your personal baseline.</div></div>
-          <div style="display:flex;gap:10px;align-items:flex-start"><div style="font-size:15px;flex-shrink:0"></div><div style="font-size:12px;color:var(--text-muted);line-height:1.5">Alerts trigger at <strong style="color:var(--text)">60% → 80% → 95%</strong> impairment, escalating from a gentle nudge to an emergency notification.</div></div>
+      <div class="card">
+        <div class="slider-row">
+          <span>Simulate gait impairment</span>
+          <strong id="gait-val">12%</strong>
         </div>
+        <input type="range" id="gait-slider" min="0" max="99" value="12" oninput="setGait(this.value)">
       </div>
+
+
+      <div id="risk-panel-gait" class="risk-panel"></div>
+
     </div>
 
     <!-- TAB 2: Proximity -->
     <div class="tab-panel" id="tab-prox">
-      <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:14px;">
-        <div class="section-label" style="margin-bottom:10px">Rally Members</div>
+
+      <div class="card">
+        <div class="section-lbl">Rally Members</div>
         <div class="dist-list" id="dist-list"></div>
       </div>
 
-      <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:14px;">
-        <div class="section-label" style="margin-bottom:8px">How it works</div>
-        <div style="font-size:12px;color:var(--text-muted);line-height:1.6">If you move more than <strong style="color:var(--text)">150m away</strong> from your rally group, it's flagged as suspicious. Combined with another signal, your friends will be alerted.</div>
+      <div class="card">
+        <div class="slider-row">
+          <span>Simulate your distance from group</span>
+          <strong id="prox-val">45m</strong>
+        </div>
+        <input type="range" id="prox-slider" min="0" max="500" value="45" oninput="setProxDist(this.value)">
       </div>
+
+
+      <div id="risk-panel-prox" class="risk-panel"></div>
+
     </div>
 
-    <!-- TAB 3: Sound / Ambient -->
+    <!-- TAB 3: Sound -->
     <div class="tab-panel" id="tab-sound">
-      <div class="ambient-card">
-        <div style="font-size:14px;font-weight:600;color:var(--text)"> AI Ambient Detection</div>
-        <div style="font-size:12px;color:var(--text-muted);margin-top:3px;line-height:1.5">Rally listens to the background noise to detect sudden environment shifts.</div>
+
+      <div class="card">
+        <div style="font-size:14px;font-weight:600;color:var(--text);">AI Ambient Detection</div>
+        <div style="font-size:12px;color:var(--text-muted);margin-top:3px;line-height:1.5;">Rally analyzes background noise to detect sudden environment shifts that may indicate danger.</div>
         <div class="awave" id="awave"></div>
-        <div style="text-align:center;font-size:13px;color:var(--text-muted);margin-bottom:12px">Detected: <strong id="amloc" style="color:var(--text)">Loud venue, likely still at the bar</strong></div>
+        <div style="text-align:center;font-size:13px;color:var(--text-muted);margin-bottom:14px;">Detected: <strong id="amloc" style="color:var(--text);">Loud venue, likely still at the bar</strong></div>
+
+        <div style="font-size:11px;color:var(--text-muted);font-style:italic;margin-bottom:10px;">Simulating ambient audio detection for this demo. Tap to change environment.</div>
         <div class="env-grid">
           <div class="env-item active" id="env-bar" onclick="setEnv('bar',this)">
-            <div class="env-icon">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 22h8"/><path d="M12 11v11"/><path d="M20 2H4l6 9h4l6-9z"/></svg>
-            </div>
-            <div class="env-label">Bar / Venue</div>
+            <div class="env-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 22h8"/><path d="M12 11v11"/><path d="M20 2H4l6 9h4l6-9z"/></svg></div>
+            <div class="env-lbl">Bar / Venue</div>
           </div>
           <div class="env-item" id="env-outside" onclick="setEnv('outside',this)">
-            <div class="env-icon">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9z"/></svg>
-            </div>
-            <div class="env-label">Outside / Street</div>
+            <div class="env-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9z"/></svg></div>
+            <div class="env-lbl">Outside / Street</div>
           </div>
           <div class="env-item" id="env-quiet" onclick="setEnv('quiet',this)">
-            <div class="env-icon">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
-            </div>
-            <div class="env-label">Quiet / Alone</div>
+            <div class="env-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg></div>
+            <div class="env-lbl">Quiet / Alone</div>
           </div>
           <div class="env-item" id="env-ride" onclick="setEnv('ride',this)">
-            <div class="env-icon">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 5v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
-            </div>
-            <div class="env-label">In a Car</div>
+            <div class="env-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 5v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div>
+            <div class="env-lbl">In a Car</div>
           </div>
         </div>
-        <div class="sound-transition ok visible" id="sound-transition">
-           <strong>No sudden shift detected.</strong> You started at a bar and you are still in a similar environment.
+        <div class="shift-box ok" id="shift-box">
+          <strong>No shift detected.</strong> Still in a loud environment, consistent with your starting location.
         </div>
       </div>
 
-      <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:14px;">
-        <div class="section-label" style="margin-bottom:8px">How it works</div>
-        <div style="font-size:12px;color:var(--text-muted);line-height:1.6">Your mic reads ambient decibel levels. A rapid drop from <strong style="color:var(--text)">loud to quiet</strong> mid-rally (e.g. bar to a silent room) is flagged as suspicious. This may cause your friends to be alerted.</div>
+
+      <div id="risk-panel-sound" class="risk-panel"></div>
+
+    </div>
+
+    <!-- TAB 4: Notification Log -->
+    <div class="tab-panel" id="tab-log">
+      <div class="card">
+        <div class="log-header-row">
+          <div class="section-lbl" style="margin-bottom:0;">Notifications Sent</div>
+          <div class="log-clear" onclick="clearLog()">Clear</div>
+        </div>
+        <div id="notif-log"><div class="log-empty">No notifications sent yet during this session.</div></div>
       </div>
     </div>
 
@@ -220,81 +267,357 @@
 
   <div class="toast" id="toastEl">
     <div id="tic" style="font-size:20px"></div>
-    <div><div id="tt" style="font-size:13px;font-weight:600;color:var(--text)"></div><div id="ts" style="font-size:11px;color:var(--text-muted);margin-top:2px"></div></div>
+    <div>
+      <div id="tt" style="font-size:13px;font-weight:600;color:var(--text)"></div>
+      <div id="ts" style="font-size:11px;color:var(--text-muted);margin-top:2px"></div>
+    </div>
   </div>
 </div>
 
 <script src="js/utils.js"></script>
 <script>
-// ── State ──────────────────────────────────────────────
-let currentGait = 12;
-let soundSuspicious = false;
-let proxSuspicious = false;
+// State
+let gaitPct       = 12;
+let proxDist      = 45;
+let soundShiftType = 'none'; // 'none' | 'gradual' | 'sudden'
+
+// Demo constants (simulating 1:52am, 23 min stationary, battery 85%)
+const DEMO_TIME_LABEL    = '1:52am';
+const DEMO_TIME_MULT     = 1.2;   // midnight to 2am
+const DEMO_STATIONARY_MIN = 23;   // 5 bonus pts
+const DEMO_BATTERY_PCT   = 85;    // above 20%, no bonus
+
 const circumference = 2 * Math.PI * 65;
 
-// Simulated stationary time — starts at 23 min for demo realism
-let stationaryMinutes = 23;
-setInterval(() => stationaryMinutes++, 60000);
+// Risk score formula
+function computeScore() {
+  // Gait: up to 40 pts
+  let gaitPts = 0;
+  if (gaitPct > 70)      gaitPts = 40;
+  else if (gaitPct > 50) gaitPts = 25;
+  else if (gaitPct > 30) gaitPts = 15;
 
-// ── AI Safety Check ────────────────────────────────────
-let aiPollInterval = null;
+  // Sound shift: up to 30 pts
+  const soundPts = soundShiftType === 'sudden'  ? 30
+                 : soundShiftType === 'gradual' ? 10
+                 : 0;
 
-function anySignalElevated() {
-  return currentGait >= 45 || soundSuspicious || PROX_FRIENDS.some(f => f.dist > 130);
+  // Distance from group: up to 30 pts
+  let distPts = 0;
+  if (proxDist > 400)      distPts = 30;
+  else if (proxDist > 200) distPts = 20;
+  else if (proxDist > 100) distPts = 10;
+
+  // Time stationary bonus: up to 20 pts
+  let stationaryPts = 0;
+  if (DEMO_STATIONARY_MIN >= 60)      stationaryPts = 20;
+  else if (DEMO_STATIONARY_MIN >= 30) stationaryPts = 10;
+  else if (DEMO_STATIONARY_MIN >= 15) stationaryPts = 5;
+
+  // Battery bonus
+  const batteryPts = DEMO_BATTERY_PCT < 20 ? 10 : 0;
+
+  const base = gaitPts + soundPts + distPts + stationaryPts + batteryPts;
+  return { score: Math.min(100, Math.round(base * DEMO_TIME_MULT)), gaitPts, soundPts, distPts, stationaryPts, batteryPts, base };
 }
 
-async function checkSafetyWithAI() {
-  const maxDist = Math.max(...PROX_FRIENDS.map(f => f.dist));
-  const payload = {
-    gaitPct:             currentGait,
-    noiseShift:          soundSuspicious,
-    maxFriendDistMeters: maxDist,
-    minutesStationary:   stationaryMinutes,
-    hourOfNight:         new Date().getHours(),
-  };
+const DEMO_NAME = 'Alex';
 
-  try {
-    const res  = await fetch('http://localhost:3001/check-safety', {
-      method:  'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body:    JSON.stringify(payload),
-    });
-    const data = await res.json();
+function getAiContent(score) {
+  const tierLabel = score >= 90 ? 'Go find them now' : score >= 75 ? 'Check on them' : 'Heads-up';
+  const N = DEMO_NAME;
 
-    const blurbEl = document.getElementById('ai-blurb');
-    if (data.notify && data.blurb) {
-      blurbEl.textContent = '✦ AI: ' + data.blurb;
-      blurbEl.style.display = 'block';
-    } else {
-      blurbEl.style.display = 'none';
-    }
-  } catch {
-    // Server not running — silently skip, app still works
+  const sentences = [];
+
+  // Gait sentence
+  if (gaitPct > 70) {
+    sentences.push(`${N}'s gait is ${gaitPct}% off their sober baseline — well above the threshold for concern.`);
+  } else if (gaitPct > 50) {
+    sentences.push(`${N}'s gait has shifted ${gaitPct}% from their calibrated sober baseline.`);
+  } else if (gaitPct > 30) {
+    sentences.push(`${N}'s gait shows a ${gaitPct}% deviation from their baseline, enough to flag.`);
   }
-}
 
-function scheduleAiCheck() {
-  if (anySignalElevated()) {
-    // Fire immediately, then every 10s while signals are active
-    if (!aiPollInterval) {
-      checkSafetyWithAI();
-      aiPollInterval = setInterval(checkSafetyWithAI, 10000);
-    }
+  // Sound sentence
+  if (soundShiftType === 'sudden') {
+    sentences.push(`${N} went quiet near an unfamiliar spot ${DEMO_STATIONARY_MIN} minutes ago — a sudden drop from a loud venue.`);
+  } else if (soundShiftType === 'gradual') {
+    sentences.push(`${N} has moved somewhere noticeably quieter since leaving the venue.`);
+  }
+
+  // Distance sentence
+  if (proxDist > 400) {
+    sentences.push(`${N} is now ${proxDist}m from the nearest rally member, which is far outside the normal range.`);
+  } else if (proxDist > 200) {
+    sentences.push(`${N} is ${proxDist}m from the group.`);
+  } else if (proxDist > 100) {
+    sentences.push(`${N} is ${proxDist}m from the nearest friend.`);
+  }
+
+  // Time and memory context
+  if (score >= 75) {
+    sentences.push(`At ${DEMO_TIME_LABEL}, this is later than ${N} usually heads home based on past rallies.`);
   } else {
-    // All clear — stop polling and hide blurb
-    if (aiPollInterval) { clearInterval(aiPollInterval); aiPollInterval = null; }
-    document.getElementById('ai-blurb').style.display = 'none';
+    sentences.push(`This is at ${DEMO_TIME_LABEL}.`);
+  }
+
+  // Stationary context
+  if (DEMO_STATIONARY_MIN >= 15) {
+    sentences.push(`${N} has been stationary for ${DEMO_STATIONARY_MIN} minutes in the same spot.`);
+  }
+
+  sentences.push(`Score: ${score}.`);
+
+  // Action
+  if (score >= 90)      sentences.push(`Go find ${N}.`);
+  else if (score >= 75) sentences.push(`Check on ${N} now.`);
+  else                  sentences.push(`Keep an eye on ${N}.`);
+
+  const narrative = sentences.join(' ');
+
+  // Short summary for the log — one or two readable sentences
+  const logParts = [];
+  if (gaitPct > 70)
+    logParts.push(`${N}'s gait is ${gaitPct}% off their sober baseline`);
+  else if (gaitPct > 50)
+    logParts.push(`${N}'s gait has shifted ${gaitPct}% from baseline`);
+  else if (gaitPct > 30)
+    logParts.push(`${N}'s gait shows a ${gaitPct}% deviation`);
+
+  if (soundShiftType === 'sudden')
+    logParts.push(`went quiet mid-rally`);
+  else if (soundShiftType === 'gradual')
+    logParts.push(`moved somewhere quieter`);
+
+  if (proxDist > 100)
+    logParts.push(`${proxDist}m from the group`);
+
+  let logSummary = '';
+  if (logParts.length === 0) {
+    logSummary = `Multiple signals elevated at ${DEMO_TIME_LABEL}.`;
+  } else if (logParts.length === 1) {
+    logSummary = logParts[0].charAt(0).toUpperCase() + logParts[0].slice(1) + ` at ${DEMO_TIME_LABEL}.`;
+  } else {
+    const first = logParts[0].charAt(0).toUpperCase() + logParts[0].slice(1);
+    logSummary = `${first}, ${logParts.slice(1).join(', ')} at ${DEMO_TIME_LABEL}.`;
+  }
+
+  return { tierLabel, narrative, logSummary };
+}
+
+function renderRiskPanel(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const { score, gaitPts, soundPts, distPts, stationaryPts, batteryPts, base } = computeScore();
+
+  const color = score >= 75 ? '#ef4444' : score >= 60 ? '#f97316' : score >= 30 ? '#f59e0b' : '#10b981';
+
+  const blurbTier = score >= 90 ? 'tier3' : score >= 75 ? 'tier2' : 'tier1';
+  const { tierLabel, narrative } = score >= 60 ? getAiContent(score) : {};
+
+  el.innerHTML = `
+    <div class="risk-header">
+      <div class="risk-title">Risk Score</div>
+      <div class="risk-score-wrap">
+        <div class="risk-score" style="color:${color}">${score}</div>
+        <div class="risk-score-max">/100</div>
+      </div>
+    </div>
+    <div class="risk-bar-track">
+      <div class="risk-bar-fill" style="width:${score}%;background:${color};"></div>
+    </div>
+    <div class="risk-breakdown">
+      <div class="risk-item">
+        <span>Gait impairment (${gaitPct}%)</span>
+        <span class="${gaitPts > 0 ? 'active' : ''}">+${gaitPts} pts</span>
+      </div>
+      <div class="risk-item">
+        <span>Distance from group (${proxDist}m)</span>
+        <span class="${distPts > 0 ? 'active' : ''}">+${distPts} pts</span>
+      </div>
+      <div class="risk-item">
+        <span>Sound shift (${soundShiftType === 'none' ? 'none' : soundShiftType})</span>
+        <span class="${soundPts > 0 ? 'active' : ''}">+${soundPts} pts</span>
+      </div>
+      <div class="risk-item">
+        <span>Stationary ${DEMO_STATIONARY_MIN} min (simulated)</span>
+        <span class="${stationaryPts > 0 ? 'active' : ''}">+${stationaryPts} pts</span>
+      </div>
+      <div class="risk-item">
+        <span>Battery ${DEMO_BATTERY_PCT}% (simulated)</span>
+        <span class="${batteryPts > 0 ? 'active' : ''}">+${batteryPts} pts</span>
+      </div>
+    </div>
+    <div class="risk-multiplier">
+      Base ${base} pts x ${DEMO_TIME_MULT} time multiplier (${DEMO_TIME_LABEL}) = <strong style="color:${color}">${score}</strong>
+    </div>
+    ${narrative ? `
+    <div class="ai-reasoning ${blurbTier}">
+      <div class="ai-reasoning-label">AI Reasoning</div>
+      <div class="ai-reasoning-tier">${tierLabel}</div>
+      ${narrative}
+    </div>` : ''}
+  `;
+}
+
+function renderAllRiskPanels() {
+  renderRiskPanel('risk-panel-gait');
+  renderRiskPanel('risk-panel-prox');
+  renderRiskPanel('risk-panel-sound');
+}
+
+// Notification log
+let notifLog = JSON.parse(localStorage.getItem('rally_notif_log') || '[]');
+let lastLoggedTier = null; // avoid duplicate back-to-back entries for same tier
+
+function maybeLogNotification(score, tier, logSummary) {
+  if (tier === lastLoggedTier) return; // same tier still active, don't re-log
+  lastLoggedTier = tier;
+
+  const entry = {
+    time: new Date().toISOString(),
+    score,
+    tier,
+    logSummary,
+    gaitPct,
+    proxDist,
+    soundShiftType,
+  };
+  notifLog.unshift(entry);
+  if (notifLog.length > 100) notifLog.pop();
+  localStorage.setItem('rally_notif_log', JSON.stringify(notifLog));
+  renderLog();
+}
+
+function resetLogTier() {
+  lastLoggedTier = null;
+}
+
+function clearLog() {
+  notifLog = [];
+  lastLoggedTier = null;
+  localStorage.removeItem('rally_notif_log');
+  renderLog();
+}
+
+function renderLog() {
+  const el = document.getElementById('notif-log');
+  if (!el) return;
+  if (notifLog.length === 0) {
+    el.innerHTML = '<div class="log-empty">No notifications sent yet during this session.</div>';
+    return;
+  }
+  el.innerHTML = notifLog.map(e => {
+    const d        = new Date(e.time);
+    const timeStr  = d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    const dateStr  = d.toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' });
+    const tierCls  = e.tier === 'emergency' ? 'tier3' : e.tier === 'urgent' ? 'tier2' : 'tier1';
+    const tierTxt  = e.tier === 'emergency' ? 'Urgent' : e.tier === 'urgent' ? 'Check on them' : 'Heads-up';
+    const scoreCol = e.score >= 75 ? '#ef4444' : e.score >= 60 ? '#f97316' : '#f59e0b';
+
+    const gaitActive  = e.gaitPct > 30;
+    const proxActive  = e.proxDist > 100;
+    const soundActive = e.soundShiftType !== 'none';
+
+    return `<div class="log-entry">
+      <div class="log-entry-top">
+        <span class="log-entry-tier ${tierCls}">${tierTxt}</span>
+        <div class="log-entry-time">${timeStr}<br>${dateStr}</div>
+      </div>
+      <div class="log-entry-signals">
+        <span class="log-signal-chip ${gaitActive ? 'active' : ''}">Gait ${e.gaitPct}%</span>
+        <span class="log-signal-chip ${proxActive ? 'active' : ''}">Dist ${e.proxDist}m</span>
+        <span class="log-signal-chip ${soundActive ? 'active' : ''}">Sound: ${e.soundShiftType}</span>
+      </div>
+      <div class="log-score" style="color:${scoreCol};margin-top:6px;">Score: ${e.score}/100</div>
+      ${e.logSummary ? `<div style="font-size:11px;color:var(--text-muted);margin-top:5px;line-height:1.4;">${e.logSummary}</div>` : ''}
+    </div>`;
+  }).join('<div style="height:8px"></div>');
+}
+
+// Returns info about an extreme single signal, or null if none
+function extremeSignal() {
+  if (gaitPct >= 85) {
+    const tier = gaitPct >= 95 ? 'emergency' : 'urgent';
+    return { tier, label: 'Extreme gait impairment', sub: gaitPct + '% off baseline' };
+  }
+  if (proxDist >= 400) {
+    return { tier: 'urgent', label: 'Extreme distance', sub: proxDist + 'm from the group' };
+  }
+  return null;
+}
+
+// Alert banner
+function updateBanner() {
+  const gaitBad  = gaitPct > 30;
+  const proxBad  = proxDist > 100;
+  const soundBad = soundShiftType !== 'none';
+  const count    = [gaitBad, proxBad, soundBad].filter(Boolean).length;
+
+  document.getElementById('sig-gait').className  = 'sig-dot ' + (gaitBad  ? 'bad' : 'ok');
+  document.getElementById('sig-prox').className  = 'sig-dot ' + (proxBad  ? 'bad' : 'ok');
+  document.getElementById('sig-sound').className = 'sig-dot ' + (soundBad ? 'bad' : 'ok');
+
+  const banner  = document.getElementById('alert-banner');
+  const countEl = document.getElementById('alert-count');
+  const subEl   = document.getElementById('alert-sub');
+
+  countEl.textContent = count + '/3 Alerts';
+
+  const { score } = computeScore();
+  const extreme  = extremeSignal();
+  const notified = score >= 60 || extreme !== null;
+
+  if (count === 0) {
+    banner.className  = 'alert-banner ok';
+    subEl.textContent = 'All signals normal. No alerts sent.';
+  } else if (extreme && extreme.tier === 'emergency') {
+    banner.className  = 'alert-banner danger';
+    subEl.textContent = extreme.label + ' (' + extreme.sub + '). Emergency alert sent to your rally.';
+  } else if (extreme) {
+    banner.className  = 'alert-banner danger';
+    subEl.textContent = extreme.label + ' (' + extreme.sub + '). Friends have been notified.';
+  } else if (notified && score >= 90) {
+    banner.className  = 'alert-banner danger';
+    subEl.textContent = 'Emergency alert sent. Your rally is coming to find you.';
+  } else if (notified && score >= 75) {
+    banner.className  = 'alert-banner danger';
+    subEl.textContent = 'Friends have been notified and are checking on you.';
+  } else if (notified) {
+    banner.className  = 'alert-banner danger';
+    subEl.textContent = 'Friends have been notified. Score: ' + score + '/100.';
+  } else if (count === 1) {
+    banner.className  = 'alert-banner warn';
+    subEl.textContent = 'One signal flagged. Not enough to notify yet.';
+  } else {
+    banner.className  = 'alert-banner warn';
+    subEl.textContent = count + ' signals flagged. Monitoring closely.';
   }
 }
 
-const PROX_FRIENDS = [
-  {ini:'RD', name:'Richard Do',   color:'#355E3B', dist:38,  angle:40},
-  {ini:'CC', name:'Collin Chan',  color:'#355E3B', dist:72,  angle:150},
-  {ini:'SM', name:'Sophia Ma',    color:'#355E3B', dist:110, angle:250},
-  {ini:'TN', name:'Tyler Nguyen', color:'#7c3aed', dist:185, angle:320},
-];
+function update() {
+  updateBanner();
+  renderAllRiskPanels();
 
-// ── Tabs ───────────────────────────────────────────────
+  // Log notification and trigger escalation
+  const { score } = computeScore();
+  const extreme   = extremeSignal();
+
+  if (score >= 60 || extreme) {
+    const tier = (score >= 90 || extreme?.tier === 'emergency') ? 'emergency'
+               : (score >= 75 || extreme?.tier === 'urgent')    ? 'urgent'
+               : 'heads-up';
+    const { logSummary } = getAiContent(score);
+    const extremeSummary = extreme
+      ? extreme.label + ': ' + extreme.sub + (score > 0 ? '. Score: ' + score + '/100.' : '.')
+      : logSummary;
+    maybeLogNotification(score, tier, extreme ? extremeSummary : logSummary);
+  } else {
+    resetLogTier();
+  }
+}
+
+// Tabs
 function switchTab(id, el) {
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
@@ -302,69 +625,64 @@ function switchTab(id, el) {
   document.getElementById('tab-' + id).classList.add('active');
 }
 
-// ── Alert banner ───────────────────────────────────────
-function updateAlertBanner() {
-  const gaitBad = currentGait >= 60;
-  const suspicious = [gaitBad, proxSuspicious, soundSuspicious].filter(Boolean).length;
+// Gait
+function setGait(val) {
+  gaitPct = parseInt(val);
+  document.getElementById('gait-val').textContent = gaitPct + '%';
 
-  const dot = (ok) => ok ? 'bad' : 'ok';
-  document.getElementById('sig-gait').className  = 'sig-dot ' + (gaitBad        ? 'bad' : 'ok');
-  document.getElementById('sig-prox').className  = 'sig-dot ' + (proxSuspicious  ? 'bad' : 'ok');
-  document.getElementById('sig-sound').className = 'sig-dot ' + (soundSuspicious ? 'bad' : 'ok');
+  const arc = document.getElementById('garc');
+  const col = gaitPct <= 30 ? '#10b981' : gaitPct <= 50 ? '#84cc16' : gaitPct <= 70 ? '#f59e0b' : '#ef4444';
+  arc.style.strokeDashoffset = circumference - (gaitPct / 100) * circumference;
+  arc.style.stroke = col;
 
-  const banner = document.getElementById('alert-banner');
-  const ic     = document.getElementById('alert-ic');
-  const title  = document.getElementById('alert-title');
-  const sub    = document.getElementById('alert-sub');
+  const gpct = document.getElementById('gpct');
+  gpct.textContent = gaitPct + '%';
+  gpct.style.color = col;
 
-  if (suspicious == 3) {
-    banner.className = 'alert-banner danger';
-    title.textContent =  '3/3 Alerts';
-    sub.textContent  = 'Your rally group has been notified of your location. Stay safe and.';
-  } else if (suspicious === 2) {
-    banner.className = 'alert-banner danger';
-    title.textContent =  '2/3 Alerts';
-    sub.textContent  = 'Your rally group has been notified of your location. Stay safe.';
-  } else if (suspicious === 1) {
-    banner.className = 'alert-banner warn';
-    title.textContent = '1/3 Alerts';
-    sub.textContent  = 'One more suspicious alert will alert your friends.';
+  if (gaitPct <= 30) {
+    document.getElementById('gtext').textContent = 'Looking good!';
+    document.getElementById('gdesc').textContent = 'Your walk is steady. No concerns detected.';
+  } else if (gaitPct <= 50) {
+    document.getElementById('gtext').textContent = 'Mild irregularity detected.';
+    document.getElementById('gdesc').textContent = 'Minor deviation from your baseline. Being monitored.';
+  } else if (gaitPct <= 70) {
+    document.getElementById('gtext').textContent = 'Mild irregularity detected.';
+    document.getElementById('gdesc').textContent = 'Your gait is noticeably off from your sober baseline.';
   } else {
-    banner.className = 'alert-banner ok';
-    title.textContent = 'All signals normal';
-    sub.textContent  = 'No alerts sent';
+    document.getElementById('gtext').textContent = 'High concern. Friends were notified.';
+    document.getElementById('gdesc').textContent = 'Significant gait impairment detected. Your rally group has been notified.';
   }
 
-  scheduleAiCheck();
+  update();
 }
 
-// ── Gait ───────────────────────────────────────────────
-function setGait(val) {
-  val = parseInt(val); currentGait = val;
-  document.getElementById('slider-val').textContent = val + '%';
-  const arc = document.getElementById('garc');
-  arc.style.strokeDashoffset = circumference - (val / 100) * circumference;
-  arc.style.stroke = gc(val);
-  const gpct = document.getElementById('gpct');
-  gpct.textContent = val + '%'; gpct.style.color = gc(val);
-  document.getElementById('gtext').textContent =
-    val < 40 ? 'Looking good! ' : val < 60 ? 'Slight irregularity ' :
-    val < 80 ? 'Heads up sent to friends ' : val < 95 ? 'Friends checking on you' : 'FRIENDS COMING NOW';
-  document.getElementById('gdesc').textContent =
-    val < 40 ? 'Your walk is steady, no concerns detected.' :
-    val < 60 ? 'Minor irregularity detected.' :
-    val < 80 ? 'Your friends have been notified.' :
-    val < 95 ? 'Your gait is significantly off. Be careful!' :
-    'Emergency alert sent!';
-  updateAlertBanner();
+// Proximity
+const FRIENDS = [
+  { ini: 'RD', name: 'Richard Do',   color: '#355E3B', dist: 39  },
+  { ini: 'CC', name: 'Collin Chan',  color: '#355E3B', dist: 82  },
+  { ini: 'SM', name: 'Sophia Ma',    color: '#355E3B', dist: 113 },
+  { ini: 'TN', name: 'Tyler Nguyen', color: '#7c3aed', dist: 188 },
+];
+
+function setProxDist(val) {
+  proxDist = parseInt(val);
+  document.getElementById('prox-val').textContent = proxDist + 'm';
+  renderProximity();
+  update();
 }
 
-// ── Proximity ──────────────────────────────────────────
 function renderProximity() {
-  const list = document.getElementById('dist-list');
-  list.innerHTML = PROX_FRIENDS.map(f => {
+  const isFar    = proxDist > 150;
+  const youColor = proxDist > 200 ? '#ef4444' : proxDist > 100 ? '#f59e0b' : '#10b981';
+  const youRow   = `<div class="dist-row you${isFar ? ' far' : ''}">
+    <div class="dist-av" style="background:#7c3aed">You</div>
+    <span class="dist-name">You</span>
+    <span class="dist-val" style="color:${youColor}">${proxDist}m away</span>
+  </div>`;
+
+  const friendRows = FRIENDS.map(f => {
     const far = f.dist > 150;
-    const col = far ? '#ef4444' : f.dist > 100 ? '#f59e0b' : '#6fcf7c';
+    const col = f.dist > 200 ? '#ef4444' : f.dist > 100 ? '#f59e0b' : '#6fcf7c';
     return `<div class="dist-row${far ? ' far' : ''}">
       <div class="dist-av" style="background:${f.color}">${f.ini}</div>
       <span class="dist-name">${f.name}</span>
@@ -372,60 +690,46 @@ function renderProximity() {
     </div>`;
   }).join('');
 
-  proxSuspicious = PROX_FRIENDS.some(f => f.dist > 150);
-  updateAlertBanner();
+  document.getElementById('dist-list').innerHTML = youRow + friendRows;
 }
 
-// simulate slow drift
-setInterval(() => {
-  PROX_FRIENDS.forEach(f => {
-    f.dist = Math.max(10, Math.min(220, f.dist + Math.round((Math.random() - 0.45) * 8)));
-  });
-  renderProximity();
-}, 3000);
-
-// ── Sound / Ambient ────────────────────────────────────
+// Sound / Ambient
 const envInfo = {
-  bar:     {label: 'Loud venue, likely still at the bar',    loud: true},
-  outside: {label: 'Outside / street, moderate noise',       loud: false},
-  quiet:   {label: 'Very quiet, possibly somewhere alone',   loud: false},
-  ride:    {label: 'In a vehicle, likely heading home',      loud: false},
+  bar:     { label: 'Loud venue, likely still at the bar',    shift: 'none'    },
+  outside: { label: 'Outside / street, quieter than venue',  shift: 'gradual' },
+  quiet:   { label: 'Very quiet, possibly somewhere alone',  shift: 'sudden'  },
+  ride:    { label: 'In a vehicle, likely heading home',      shift: 'none'    },
 };
-let startedLoud = true; // user began at bar
 
 function setEnv(key, el) {
-  document.querySelectorAll('.env-item').forEach(e => {
-    e.classList.remove('active', 'suspicious');
-  });
+  document.querySelectorAll('.env-item').forEach(e => e.classList.remove('active', 'flagged'));
   el.classList.add('active');
   document.getElementById('amloc').textContent = envInfo[key].label;
 
-  const nowLoud = envInfo[key].loud;
-  const shifted = startedLoud && !nowLoud && key !== 'ride';
-  soundSuspicious = shifted;
+  soundShiftType = envInfo[key].shift;
+  const box = document.getElementById('shift-box');
 
-  if (shifted) {
-    el.classList.add('suspicious');
-  }
-
-  const box = document.getElementById('sound-transition');
-  if (key === 'ride') {
-    box.className = 'sound-transition ok visible';
-    box.innerHTML = ' <strong>Safe transition.</strong> Moving into a ride, expected behavior.';
-  } else if (shifted) {
-    box.className = 'sound-transition bad visible';
-    box.innerHTML = ' <strong>Sudden shift detected!</strong> You went from a loud environment to somewhere quiet. This is flagged as suspicious.';
+  if (soundShiftType === 'none') {
+    if (el.classList.remove) el.classList.remove('flagged');
+    box.className = 'shift-box ok';
+    box.innerHTML = '<strong>No shift detected.</strong> ' + (key === 'ride' ? 'In a ride, expected behavior.' : 'Still in a loud environment, consistent with your starting location.');
+  } else if (soundShiftType === 'gradual') {
+    el.classList.add('flagged');
+    box.className = 'shift-box warn';
+    box.innerHTML = '<strong>Gradual shift detected.</strong> Moved from a loud venue to a quieter outdoor environment. Adding 10 pts to risk score.';
   } else {
-    box.className = 'sound-transition ok visible';
-    box.innerHTML = ' <strong>No sudden shift detected.</strong> Environment change looks normal.';
+    el.classList.add('flagged');
+    box.className = 'shift-box bad';
+    box.innerHTML = '<strong>Sudden shift detected.</strong> Went from a clearly loud venue to completely quiet. This is flagged as suspicious and adds 30 pts.';
   }
-  updateAlertBanner();
+  update();
 }
 
 function initAmbient() {
-  const w = document.getElementById('awave'); w.innerHTML = '';
+  const w = document.getElementById('awave');
   [8,14,22,32,18,36,24,16,30,20,28,12,38,22,16,10].forEach(h => {
-    const b = document.createElement('div'); b.className = 'wbar';
+    const b = document.createElement('div');
+    b.className = 'wbar';
     b.style.setProperty('--h', h + 'px');
     b.style.setProperty('--d', (0.35 + Math.random() * 0.55).toFixed(2) + 's');
     b.style.height = Math.floor(h * 0.4) + 'px';
@@ -433,17 +737,12 @@ function initAmbient() {
   });
 }
 
-// ── Init ───────────────────────────────────────────────
+// Init
 setGait(12);
-initAmbient();
 renderProximity();
-scheduleAiCheck();
-
-setInterval(() => {
-  const slider = document.getElementById('gait-slider');
-  const newVal = Math.max(0, Math.min(99, parseInt(slider.value) + Math.round((Math.random() - 0.45) * 3)));
-  slider.value = newVal; setGait(newVal);
-}, 2500);
+initAmbient();
+renderLog();
+update();
 </script>
 </body>
 </html>
