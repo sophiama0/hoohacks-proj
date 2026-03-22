@@ -9,19 +9,34 @@
     .content{position:absolute;top:104px;bottom:0;left:0;right:0;overflow-y:auto;padding:0 0 32px;}
 
     /* Alert banner */
-    .alert-banner{margin:14px 14px 0;border-radius:14px;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;transition:background 0.3s,border 0.3s;}
+    .alert-banner{margin:14px 14px 0;border-radius:14px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;transition:background 0.3s,border 0.3s;}
     .alert-banner.ok{background:rgba(53,94,59,0.1);border:1px solid rgba(53,94,59,0.35);}
     .alert-banner.warn{background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.4);}
     .alert-banner.danger{background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.4);animation:bannerglow 1.6s ease-in-out infinite;}
+    .alert-banner.emergency{background:rgba(220,38,38,0.15);border:1px solid rgba(220,38,38,0.6);animation:bannerglow 0.9s ease-in-out infinite;}
     @keyframes bannerglow{0%,100%{box-shadow:none;}50%{box-shadow:0 0 18px rgba(239,68,68,0.2);}}
-    .alert-count{font-size:15px;font-weight:800;color:var(--text);}
-    .alert-sub{font-size:11px;color:var(--text-muted);margin-top:2px;}
+    .banner-left{flex:1;min-width:0;}
+    .banner-top-row{display:flex;align-items:center;gap:8px;margin-bottom:4px;}
+    .alert-level{font-size:16px;font-weight:800;transition:color 0.3s;}
+    .notif-badge{font-size:10px;font-weight:700;letter-spacing:0.4px;padding:2px 8px;border-radius:20px;white-space:nowrap;transition:all 0.3s;}
+    .notif-badge.notified{background:rgba(239,68,68,0.18);color:#fca5a5;border:1px solid rgba(239,68,68,0.3);}
+    .notif-badge.watching{background:rgba(245,158,11,0.15);color:#fbbf24;border:1px solid rgba(245,158,11,0.25);}
+    .notif-badge.clear{background:rgba(53,94,59,0.15);color:#6fcf7c;border:1px solid rgba(53,94,59,0.25);}
+    .alert-oneliner{font-size:11px;color:var(--text-muted);line-height:1.4;font-style:italic;}
     .signal-dots{display:flex;flex-direction:column;gap:5px;align-items:flex-end;}
     .sig-row{display:flex;gap:6px;align-items:center;}
     .sig-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;transition:background 0.3s;}
     .sig-dot.ok{background:#355E3B;}
     .sig-dot.bad{background:#ef4444;}
     .sig-lbl{font-size:10px;color:var(--text-muted);}
+
+    /* Signal data rows */
+    .sig-data-row{display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:1px solid rgba(255,255,255,0.05);}
+    .sig-data-row:last-child{border-bottom:none;}
+    .sig-data-label{font-size:11px;color:var(--text-muted);}
+    .sig-data-val{display:flex;align-items:center;gap:5px;}
+    .sig-box{width:9px;height:9px;border-radius:2px;flex-shrink:0;}
+    .sig-data-text{font-size:11px;font-weight:600;}
 
     /* Tabs */
     .tab-bar{display:flex;padding:0 14px;margin:14px 0 0;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg);z-index:10;}
@@ -78,26 +93,18 @@
     .shift-box.warn{background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.3);color:#fbbf24;}
     .shift-box.bad{background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.3);color:#f87171;}
 
-    /* Risk score panel */
+    /* Signal data panel */
     .risk-panel{border-radius:16px;padding:15px 16px;border:1px solid var(--border);background:var(--surface);}
-    .risk-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
-    .risk-title{font-size:12px;font-weight:700;color:var(--text-muted);letter-spacing:0.5px;text-transform:uppercase;}
-    .risk-score-wrap{display:flex;align-items:baseline;gap:4px;}
-    .risk-score{font-size:26px;font-weight:800;transition:color 0.3s;}
-    .risk-score-max{font-size:13px;color:var(--text-muted);}
-    .risk-bar-track{height:7px;background:rgba(255,255,255,0.08);border-radius:4px;overflow:hidden;margin-bottom:10px;}
-    .risk-bar-fill{height:100%;border-radius:4px;transition:width 0.5s ease,background 0.3s;}
     .risk-breakdown{display:flex;flex-direction:column;gap:5px;}
     .risk-item{display:flex;justify-content:space-between;font-size:11px;color:var(--text-muted);}
     .risk-item span:last-child{font-weight:700;}
     .risk-item span:last-child.active{color:#f59e0b;}
-    .risk-multiplier{font-size:11px;color:var(--text-muted);margin-top:6px;border-top:1px solid var(--border);padding-top:6px;}
     .ai-reasoning{margin-top:12px;border-radius:11px;padding:11px 12px;font-size:12px;line-height:1.6;}
+    .ai-reasoning.ok{background:rgba(53,94,59,0.08);border:1px solid rgba(53,94,59,0.3);color:#6fcf7c;}
     .ai-reasoning.tier1{background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.3);color:#fbbf24;}
     .ai-reasoning.tier2{background:rgba(249,115,22,0.11);border:1px solid rgba(249,115,22,0.45);color:#f97316;}
     .ai-reasoning.tier3{background:rgba(220,38,38,0.14);border:1px solid rgba(220,38,38,0.65);color:#ef4444;}
     .ai-reasoning-label{font-size:10px;font-weight:700;letter-spacing:0.8px;text-transform:uppercase;opacity:0.7;margin-bottom:6px;}
-    .ai-reasoning-tier{font-size:11px;font-weight:700;margin-bottom:5px;}
 
     /* Notification log */
     .log-empty{text-align:center;color:var(--text-muted);font-size:12px;padding:28px 0;}
@@ -131,9 +138,12 @@
 
     <!-- Alert banner -->
     <div class="alert-banner ok" id="alert-banner">
-      <div style="flex:1;min-width:0;">
-        <div class="alert-count" id="alert-count">0/3 Alerts</div>
-        <div class="alert-sub" id="alert-sub">All signals normal. No alerts sent.</div>
+      <div class="banner-left">
+        <div class="banner-top-row">
+          <div class="alert-level" id="alert-level" style="color:#10b981">All Clear</div>
+          <div class="notif-badge clear" id="notif-badge">Monitoring</div>
+        </div>
+        <div class="alert-oneliner" id="alert-oneliner">All signals look normal.</div>
       </div>
       <div class="signal-dots">
         <div class="sig-row">
@@ -276,187 +286,163 @@
 
 <script src="js/utils.js"></script>
 <script>
-// State
-let gaitPct       = 12;
-let proxDist      = 45;
+// ── State ─────────────────────────────────────────────────────────────
+let gaitPct        = 12;
+let proxDist       = 45;
 let soundShiftType = 'none'; // 'none' | 'gradual' | 'sudden'
 
-// Demo constants (simulating 1:52am, 23 min stationary, battery 85%)
-const DEMO_TIME_LABEL    = '1:52am';
-const DEMO_TIME_MULT     = 1.2;   // midnight to 2am
-const DEMO_STATIONARY_MIN = 23;   // 5 bonus pts
-const DEMO_BATTERY_PCT   = 85;    // above 20%, no bonus
+// Demo constants
+const DEMO_TIME_LABEL     = '1:52am';
+const DEMO_STATIONARY_MIN = 23;
+const DEMO_BATTERY_PCT    = 85;
 
 const circumference = 2 * Math.PI * 65;
 
-// Risk score formula
-function computeScore() {
-  // Gait: up to 40 pts
-  let gaitPts = 0;
-  if (gaitPct > 70)      gaitPts = 40;
-  else if (gaitPct > 50) gaitPts = 25;
-  else if (gaitPct > 30) gaitPts = 15;
-
-  // Sound shift: up to 30 pts
-  const soundPts = soundShiftType === 'sudden'  ? 30
-                 : soundShiftType === 'gradual' ? 10
-                 : 0;
-
-  // Distance from group: up to 30 pts
-  let distPts = 0;
-  if (proxDist > 400)      distPts = 30;
-  else if (proxDist > 200) distPts = 20;
-  else if (proxDist > 100) distPts = 10;
-
-  // Time stationary bonus: up to 20 pts
-  let stationaryPts = 0;
-  if (DEMO_STATIONARY_MIN >= 60)      stationaryPts = 20;
-  else if (DEMO_STATIONARY_MIN >= 30) stationaryPts = 10;
-  else if (DEMO_STATIONARY_MIN >= 15) stationaryPts = 5;
-
-  // Battery bonus
-  const batteryPts = DEMO_BATTERY_PCT < 20 ? 10 : 0;
-
-  const base = gaitPts + soundPts + distPts + stationaryPts + batteryPts;
-  return { score: Math.min(100, Math.round(base * DEMO_TIME_MULT)), gaitPts, soundPts, distPts, stationaryPts, batteryPts, base };
+// ── Signal tier (used for banner, log, AI box color) ──────────────────
+function getSignalTier() {
+  if (gaitPct >= 95 || proxDist >= 500) return 'emergency';
+  if (gaitPct >= 85 || proxDist >= 400) return 'urgent';
+  if (gaitPct > 70 || soundShiftType === 'sudden') return 'urgent';
+  if (gaitPct > 30 || proxDist > 100 || soundShiftType !== 'none') return 'heads-up';
+  return null;
 }
 
-const DEMO_NAME = 'Alex';
+// ── AI analysis (hardcoded, context-aware) ────────────────────────────
+function computeNarrativeScore() {
+  const gaitPts = gaitPct > 70 ? 40 : gaitPct > 50 ? 25 : gaitPct > 30 ? 15 : 0;
+  const soundPts = soundShiftType === 'sudden' ? 30 : soundShiftType === 'gradual' ? 10 : 0;
+  const distPts = proxDist > 400 ? 30 : proxDist > 200 ? 20 : proxDist > 100 ? 10 : 0;
+  const statPts = DEMO_STATIONARY_MIN >= 60 ? 20 : DEMO_STATIONARY_MIN >= 30 ? 10 : DEMO_STATIONARY_MIN >= 15 ? 5 : 0;
+  const batPts  = DEMO_BATTERY_PCT < 20 ? 10 : 0;
+  return Math.min(100, Math.round((gaitPts + soundPts + distPts + statPts + batPts) * 1.2));
+}
 
-function getAiContent(score) {
-  const tierLabel = score >= 90 ? 'Go find them now' : score >= 75 ? 'Check on them' : 'Heads-up';
-  const N = DEMO_NAME;
+function getAiContent() {
+  const N     = 'Alex';
+  const tier  = getSignalTier();
+  const score = computeNarrativeScore();
 
-  const sentences = [];
+  const closeToGroup = proxDist <= 100;
+  const farFromGroup = proxDist > 200;
+  const gaitHigh     = gaitPct > 70;
+  const gaitMid      = gaitPct > 50 && gaitPct <= 70;
+  const gaitMild     = gaitPct > 30 && gaitPct <= 50;
+  const soundSudden  = soundShiftType === 'sudden';
+  const soundGradual = soundShiftType === 'gradual';
+  const lateNight    = true; // 1:52am always qualifies
+  const stationary   = DEMO_STATIONARY_MIN >= 15;
 
-  // Gait sentence
-  if (gaitPct > 70) {
-    sentences.push(`${N}'s gait is ${gaitPct}% off their sober baseline — well above the threshold for concern.`);
-  } else if (gaitPct > 50) {
-    sentences.push(`${N}'s gait has shifted ${gaitPct}% from their calibrated sober baseline.`);
-  } else if (gaitPct > 30) {
-    sentences.push(`${N}'s gait shows a ${gaitPct}% deviation from their baseline, enough to flag.`);
-  }
+  // ── Full reasoning narrative ──────────────────────────────────────
+  let full = '';
 
-  // Sound sentence
-  if (soundShiftType === 'sudden') {
-    sentences.push(`${N} went quiet near an unfamiliar spot ${DEMO_STATIONARY_MIN} minutes ago — a sudden drop from a loud venue.`);
-  } else if (soundShiftType === 'gradual') {
-    sentences.push(`${N} has moved somewhere noticeably quieter since leaving the venue.`);
-  }
-
-  // Distance sentence
-  if (proxDist > 400) {
-    sentences.push(`${N} is now ${proxDist}m from the nearest rally member, which is far outside the normal range.`);
-  } else if (proxDist > 200) {
-    sentences.push(`${N} is ${proxDist}m from the group.`);
-  } else if (proxDist > 100) {
-    sentences.push(`${N} is ${proxDist}m from the nearest friend.`);
-  }
-
-  // Time and memory context
-  if (score >= 75) {
-    sentences.push(`At ${DEMO_TIME_LABEL}, this is later than ${N} usually heads home based on past rallies.`);
+  if (tier === 'emergency') {
+    full = `${N}'s gait is ${gaitPct}% off baseline - I'd flag that alone, however what concerns me more is they're ${proxDist}m from the group${soundSudden ? ` and went completely quiet ${DEMO_STATIONARY_MIN} min ago` : ''}. But given it's ${DEMO_TIME_LABEL} and ${N} is usually home by now based on past rallies, this combination is hard to explain away. Score: ${score}. Go find them now.`;
+  } else if (gaitHigh && soundSudden) {
+    full = `${N}'s gait is ${gaitPct}% off their sober baseline - I think this is significant impairment, not just noise. However what adds real weight here is they went completely quiet near an unfamiliar spot ${DEMO_STATIONARY_MIN} min ago, which past rallies show is unusual for them. But given it's ${DEMO_TIME_LABEL}${farFromGroup ? ` and they're ${proxDist}m from the group` : " and they haven't moved since"}, these signals together are a serious flag. Score: ${score}. Check on ${N} now.`;
+  } else if (gaitHigh && soundGradual) {
+    full = `${N}'s gait is ${gaitPct}% off baseline - I'd normally wait for a second signal, however the gradual environment shift toward somewhere quieter suggests they may have left the venue area. But given they've been stationary for ${DEMO_STATIONARY_MIN} min at ${DEMO_TIME_LABEL}${farFromGroup ? ` and are ${proxDist}m from the group` : ''}, I think this warrants a check-in. Score: ${score}. Check on ${N}.`;
+  } else if (gaitHigh && farFromGroup) {
+    full = `${N}'s gait is ${gaitPct}% off their sober baseline. I'd consider this borderline on its own, however they're also ${proxDist}m from the nearest friend - further than their usual range based on past rallies. But given it's ${DEMO_TIME_LABEL} and ${N} has been in the same spot for ${DEMO_STATIONARY_MIN} min, the combination here is concerning. Score: ${score}. Check on ${N} now.`;
+  } else if (gaitHigh && closeToGroup) {
+    full = `${N}'s gait is ${gaitPct}% off their sober baseline - I think this reflects real impairment. However, they're still close to the group at ${proxDist}m, which is reassuring. But given it's ${DEMO_TIME_LABEL} and they've been stationary ${DEMO_STATIONARY_MIN} min, I'd still have someone check on them in person rather than just pinging. Score: ${score}. Check on ${N}.`;
+  } else if (gaitMid && soundSudden) {
+    full = `${N}'s gait has shifted ${gaitPct}% from baseline - moderate, not extreme. However they also went completely quiet ${DEMO_STATIONARY_MIN} min ago, which is the part I'm more unsure about. But given that past rallies show ${N} usually stays loud until heading home, this silence at ${DEMO_TIME_LABEL} feels off. Score: ${score}. Worth a check-in.`;
+  } else if (soundSudden && farFromGroup) {
+    full = `${N} went suddenly quiet near an unfamiliar spot ${DEMO_STATIONARY_MIN} min ago - I think that alone is worth noting. However gait looks okay at ${gaitPct}%, so this could just be a ride home. But given they're ${proxDist}m from the group at ${DEMO_TIME_LABEL} with no contact, I can't rule out something being wrong. Score: ${score}. Reach out to ${N}.`;
+  } else if (soundSudden) {
+    full = `${N} went from a loud venue to completely quiet ${DEMO_STATIONARY_MIN} min ago - I think this is the most interesting signal right now. However their gait is only ${gaitPct}% off and they're ${proxDist}m from the group, so it could just be a car or a quiet area. But given ${N} doesn't usually go quiet this early based on past rallies, I'd send a quick ping to confirm they're okay. Score: ${score}. Ping ${N}.`;
+  } else if (gaitMid) {
+    full = `${N}'s gait has drifted ${gaitPct}% from their sober baseline - I think this is worth watching but not alarming yet. However they're ${closeToGroup ? 'still close to the group' : proxDist + 'm from the group'} and the environment is consistent, which are both good signs. But given it's ${DEMO_TIME_LABEL} and they've been stationary ${DEMO_STATIONARY_MIN} min, I'd keep a closer eye over the next few minutes. Score: ${score}. Monitor ${N}.`;
+  } else if (gaitMild) {
+    full = `${N}'s gait shows a ${gaitPct}% deviation from baseline - I'd call this mild and possibly just movement variation. However it's crossed the flagging threshold, so I'm tracking it. But given they're close to the group and the environment is stable, I think this is low concern for now. Score: ${score}. Keeping an eye on ${N}.`;
+  } else if (farFromGroup) {
+    full = `${N} is ${proxDist}m from the group - I think that's further than usual for this point in the night. However gait looks steady and there's no sound shift, which makes this feel more like they wandered off than something wrong. But given it's ${DEMO_TIME_LABEL}, I'd send a quick ping just to confirm. Score: ${score}. Ping ${N}.`;
   } else {
-    sentences.push(`This is at ${DEMO_TIME_LABEL}.`);
+    full = `${N}'s gait is steady at ${gaitPct}% off baseline - well within normal range. I think the environment and proximity signals are consistent with a normal night out. However I'm continuing to monitor in real time, and given it's ${DEMO_TIME_LABEL}, any shift in gait or sound would escalate this quickly. Score: ${score}. ${N} looks fine.`;
   }
 
-  // Stationary context
-  if (DEMO_STATIONARY_MIN >= 15) {
-    sentences.push(`${N} has been stationary for ${DEMO_STATIONARY_MIN} minutes in the same spot.`);
-  }
-
-  sentences.push(`Score: ${score}.`);
-
-  // Action
-  if (score >= 90)      sentences.push(`Go find ${N}.`);
-  else if (score >= 75) sentences.push(`Check on ${N} now.`);
-  else                  sentences.push(`Keep an eye on ${N}.`);
-
-  const narrative = sentences.join(' ');
-
-  // Short summary for the log — one or two readable sentences
-  const logParts = [];
-  if (gaitPct > 70)
-    logParts.push(`${N}'s gait is ${gaitPct}% off their sober baseline`);
-  else if (gaitPct > 50)
-    logParts.push(`${N}'s gait has shifted ${gaitPct}% from baseline`);
-  else if (gaitPct > 30)
-    logParts.push(`${N}'s gait shows a ${gaitPct}% deviation`);
-
-  if (soundShiftType === 'sudden')
-    logParts.push(`went quiet mid-rally`);
-  else if (soundShiftType === 'gradual')
-    logParts.push(`moved somewhere quieter`);
-
-  if (proxDist > 100)
-    logParts.push(`${proxDist}m from the group`);
-
-  let logSummary = '';
-  if (logParts.length === 0) {
-    logSummary = `Multiple signals elevated at ${DEMO_TIME_LABEL}.`;
-  } else if (logParts.length === 1) {
-    logSummary = logParts[0].charAt(0).toUpperCase() + logParts[0].slice(1) + ` at ${DEMO_TIME_LABEL}.`;
+  // ── One-liner for banner ──────────────────────────────────────────
+  let oneliner = '';
+  if (tier === 'emergency') {
+    oneliner = `${gaitPct}% off + ${proxDist}m away - score ${score}. Go find them now.`;
+  } else if (gaitHigh && soundSudden) {
+    oneliner = `${gaitPct}% off and went quiet ${DEMO_STATIONARY_MIN} min ago - score ${score}. Check on them.`;
+  } else if (gaitHigh) {
+    oneliner = `Gait ${gaitPct}% off baseline at ${DEMO_TIME_LABEL} - score ${score}. Check on them.`;
+  } else if (soundSudden) {
+    oneliner = `Went suddenly quiet ${DEMO_STATIONARY_MIN} min ago - score ${score}. Reach out.`;
+  } else if (gaitMid) {
+    oneliner = `Gait ${gaitPct}% off - score ${score}. Monitoring closely.`;
+  } else if (farFromGroup) {
+    oneliner = `${proxDist}m from the group at ${DEMO_TIME_LABEL} - score ${score}. Worth a ping.`;
+  } else if (tier === 'heads-up') {
+    oneliner = `Mild signal flagged - score ${score}. Keeping an eye on ${N}.`;
   } else {
-    const first = logParts[0].charAt(0).toUpperCase() + logParts[0].slice(1);
-    logSummary = `${first}, ${logParts.slice(1).join(', ')} at ${DEMO_TIME_LABEL}.`;
+    oneliner = `All signals normal - score ${score}. ${N} looks good.`;
   }
 
-  return { tierLabel, narrative, logSummary };
+  return { full, oneliner };
+}
+
+// ── AI refresh (synchronous, no API needed) ───────────────────────────
+function scheduleAiRefresh() {
+  const { full, oneliner } = getAiContent();
+  const tier = getSignalTier();
+  const tierCls = tier === 'emergency' ? 'tier3' : tier === 'urgent' ? 'tier2' : tier === 'heads-up' ? 'tier1' : 'ok';
+
+  document.querySelectorAll('.ai-box-slot').forEach(box => {
+    box.className = 'ai-reasoning ai-box-slot ' + tierCls;
+  });
+  document.querySelectorAll('.ai-text-slot').forEach(el => {
+    el.textContent = full;
+    el.style.opacity = '1';
+    el.style.fontStyle = 'normal';
+  });
+  const onelineEl = document.getElementById('alert-oneliner');
+  if (onelineEl) { onelineEl.textContent = oneliner; onelineEl.style.fontStyle = 'italic'; }
+}
+
+// ── Signal data panels ────────────────────────────────────────────────
+function sigRow(label, color, valText) {
+  return `<div class="sig-data-row">
+    <span class="sig-data-label">${label}</span>
+    <div class="sig-data-val">
+      <span class="sig-box" style="background:${color};"></span>
+      <span class="sig-data-text" style="color:${color};">${valText}</span>
+    </div>
+  </div>`;
 }
 
 function renderRiskPanel(id) {
   const el = document.getElementById(id);
   if (!el) return;
-  const { score, gaitPts, soundPts, distPts, stationaryPts, batteryPts, base } = computeScore();
 
-  const color = score >= 75 ? '#ef4444' : score >= 60 ? '#f97316' : score >= 30 ? '#f59e0b' : '#10b981';
+  const gaitColor = gaitPct > 70 ? '#ef4444' : gaitPct > 50 ? '#f97316' : gaitPct > 30 ? '#f59e0b' : '#10b981';
+  const gaitLabel = gaitPct > 70 ? 'High' : gaitPct > 50 ? 'Moderate' : gaitPct > 30 ? 'Mild' : 'Normal';
 
-  const blurbTier = score >= 90 ? 'tier3' : score >= 75 ? 'tier2' : 'tier1';
-  const { tierLabel, narrative } = score >= 60 ? getAiContent(score) : {};
+  const distColor = proxDist > 400 ? '#ef4444' : proxDist > 200 ? '#f97316' : proxDist > 100 ? '#f59e0b' : '#10b981';
+  const distLabel = proxDist > 400 ? 'Separated' : proxDist > 200 ? 'Very far' : proxDist > 100 ? 'Far' : 'Close';
+
+  const soundColor = soundShiftType === 'sudden' ? '#ef4444' : soundShiftType === 'gradual' ? '#f59e0b' : '#10b981';
+  const soundLabel = soundShiftType === 'sudden' ? 'Flagged' : soundShiftType === 'gradual' ? 'Shifted' : 'Stable';
+
+  const statColor = DEMO_STATIONARY_MIN >= 60 ? '#ef4444' : DEMO_STATIONARY_MIN >= 30 ? '#f97316' : DEMO_STATIONARY_MIN >= 15 ? '#f59e0b' : '#10b981';
+  const statLabel = DEMO_STATIONARY_MIN >= 60 ? '60+ min' : DEMO_STATIONARY_MIN >= 30 ? '30+ min' : DEMO_STATIONARY_MIN >= 15 ? '15+ min' : 'Active';
+
+  const batColor = DEMO_BATTERY_PCT < 20 ? '#ef4444' : '#10b981';
+  const batLabel = DEMO_BATTERY_PCT < 20 ? 'Low' : 'OK';
 
   el.innerHTML = `
-    <div class="risk-header">
-      <div class="risk-title">Risk Score</div>
-      <div class="risk-score-wrap">
-        <div class="risk-score" style="color:${color}">${score}</div>
-        <div class="risk-score-max">/100</div>
-      </div>
+    <div style="font-size:11px;font-weight:700;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">Signal Data</div>
+    ${sigRow('Gait impairment (' + gaitPct + '%)', gaitColor, gaitLabel)}
+    ${sigRow('Distance from group (' + proxDist + 'm)', distColor, distLabel)}
+    ${sigRow('Sound shift (' + (soundShiftType === 'none' ? 'none' : soundShiftType) + ')', soundColor, soundLabel)}
+    ${sigRow('Stationary ' + DEMO_STATIONARY_MIN + ' min', statColor, statLabel)}
+    ${sigRow('Battery ' + DEMO_BATTERY_PCT + '%', batColor, batLabel)}
+    <div class="ai-reasoning ok ai-box-slot" style="margin-top:12px;">
+      <div class="ai-reasoning-label">AI Analysis</div>
+      <div class="ai-text-slot" style="opacity:0.6;font-style:italic;">Analyzing…</div>
     </div>
-    <div class="risk-bar-track">
-      <div class="risk-bar-fill" style="width:${score}%;background:${color};"></div>
-    </div>
-    <div class="risk-breakdown">
-      <div class="risk-item">
-        <span>Gait impairment (${gaitPct}%)</span>
-        <span class="${gaitPts > 0 ? 'active' : ''}">+${gaitPts} pts</span>
-      </div>
-      <div class="risk-item">
-        <span>Distance from group (${proxDist}m)</span>
-        <span class="${distPts > 0 ? 'active' : ''}">+${distPts} pts</span>
-      </div>
-      <div class="risk-item">
-        <span>Sound shift (${soundShiftType === 'none' ? 'none' : soundShiftType})</span>
-        <span class="${soundPts > 0 ? 'active' : ''}">+${soundPts} pts</span>
-      </div>
-      <div class="risk-item">
-        <span>Stationary ${DEMO_STATIONARY_MIN} min (simulated)</span>
-        <span class="${stationaryPts > 0 ? 'active' : ''}">+${stationaryPts} pts</span>
-      </div>
-      <div class="risk-item">
-        <span>Battery ${DEMO_BATTERY_PCT}% (simulated)</span>
-        <span class="${batteryPts > 0 ? 'active' : ''}">+${batteryPts} pts</span>
-      </div>
-    </div>
-    <div class="risk-multiplier">
-      Base ${base} pts x ${DEMO_TIME_MULT} time multiplier (${DEMO_TIME_LABEL}) = <strong style="color:${color}">${score}</strong>
-    </div>
-    ${narrative ? `
-    <div class="ai-reasoning ${blurbTier}">
-      <div class="ai-reasoning-label">AI Reasoning</div>
-      <div class="ai-reasoning-tier">${tierLabel}</div>
-      ${narrative}
-    </div>` : ''}
   `;
 }
 
@@ -464,34 +450,24 @@ function renderAllRiskPanels() {
   renderRiskPanel('risk-panel-gait');
   renderRiskPanel('risk-panel-prox');
   renderRiskPanel('risk-panel-sound');
+  scheduleAiRefresh();
 }
 
-// Notification log
+// ── Notification log ──────────────────────────────────────────────────
 let notifLog = JSON.parse(localStorage.getItem('rally_notif_log') || '[]');
-let lastLoggedTier = null; // avoid duplicate back-to-back entries for same tier
+let lastLoggedTier = null;
 
-function maybeLogNotification(score, tier, logSummary) {
-  if (tier === lastLoggedTier) return; // same tier still active, don't re-log
+function maybeLogNotification(tier, logSummary) {
+  if (tier === lastLoggedTier) return;
   lastLoggedTier = tier;
-
-  const entry = {
-    time: new Date().toISOString(),
-    score,
-    tier,
-    logSummary,
-    gaitPct,
-    proxDist,
-    soundShiftType,
-  };
+  const entry = { time: new Date().toISOString(), tier, logSummary, gaitPct, proxDist, soundShiftType };
   notifLog.unshift(entry);
   if (notifLog.length > 100) notifLog.pop();
   localStorage.setItem('rally_notif_log', JSON.stringify(notifLog));
   renderLog();
 }
 
-function resetLogTier() {
-  lastLoggedTier = null;
-}
+function resetLogTier() { lastLoggedTier = null; }
 
 function clearLog() {
   notifLog = [];
@@ -512,13 +488,10 @@ function renderLog() {
     const timeStr  = d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
     const dateStr  = d.toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' });
     const tierCls  = e.tier === 'emergency' ? 'tier3' : e.tier === 'urgent' ? 'tier2' : 'tier1';
-    const tierTxt  = e.tier === 'emergency' ? 'Urgent' : e.tier === 'urgent' ? 'Check on them' : 'Heads-up';
-    const scoreCol = e.score >= 75 ? '#ef4444' : e.score >= 60 ? '#f97316' : '#f59e0b';
-
+    const tierTxt  = e.tier === 'emergency' ? 'Emergency' : e.tier === 'urgent' ? 'Urgent' : 'Heads Up';
     const gaitActive  = e.gaitPct > 30;
     const proxActive  = e.proxDist > 100;
     const soundActive = e.soundShiftType !== 'none';
-
     return `<div class="log-entry">
       <div class="log-entry-top">
         <span class="log-entry-tier ${tierCls}">${tierTxt}</span>
@@ -529,25 +502,12 @@ function renderLog() {
         <span class="log-signal-chip ${proxActive ? 'active' : ''}">Dist ${e.proxDist}m</span>
         <span class="log-signal-chip ${soundActive ? 'active' : ''}">Sound: ${e.soundShiftType}</span>
       </div>
-      <div class="log-score" style="color:${scoreCol};margin-top:6px;">Score: ${e.score}/100</div>
-      ${e.logSummary ? `<div style="font-size:11px;color:var(--text-muted);margin-top:5px;line-height:1.4;">${e.logSummary}</div>` : ''}
+      ${e.logSummary ? `<div style="font-size:11px;color:var(--text-muted);margin-top:6px;line-height:1.4;">${e.logSummary}</div>` : ''}
     </div>`;
   }).join('<div style="height:8px"></div>');
 }
 
-// Returns info about an extreme single signal, or null if none
-function extremeSignal() {
-  if (gaitPct >= 85) {
-    const tier = gaitPct >= 95 ? 'emergency' : 'urgent';
-    return { tier, label: 'Extreme gait impairment', sub: gaitPct + '% off baseline' };
-  }
-  if (proxDist >= 400) {
-    return { tier: 'urgent', label: 'Extreme distance', sub: proxDist + 'm from the group' };
-  }
-  return null;
-}
-
-// Alert banner
+// ── Alert banner ──────────────────────────────────────────────────────
 function updateBanner() {
   const gaitBad  = gaitPct > 30;
   const proxBad  = proxDist > 100;
@@ -559,39 +519,40 @@ function updateBanner() {
   document.getElementById('sig-sound').className = 'sig-dot ' + (soundBad ? 'bad' : 'ok');
 
   const banner  = document.getElementById('alert-banner');
-  const countEl = document.getElementById('alert-count');
-  const subEl   = document.getElementById('alert-sub');
-
-  countEl.textContent = count + '/3 Alerts';
-
-  const { score } = computeScore();
-  const extreme  = extremeSignal();
-  const notified = score >= 60 || extreme !== null;
+  const levelEl = document.getElementById('alert-level');
+  const badgeEl = document.getElementById('notif-badge');
+  const tier    = getSignalTier();
 
   if (count === 0) {
-    banner.className  = 'alert-banner ok';
-    subEl.textContent = 'All signals normal. No alerts sent.';
-  } else if (extreme && extreme.tier === 'emergency') {
-    banner.className  = 'alert-banner danger';
-    subEl.textContent = extreme.label + ' (' + extreme.sub + '). Emergency alert sent to your rally.';
-  } else if (extreme) {
-    banner.className  = 'alert-banner danger';
-    subEl.textContent = extreme.label + ' (' + extreme.sub + '). Friends have been notified.';
-  } else if (notified && score >= 90) {
-    banner.className  = 'alert-banner danger';
-    subEl.textContent = 'Emergency alert sent. Your rally is coming to find you.';
-  } else if (notified && score >= 75) {
-    banner.className  = 'alert-banner danger';
-    subEl.textContent = 'Friends have been notified and are checking on you.';
-  } else if (notified) {
-    banner.className  = 'alert-banner danger';
-    subEl.textContent = 'Friends have been notified. Score: ' + score + '/100.';
-  } else if (count === 1) {
-    banner.className  = 'alert-banner warn';
-    subEl.textContent = 'One signal flagged. Not enough to notify yet.';
+    banner.className   = 'alert-banner ok';
+    levelEl.textContent = 'All Clear';
+    levelEl.style.color = '#10b981';
+    badgeEl.textContent = 'Monitoring';
+    badgeEl.className   = 'notif-badge clear';
+  } else if (tier === 'emergency') {
+    banner.className   = 'alert-banner emergency';
+    levelEl.textContent = 'Emergency';
+    levelEl.style.color = '#ef4444';
+    badgeEl.textContent = 'Friends notified';
+    badgeEl.className   = 'notif-badge notified';
+  } else if (tier === 'urgent') {
+    banner.className   = 'alert-banner danger';
+    levelEl.textContent = 'Urgent';
+    levelEl.style.color = '#f97316';
+    badgeEl.textContent = 'Friends notified';
+    badgeEl.className   = 'notif-badge notified';
+  } else if (count >= 2) {
+    banner.className   = 'alert-banner danger';
+    levelEl.textContent = 'Concern';
+    levelEl.style.color = '#f97316';
+    badgeEl.textContent = 'Friends notified';
+    badgeEl.className   = 'notif-badge notified';
   } else {
-    banner.className  = 'alert-banner warn';
-    subEl.textContent = count + ' signals flagged. Monitoring closely.';
+    banner.className   = 'alert-banner warn';
+    levelEl.textContent = 'Heads Up';
+    levelEl.style.color = '#f59e0b';
+    badgeEl.textContent = 'Watching';
+    badgeEl.className   = 'notif-badge watching';
   }
 }
 
@@ -599,19 +560,10 @@ function update() {
   updateBanner();
   renderAllRiskPanels();
 
-  // Log notification and trigger escalation
-  const { score } = computeScore();
-  const extreme   = extremeSignal();
-
-  if (score >= 60 || extreme) {
-    const tier = (score >= 90 || extreme?.tier === 'emergency') ? 'emergency'
-               : (score >= 75 || extreme?.tier === 'urgent')    ? 'urgent'
-               : 'heads-up';
-    const { logSummary } = getAiContent(score);
-    const extremeSummary = extreme
-      ? extreme.label + ': ' + extreme.sub + (score > 0 ? '. Score: ' + score + '/100.' : '.')
-      : logSummary;
-    maybeLogNotification(score, tier, extreme ? extremeSummary : logSummary);
+  const tier = getSignalTier();
+  if (tier) {
+    const { oneliner } = getAiContent();
+    maybeLogNotification(tier, oneliner);
   } else {
     resetLogTier();
   }
@@ -649,8 +601,8 @@ function setGait(val) {
     document.getElementById('gtext').textContent = 'Mild irregularity detected.';
     document.getElementById('gdesc').textContent = 'Your gait is noticeably off from your sober baseline.';
   } else {
-    document.getElementById('gtext').textContent = 'High concern. Friends were notified.';
-    document.getElementById('gdesc').textContent = 'Significant gait impairment detected. Your rally group has been notified.';
+    document.getElementById('gtext').textContent = 'High concern.';
+    document.getElementById('gdesc').textContent = 'Significant gait impairment detected.';
   }
 
   update();
@@ -716,11 +668,11 @@ function setEnv(key, el) {
   } else if (soundShiftType === 'gradual') {
     el.classList.add('flagged');
     box.className = 'shift-box warn';
-    box.innerHTML = '<strong>Gradual shift detected.</strong> Moved from a loud venue to a quieter outdoor environment. Adding 10 pts to risk score.';
+    box.innerHTML = '<strong>Gradual shift detected.</strong> Moved from a loud venue to a quieter outdoor environment.';
   } else {
     el.classList.add('flagged');
     box.className = 'shift-box bad';
-    box.innerHTML = '<strong>Sudden shift detected.</strong> Went from a clearly loud venue to completely quiet. This is flagged as suspicious and adds 30 pts.';
+    box.innerHTML = '<strong>Sudden shift detected.</strong> Went from a clearly loud venue to completely quiet. This is flagged as suspicious.';
   }
   update();
 }
