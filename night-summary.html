@@ -7,10 +7,18 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
   <link rel="stylesheet" href="css/shared.css">
   <style>
-    .header-sub{font-size:12px;color:var(--text-muted);margin-top:3px;}
-    .map-section{position:absolute;top:116px;left:0;right:0;height:210px;z-index:50;}
+    .map-section{position:absolute;top:138px;left:0;right:0;height:210px;z-index:50;}
     #map{width:100%;height:100%;}
-    .content{position:absolute;top:326px;bottom:0;left:0;right:0;overflow-y:auto;padding:14px 14px 28px;display:flex;flex-direction:column;gap:14px;}
+    .content{position:absolute;top:348px;bottom:0;left:0;right:0;overflow-y:auto;padding:14px 14px 28px;display:flex;flex-direction:column;gap:14px;}
+
+    /* Rally nav */
+    .rally-nav{display:flex;align-items:center;justify-content:space-between;margin-top:12px;padding:0 2px;}
+    .rally-nav-center{text-align:center;flex:1;}
+    .rally-nav-date{font-size:15px;font-weight:700;color:var(--text);}
+    .rally-nav-time{font-size:11px;color:var(--text-muted);margin-top:3px;}
+    .nav-btn{width:32px;height:32px;border-radius:50%;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:opacity 0.15s;}
+    .nav-btn-active{background:var(--primary);}
+    .nav-btn-disabled{background:rgba(255,255,255,0.08);cursor:default;pointer-events:none;}
 
     /* Stats */
     .stat-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;}
@@ -30,67 +38,69 @@
     .tl-text{font-size:13px;color:var(--text);line-height:1.4;}
     .tl-sub{font-size:11px;color:var(--text-muted);margin-top:3px;}
 
-    /* Map legend */
-    .map-legend-row{display:flex;align-items:center;gap:7px;}
-    .map-legend-line{width:24px;height:3px;border-radius:2px;}
-    .map-legend-label{font-size:12px;color:var(--text-muted);}
-
-    /* Friend mini cards */
+    /* Friends */
     .friend-row{display:flex;gap:8px;overflow-x:auto;-ms-overflow-style:none;scrollbar-width:none;}
     .friend-row::-webkit-scrollbar{display:none;}
     .fc-mini{flex-shrink:0;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:12px;text-align:center;min-width:82px;}
     .fc-mini-av{width:36px;height:36px;border-radius:50%;margin:0 auto 6px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:white;}
     .fc-mini-name{font-size:11px;font-weight:600;color:var(--text);}
     .fc-mini-status{font-size:10px;margin-top:2px;}
+
+    /* Map path banner */
+    #path-banner{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);z-index:1000;display:flex;align-items:center;gap:8px;background:rgba(18,18,18,0.92);border:1px solid rgba(255,255,255,0.12);border-radius:50px;padding:7px 14px;backdrop-filter:blur(8px);transition:opacity 0.2s;pointer-events:none;}
+    #path-banner.hidden{opacity:0;}
+    #path-banner-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+    #path-banner-name{font-size:13px;font-weight:600;color:var(--text);}
+    #path-banner-hint{font-size:11px;color:var(--text-muted);}
+    #map-tap-hint{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);z-index:999;font-size:11px;color:rgba(255,255,255,0.4);pointer-events:none;white-space:nowrap;transition:opacity 0.2s;}
+    #map-tap-hint.hidden{opacity:0;}
+
+    /* Slide transition */
+    .content-fade{animation:cfade 0.22s ease;}
+    @keyframes cfade{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
   </style>
 </head>
 <body>
 <div id="app">
-  <div class="header">
+  <div class="header" style="padding-bottom:12px;">
     <div class="header-top">
       <a class="back" href="index.html">‹ Back</a>
       <div class="header-title">Night Summary</div>
       <button onclick="toast('','Sharing…','Generating your night summary to share with the group')" style="font-size:12px;font-weight:600;padding:6px 12px;background:rgba(53,94,59,0.15);border:1px solid rgba(53,94,59,0.3);border-radius:50px;color:#7ab880;cursor:pointer;font-family:inherit">Share</button>
     </div>
-    <div class="header-sub">Saturday, March 21 · 9:00 PM – 1:30 AM · 4h 30m</div>
+    <div class="rally-nav">
+      <button id="nav-left" class="nav-btn nav-btn-active" onclick="navigate(-1)">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <div class="rally-nav-center">
+        <div class="rally-nav-date" id="rally-date"></div>
+        <div class="rally-nav-time" id="rally-time"></div>
+      </div>
+      <button id="nav-right" class="nav-btn nav-btn-disabled" disabled onclick="navigate(1)">
+        <svg id="nav-right-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+    </div>
   </div>
 
-  <div class="map-section"><div id="map"></div></div>
-
-  <div class="content">
-    <div class="stat-grid">
-      <div class="stat-box"><div class="stat-val">4h 30m</div><div class="stat-lbl">Time Out</div></div>
-      <div class="stat-box"><div class="stat-val">3</div><div class="stat-lbl">Venues</div></div>
-      <div class="stat-box"><div class="stat-val" style="color:var(--safe);font-size:16px">All safe</div><div class="stat-lbl">Made it home</div></div>
+  <div class="map-section" style="position:relative;">
+    <div id="map"></div>
+    <div id="map-tap-hint">Tap a path to see who</div>
+    <div id="path-banner" class="hidden">
+      <div id="path-banner-dot"></div>
+      <div id="path-banner-name"></div>
+      <div id="path-banner-hint" style="margin-left:2px;">· tap map to reset</div>
     </div>
-    <div class="stat-grid">
-      <div class="stat-box"><div class="stat-val">87%</div><div class="stat-lbl">Peak gait index</div></div>
-      <div class="stat-box"><div class="stat-val">4</div><div class="stat-lbl">Alerts sent</div></div>
-      <div class="stat-box"><div class="stat-val">0.3mi</div><div class="stat-lbl">Max separation</div></div>
-    </div>
+  </div>
 
+  <div class="content" id="main-content">
+    <div id="stats1" class="stat-grid"></div>
+    <div id="stats2" class="stat-grid"></div>
     <div class="section-label">Event Timeline</div>
     <div style="background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:14px;">
-      <div class="timeline">
-        <div class="tl-row"><div class="tl-time">9:00 PM</div><div class="tl-dot-col"><div class="tl-dot" style="background:var(--primary)"></div><div class="tl-line"></div></div><div class="tl-body"><div class="tl-text">Group met up at The Corner </div><div class="tl-sub">All 5 friends checked in together</div></div></div>
-        <div class="tl-row"><div class="tl-time">9:45 PM</div><div class="tl-dot-col"><div class="tl-dot" style="background:var(--primary)"></div><div class="tl-line"></div></div><div class="tl-body"><div class="tl-text">Moved to Boylan Heights </div><div class="tl-sub">Group walked 0.2mi together</div></div></div>
-        <div class="tl-row"><div class="tl-time">10:30 PM</div><div class="tl-dot-col"><div class="tl-dot" style="background:var(--warning)"></div><div class="tl-line"></div></div><div class="tl-body"><div class="tl-text"> Alex flagged — gait at 73%</div><div class="tl-sub">"Heads up" notification sent to group</div></div></div>
-        <div class="tl-row"><div class="tl-time">10:55 PM</div><div class="tl-dot-col"><div class="tl-dot" style="background:var(--danger)"></div><div class="tl-line"></div></div><div class="tl-body"><div class="tl-text"> Alex gait hit 87% — check-in alert</div><div class="tl-sub">Maya responded and walked with Alex</div></div></div>
-        <div class="tl-row"><div class="tl-time">11:15 PM</div><div class="tl-dot-col"><div class="tl-dot" style="background:var(--warning)"></div><div class="tl-line"></div></div><div class="tl-body"><div class="tl-text">Jordan wandered 0.3mi from group</div><div class="tl-sub">Friends sent directions and met up</div></div></div>
-        <div class="tl-row"><div class="tl-time">12:00 AM</div><div class="tl-dot-col"><div class="tl-dot" style="background:var(--warning)"></div><div class="tl-line"></div></div><div class="tl-body"><div class="tl-text"> Alex battery dropped to 18%</div><div class="tl-sub">Low battery alert sent to all friends</div></div></div>
-        <div class="tl-row"><div class="tl-time">12:30 AM</div><div class="tl-dot-col"><div class="tl-dot" style="background:var(--primary)"></div><div class="tl-line"></div></div><div class="tl-body"><div class="tl-text">Group ordered Ubers home </div><div class="tl-sub">Rides pre-filled with home addresses</div></div></div>
-        <div class="tl-row"><div class="tl-time">1:30 AM</div><div class="tl-dot-col"><div class="tl-dot" style="background:var(--safe)"></div></div><div class="tl-body"><div class="tl-text" style="color:var(--safe)"> Everyone made it home safely</div><div class="tl-sub">All friends confirmed at their safe places</div></div></div>
-      </div>
+      <div class="timeline" id="timeline"></div>
     </div>
-
     <div class="section-label">Friends That Night</div>
-    <div class="friend-row">
-      <div class="fc-mini"><div class="fc-mini-av" style="background:#ef4444">AC</div><div class="fc-mini-name">Alex</div><div class="fc-mini-status" style="color:var(--safe)"> Safe</div></div>
-      <div class="fc-mini"><div class="fc-mini-av" style="background:#f59e0b">JK</div><div class="fc-mini-name">Jordan</div><div class="fc-mini-status" style="color:var(--safe)"> Safe</div></div>
-      <div class="fc-mini"><div class="fc-mini-av" style="background:#10b981">MR</div><div class="fc-mini-name">Maya</div><div class="fc-mini-status" style="color:var(--safe)"> Safe</div></div>
-      <div class="fc-mini"><div class="fc-mini-av" style="background:#3b82f6">ST</div><div class="fc-mini-name">Sam</div><div class="fc-mini-status" style="color:var(--safe)"> Safe</div></div>
-      <div class="fc-mini"><div class="fc-mini-av" style="background:#355E3B">S</div><div class="fc-mini-name">Sophie</div><div class="fc-mini-status" style="color:var(--safe)"> Safe</div></div>
-    </div>
+    <div class="friend-row" id="friends"></div>
   </div>
 
   <div class="toast" id="toastEl">
@@ -102,30 +112,282 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="js/utils.js"></script>
 <script>
-function initMap(){
-  const map=L.map('map',{center:[38.054,-78.487],zoom:15,zoomControl:false,attributionControl:false,dragging:true,scrollWheelZoom:false});
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{subdomains:'abcd'}).addTo(map);
+// ── Data ─────────────────────────────────────────────────────────────────────
+// Index 0 = most recent. Left arrow = older (idx+1), Right arrow = newer (idx-1).
+const RALLIES = [
+  {
+    dayName:'Saturday', date:'March 21',
+    timeRange:'9:00 PM – 1:30 AM', duration:'4h 30m',
+    stats:[
+      {val:'4h 30m', lbl:'Time Out'},
+      {val:'3',      lbl:'Venues'},
+      {val:'All safe',lbl:'Made it home', color:'var(--safe)', size:'16px'},
+      {val:'87%',    lbl:'Peak gait index'},
+      {val:'4',      lbl:'Alerts sent'},
+      {val:'0.3mi',  lbl:'Max separation'},
+    ],
+    people:[
+      {name:'Alex',  ini:'AC', color:'#ef4444', end:[38.0538,-78.4865]},
+      {name:'Jordan',ini:'JK', color:'#f59e0b', end:[38.0528,-78.4858]},
+      {name:'Maya',  ini:'MR', color:'#10b981', end:[38.0542,-78.4878]},
+      {name:'Sam',   ini:'ST', color:'#3b82f6', end:[38.0545,-78.4875]},
+      {name:'Sophie',ini:'S',  color:'#355E3B', end:[38.0535,-78.4870]},
+    ],
+    wanderMarker:[38.050,-78.484],
+    timeline:[
+      {time:'9:00 PM', dot:'var(--primary)', text:'Group met up at The Corner 🍺', sub:'All 5 friends checked in together', line:true},
+      {time:'9:45 PM', dot:'var(--primary)', text:'Moved to Boylan Heights 🍕', sub:'Group walked 0.2mi together', line:true},
+      {time:'10:30 PM',dot:'var(--warning)', text:'⚠️ Alex flagged — gait at 73%', sub:'"Heads up" notification sent to group', line:true},
+      {time:'10:55 PM',dot:'var(--danger)',  text:'🚨 Alex gait hit 87% — check-in alert', sub:'Maya responded and walked with Alex', line:true},
+      {time:'11:15 PM',dot:'var(--warning)', text:'Jordan wandered 0.3mi from group', sub:'Friends sent directions and met up', line:true},
+      {time:'12:00 AM',dot:'var(--warning)', text:'🔋 Alex battery dropped to 18%', sub:'Low battery alert sent to all friends', line:true},
+      {time:'12:30 AM',dot:'var(--primary)', text:'Group ordered Ubers home 🚗', sub:'Rides pre-filled with home addresses', line:true},
+      {time:'1:30 AM', dot:'var(--safe)',    text:'✅ Everyone made it home safely', sub:'All friends confirmed at their safe places', color:'var(--safe)', line:false},
+    ],
+    friends:[
+      {ini:'AC', color:'#ef4444', name:'Alex'},
+      {ini:'JK', color:'#f59e0b', name:'Jordan'},
+      {ini:'MR', color:'#10b981', name:'Maya'},
+      {ini:'ST', color:'#3b82f6', name:'Sam'},
+      {ini:'S',  color:'#355E3B', name:'Sophie'},
+    ],
+  },
+  {
+    dayName:'Saturday', date:'March 14',
+    timeRange:'10:00 PM – 1:00 AM', duration:'3h 00m',
+    stats:[
+      {val:'3h 00m', lbl:'Time Out'},
+      {val:'2',      lbl:'Venues'},
+      {val:'All safe',lbl:'Made it home', color:'var(--safe)', size:'16px'},
+      {val:'64%',    lbl:'Peak gait index'},
+      {val:'1',      lbl:'Alerts sent'},
+      {val:'0.1mi',  lbl:'Max separation'},
+    ],
+    people:[
+      {name:'Jordan',ini:'JK', color:'#f59e0b', end:[38.0530,-78.4860]},
+      {name:'Maya',  ini:'MR', color:'#10b981', end:[38.0544,-78.4876]},
+      {name:'Sam',   ini:'ST', color:'#3b82f6', end:[38.0547,-78.4873]},
+    ],
+    wanderMarker:null,
+    timeline:[
+      {time:'10:00 PM',dot:'var(--primary)', text:'Group met at Boylan Heights 🍕', sub:'Jordan, Maya, Sam all checked in', line:true},
+      {time:'11:20 PM',dot:'var(--primary)', text:'Moved to The Corner 🍺', sub:'Group walked together', line:true},
+      {time:'11:50 PM',dot:'var(--warning)', text:'⚠️ Sam flagged — gait at 64%', sub:'"Heads up" sent to Jordan and Maya', line:true},
+      {time:'12:30 AM',dot:'var(--primary)', text:'Group ordered rides home 🚗', sub:'All three in the same Uber', line:true},
+      {time:'1:00 AM', dot:'var(--safe)',    text:'✅ Everyone made it home safely', sub:'All friends confirmed at their safe places', color:'var(--safe)', line:false},
+    ],
+    friends:[
+      {ini:'JK', color:'#f59e0b', name:'Jordan'},
+      {ini:'MR', color:'#10b981', name:'Maya'},
+      {ini:'ST', color:'#3b82f6', name:'Sam'},
+    ],
+  },
+  {
+    dayName:'Saturday', date:'March 7',
+    timeRange:'9:30 PM – 2:30 AM', duration:'5h 00m',
+    stats:[
+      {val:'5h 00m', lbl:'Time Out'},
+      {val:'3',      lbl:'Venues'},
+      {val:'Incident',lbl:'Review flagged', color:'var(--danger)', size:'15px'},
+      {val:'91%',    lbl:'Peak gait index'},
+      {val:'7',      lbl:'Alerts sent'},
+      {val:'0.6mi',  lbl:'Max separation'},
+    ],
+    people:[
+      {name:'Alex',  ini:'AC', color:'#ef4444', end:[38.0536,-78.4863]},
+      {name:'Jordan',ini:'JK', color:'#f59e0b', end:[38.0526,-78.4856]},
+      {name:'Maya',  ini:'MR', color:'#10b981', end:[38.0540,-78.4876]},
+      {name:'Sophie',ini:'S',  color:'#355E3B', end:[38.0533,-78.4868]},
+    ],
+    wanderMarker:[38.0490,-78.4830],
+    timeline:[
+      {time:'9:30 PM', dot:'var(--primary)', text:'Group met at Trinity Irish Pub 🍺', sub:'All 4 friends checked in', line:true},
+      {time:'10:15 PM',dot:'var(--primary)', text:'Moved to The Corner 🍻', sub:'Group walked 0.3mi together', line:true},
+      {time:'10:45 PM',dot:'var(--warning)', text:'⚠️ Alex gait flagged at 78%', sub:'Group notified', line:true},
+      {time:'11:30 PM',dot:'var(--danger)',  text:'🚨 Alex gait hit 91% — check-in alert', sub:'Sophie stayed with Alex', line:true},
+      {time:'11:50 PM',dot:'var(--danger)',  text:'🚨 Jordan separated — 0.6mi from group', sub:'Emergency check-in triggered', line:true},
+      {time:'12:10 AM',dot:'var(--warning)', text:'Jordan located — walking on Rugby Rd', sub:'Maya and Sam went to meet Jordan', line:true},
+      {time:'12:45 AM',dot:'var(--primary)', text:"Moved to Bodo's Bagels 🥯", sub:'Group reunited, food run', line:true},
+      {time:'1:30 AM', dot:'var(--primary)', text:'Group split into two Ubers 🚗', sub:'', line:true},
+      {time:'2:30 AM', dot:'var(--safe)',    text:'✅ Everyone made it home safely', sub:'All friends confirmed at their safe places', color:'var(--safe)', line:false},
+    ],
+    friends:[
+      {ini:'AC', color:'#ef4444', name:'Alex'},
+      {ini:'JK', color:'#f59e0b', name:'Jordan'},
+      {ini:'MR', color:'#10b981', name:'Maya'},
+      {ini:'S',  color:'#355E3B', name:'Sophie'},
+    ],
+  },
+  {
+    dayName:'Saturday', date:'Feb 28',
+    timeRange:'10:00 PM – 12:45 AM', duration:'2h 45m',
+    stats:[
+      {val:'2h 45m', lbl:'Time Out'},
+      {val:'1',      lbl:'Venues'},
+      {val:'All safe',lbl:'Made it home', color:'var(--safe)', size:'16px'},
+      {val:'42%',    lbl:'Peak gait index'},
+      {val:'0',      lbl:'Alerts sent'},
+      {val:'0.05mi', lbl:'Max separation'},
+    ],
+    people:[
+      {name:'Alex',  ini:'AC', color:'#ef4444', end:[38.0537,-78.4864]},
+      {name:'Sam',   ini:'ST', color:'#3b82f6', end:[38.0546,-78.4874]},
+      {name:'Sophie',ini:'S',  color:'#355E3B', end:[38.0534,-78.4869]},
+    ],
+    wanderMarker:null,
+    timeline:[
+      {time:'10:00 PM',dot:'var(--primary)', text:'Group met at Boylan Heights 🍕', sub:'Alex, Sam, Sophie checked in', line:true},
+      {time:'11:30 PM',dot:'var(--primary)', text:'Still at Boylan — chill night 😌', sub:'No alerts, group stayed together all night', line:true},
+      {time:'12:15 AM',dot:'var(--primary)', text:'Walked home together 🚶', sub:'All three live nearby', line:true},
+      {time:'12:45 AM',dot:'var(--safe)',    text:'✅ Everyone made it home safely', sub:'No incidents — perfect night', color:'var(--safe)', line:false},
+    ],
+    friends:[
+      {ini:'AC', color:'#ef4444', name:'Alex'},
+      {ini:'ST', color:'#3b82f6', name:'Sam'},
+      {ini:'S',  color:'#355E3B', name:'Sophie'},
+    ],
+  },
+];
 
-  const people=[
-    {color:'#ef4444',end:[38.0538,-78.4865]},{color:'#f59e0b',end:[38.0528,-78.4858]},
-    {color:'#10b981',end:[38.0542,-78.4878]},{color:'#3b82f6',end:[38.0545,-78.4875]},
-    {color:'#355E3B',end:[38.0535,-78.4870]},
-  ];
-  const venueA=[38.0560,-78.489], venueB=[38.054,-78.486], home=[38.0520,-78.4892];
+// ── Map state ─────────────────────────────────────────────────────────────────
+let leafletMap, dynamicLayers=[], polylines=[];
+const venueA=[38.0560,-78.489], venueB=[38.054,-78.486], home=[38.0520,-78.4892];
 
-  people.forEach(p=>{
-    const path=[...venueA,[venueA[0]+(Math.random()-0.5)*0.004,venueA[1]+(Math.random()-0.5)*0.004],[venueB[0]+(Math.random()-0.5)*0.003,venueB[1]+(Math.random()-0.5)*0.003],...venueB,...p.end,...home];
-    L.polyline([[...venueA],[venueA[0]+(Math.random()-0.5)*0.004,venueA[1]+(Math.random()-0.5)*0.004],[venueB[0]+(Math.random()-0.5)*0.003,venueB[1]+(Math.random()-0.5)*0.003],[...venueB],[...p.end],[...home]],{color:p.color,weight:2.5,opacity:0.8}).addTo(map);
-    L.circleMarker(home,{radius:4,fillColor:p.color,color:'white',weight:1.5,fillOpacity:1}).addTo(map);
-  });
-
-  const mkV=(ll,label,ic)=>L.marker(ll,{icon:L.divIcon({html:`<div style="font-size:18px;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.5))">${ic}</div>`,className:'',iconSize:[24,24],iconAnchor:[12,12]})}).addTo(map).bindPopup(label);
-  mkV([38.0558,-78.489],'The Corner ','');
-  mkV([38.0540,-78.486],'Boylan Heights ','');
-  L.marker(home,{icon:L.divIcon({html:`<div style="width:28px;height:28px;border-radius:8px;background:#10b981;border:2px solid white;box-shadow:0 4px 10px rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>`,className:'',iconSize:[28,28],iconAnchor:[14,14]})}).addTo(map).bindPopup('<b> Home</b><br>Everyone arrived safely');
-  L.marker([38.050,-78.484],{icon:L.divIcon({html:`<div style="font-size:18px"></div>`,className:'',iconSize:[22,22],iconAnchor:[11,11]})}).addTo(map).bindPopup('Jordan wandered here — friends sent directions');
+function clearDynamicLayers(){
+  dynamicLayers.forEach(l=>leafletMap.removeLayer(l));
+  dynamicLayers=[];
+  polylines=[];
 }
+
+function resetPaths(){
+  polylines.forEach(({pl})=>{pl.setStyle({weight:2.5,opacity:0.8});pl.bringToBack();});
+  document.getElementById('path-banner').classList.add('hidden');
+  document.getElementById('map-tap-hint').classList.remove('hidden');
+}
+
+function selectPath(idx){
+  polylines.forEach(({pl},i)=>{
+    if(i===idx){pl.setStyle({weight:4,opacity:1});pl.bringToFront();}
+    else{pl.setStyle({weight:1.5,opacity:0.2});}
+  });
+  const p=polylines[idx].p;
+  document.getElementById('path-banner-dot').style.background=p.color;
+  document.getElementById('path-banner-name').textContent=p.name+"'s route";
+  document.getElementById('path-banner').classList.remove('hidden');
+  document.getElementById('map-tap-hint').classList.add('hidden');
+}
+
+function drawRoutes(rally){
+  clearDynamicLayers();
+  rally.people.forEach((p,i)=>{
+    const coords=[[...venueA],[venueA[0]+(Math.random()-0.5)*0.004,venueA[1]+(Math.random()-0.5)*0.004],[venueB[0]+(Math.random()-0.5)*0.003,venueB[1]+(Math.random()-0.5)*0.003],[...venueB],[...p.end],[...home]];
+    const pl=L.polyline(coords,{color:p.color,weight:2.5,opacity:0.8}).addTo(leafletMap);
+    pl.on('click',e=>{L.DomEvent.stopPropagation(e);selectPath(i);});
+    dynamicLayers.push(pl);
+    polylines.push({pl,p});
+    const cm=L.circleMarker(home,{radius:4,fillColor:p.color,color:'white',weight:1.5,fillOpacity:1}).addTo(leafletMap);
+    dynamicLayers.push(cm);
+  });
+  if(rally.wanderMarker){
+    const wm=L.marker(rally.wanderMarker,{icon:L.divIcon({html:`<div style="font-size:18px">😵</div>`,className:'',iconSize:[22,22],iconAnchor:[11,11]})}).addTo(leafletMap).bindPopup('Someone wandered here — friends sent directions');
+    dynamicLayers.push(wm);
+  }
+}
+
+function initMap(){
+  leafletMap=L.map('map',{center:[38.054,-78.487],zoom:15,zoomControl:false,attributionControl:false,dragging:true,scrollWheelZoom:false});
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{subdomains:'abcd'}).addTo(leafletMap);
+  const mkV=(ll,label,ic)=>L.marker(ll,{icon:L.divIcon({html:`<div style="font-size:18px;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.5))">${ic}</div>`,className:'',iconSize:[24,24],iconAnchor:[12,12]})}).addTo(leafletMap).bindPopup(label);
+  mkV([38.0558,-78.489],'The Corner 🍺','🏠');
+  mkV([38.0540,-78.486],'Boylan Heights 🍕','🏠');
+  L.marker(home,{icon:L.divIcon({html:`<div style="width:28px;height:28px;border-radius:8px;background:#10b981;border:2px solid white;box-shadow:0 4px 10px rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>`,className:'',iconSize:[28,28],iconAnchor:[14,14]})}).addTo(leafletMap).bindPopup('<b>🏠 Home</b><br>Everyone arrived safely');
+  leafletMap.on('click',resetPaths);
+}
+
+// ── Render ────────────────────────────────────────────────────────────────────
+let currentIdx=0;
+
+function render(idx, dir){
+  const r=RALLIES[idx];
+
+  // Header
+  document.getElementById('rally-date').textContent=`${r.dayName}, ${r.date}`;
+  document.getElementById('rally-time').textContent=`${r.timeRange} · ${r.duration}`;
+
+  // Nav button states
+  const navL=document.getElementById('nav-left');
+  const navR=document.getElementById('nav-right');
+  const navRIcon=document.getElementById('nav-right-icon');
+
+  if(idx >= RALLIES.length-1){
+    navL.className='nav-btn nav-btn-disabled'; navL.disabled=true;
+  } else {
+    navL.className='nav-btn nav-btn-active'; navL.disabled=false;
+  }
+  if(idx <= 0){
+    navR.className='nav-btn nav-btn-disabled'; navR.disabled=true;
+    navRIcon.setAttribute('stroke','rgba(255,255,255,0.25)');
+  } else {
+    navR.className='nav-btn nav-btn-active'; navR.disabled=false;
+    navRIcon.setAttribute('stroke','white');
+  }
+
+  // Stats
+  const s=r.stats;
+  document.getElementById('stats1').innerHTML=s.slice(0,3).map(b=>`
+    <div class="stat-box">
+      <div class="stat-val" style="${b.color?`color:${b.color};`:''}${b.size?`font-size:${b.size};`:''}">${b.val}</div>
+      <div class="stat-lbl">${b.lbl}</div>
+    </div>`).join('');
+  document.getElementById('stats2').innerHTML=s.slice(3).map(b=>`
+    <div class="stat-box">
+      <div class="stat-val" style="${b.color?`color:${b.color};`:''}${b.size?`font-size:${b.size};`:''}">${b.val}</div>
+      <div class="stat-lbl">${b.lbl}</div>
+    </div>`).join('');
+
+  // Timeline
+  document.getElementById('timeline').innerHTML=r.timeline.map(e=>`
+    <div class="tl-row">
+      <div class="tl-time">${e.time}</div>
+      <div class="tl-dot-col">
+        <div class="tl-dot" style="background:${e.dot}"></div>
+        ${e.line?'<div class="tl-line"></div>':''}
+      </div>
+      <div class="tl-body">
+        <div class="tl-text"${e.color?` style="color:${e.color}"`:''}>${e.text}</div>
+        ${e.sub?`<div class="tl-sub">${e.sub}</div>`:''}
+      </div>
+    </div>`).join('');
+
+  // Friends
+  document.getElementById('friends').innerHTML=r.friends.map(f=>`
+    <div class="fc-mini">
+      <div class="fc-mini-av" style="background:${f.color}">${f.ini}</div>
+      <div class="fc-mini-name">${f.name}</div>
+      <div class="fc-mini-status" style="color:var(--safe)">✓ Safe</div>
+    </div>`).join('');
+
+  // Map routes
+  drawRoutes(r);
+  resetPaths();
+
+  // Fade animation
+  const content=document.getElementById('main-content');
+  content.classList.remove('content-fade');
+  void content.offsetWidth;
+  content.classList.add('content-fade');
+}
+
+function navigate(dir){
+  // dir: +1 = newer (idx-1), -1 = older (idx+1)
+  const next=currentIdx + (dir>0 ? -1 : 1);
+  if(next<0||next>=RALLIES.length) return;
+  currentIdx=next;
+  render(currentIdx, dir);
+}
+
 initMap();
+render(0);
 </script>
 </body>
 </html>
