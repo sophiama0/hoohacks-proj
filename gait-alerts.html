@@ -98,6 +98,7 @@
         <div>
           <div class="alert-banner-title" id="alert-title">All signals normal</div>
           <div class="alert-banner-sub" id="alert-sub">No alerts sent, your friends are not notified</div>
+          <div id="ai-blurb" style="display:none;font-size:11px;color:#fbbf24;margin-top:5px;line-height:1.4;font-style:italic;"></div>
         </div>
         <div class="signal-row" style="margin-left:auto;flex-direction:column;gap:5px;">
           <div style="display:flex;gap:5px;align-items:center">
@@ -231,6 +232,61 @@ let soundSuspicious = false;
 let proxSuspicious = false;
 const circumference = 2 * Math.PI * 65;
 
+// Simulated stationary time — starts at 23 min for demo realism
+let stationaryMinutes = 23;
+setInterval(() => stationaryMinutes++, 60000);
+
+// ── AI Safety Check ────────────────────────────────────
+let aiPollInterval = null;
+
+function anySignalElevated() {
+  return currentGait >= 45 || soundSuspicious || PROX_FRIENDS.some(f => f.dist > 130);
+}
+
+async function checkSafetyWithAI() {
+  const maxDist = Math.max(...PROX_FRIENDS.map(f => f.dist));
+  const payload = {
+    gaitPct:             currentGait,
+    noiseShift:          soundSuspicious,
+    maxFriendDistMeters: maxDist,
+    minutesStationary:   stationaryMinutes,
+    hourOfNight:         new Date().getHours(),
+  };
+
+  try {
+    const res  = await fetch('http://localhost:3001/check-safety', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify(payload),
+    });
+    const data = await res.json();
+
+    const blurbEl = document.getElementById('ai-blurb');
+    if (data.notify && data.blurb) {
+      blurbEl.textContent = '✦ AI: ' + data.blurb;
+      blurbEl.style.display = 'block';
+    } else {
+      blurbEl.style.display = 'none';
+    }
+  } catch {
+    // Server not running — silently skip, app still works
+  }
+}
+
+function scheduleAiCheck() {
+  if (anySignalElevated()) {
+    // Fire immediately, then every 10s while signals are active
+    if (!aiPollInterval) {
+      checkSafetyWithAI();
+      aiPollInterval = setInterval(checkSafetyWithAI, 10000);
+    }
+  } else {
+    // All clear — stop polling and hide blurb
+    if (aiPollInterval) { clearInterval(aiPollInterval); aiPollInterval = null; }
+    document.getElementById('ai-blurb').style.display = 'none';
+  }
+}
+
 const PROX_FRIENDS = [
   {ini:'RD', name:'Richard Do',   color:'#355E3B', dist:38,  angle:40},
   {ini:'CC', name:'Collin Chan',  color:'#355E3B', dist:72,  angle:150},
@@ -278,6 +334,8 @@ function updateAlertBanner() {
     title.textContent = 'All signals normal';
     sub.textContent  = 'No alerts sent';
   }
+
+  scheduleAiCheck();
 }
 
 // ── Gait ───────────────────────────────────────────────
@@ -379,6 +437,7 @@ function initAmbient() {
 setGait(12);
 initAmbient();
 renderProximity();
+scheduleAiCheck();
 
 setInterval(() => {
   const slider = document.getElementById('gait-slider');
