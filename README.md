@@ -15,16 +15,12 @@ Rally is a real-time safety application for groups going out at night. It monito
 
 ## Risk Score Tiers
 
-| Score | Status |
-|-------|--------|
-| 0–20  | Healthy |
-| 21–40 | Doing Well |
-| 41–55 | Mellow |
-| 56–65 | Uneasy |
-| 66–75 | Needs a Check-in |
-| 76–85 | Needs Help |
-| 86–95 | Critical |
-| 96+   | Distressed |
+| Score | Status | Action |
+|-------|--------|--------|
+| 0–59  | Healthy | No alert |
+| 60–74 | Check-in | Friends notified — heads-up |
+| 75–89 | Urgent | Friends notified — check on them |
+| 90+   | Emergency | Friends notified — go find them now |
 
 Score factors: gait (up to 40 pts), noise shift (up to 30 pts), distance from friends (up to 30 pts), stationary 15+ min (+20 pts), low battery (+10 pts), late-night multiplier (up to 1.4×).
 
