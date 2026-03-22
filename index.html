@@ -202,9 +202,8 @@
     <div id="map"></div>
 
     <div class="map-bottom">
-      <button class="action-primary" onclick="openModal('helpme-modal')"> Come Help Me</button>
       <div class="action-row">
-        <button class="action-btn btn-contact" onclick="openModal('contact-modal')"> Call Emergency Contact</button>
+        <button class="action-btn" onclick="openModal('helpme-modal')" style="background:var(--danger);color:white;border:none;box-shadow:0 0 18px rgba(239,68,68,0.4);flex:1.2"> Request Help</button>
         <button class="action-btn btn-uber" onclick="openModal('uber-modal')"> Order Ride</button>
       </div>
       <div class="chips" id="chips"></div>
@@ -214,7 +213,7 @@
     <div class="modal-overlay" id="helpme-modal">
       <div class="modal-sheet">
         <div class="mhandle"></div>
-        <div class="mtitle" style="color:var(--danger)"> Come Help Me</div>
+        <div class="mtitle" style="color:var(--danger)"> Request Help</div>
         <div class="msub">Your live GPS location will be sent to your friends with turn-by-turn directions to reach you.</div>
         <div class="loc-box">
           <div style="font-size:11px;color:var(--text-muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:1px;font-weight:600">Your location</div>
@@ -223,7 +222,7 @@
           <div style="font-size:12px;color:var(--text-muted);margin-top:3px"> Nearby: McDonald's, brick building w/ green awning</div>
         </div>
         <button class="mbtn danger" onclick="closeModal('helpme-modal');toast('','Help Request Sent!','All 4 friends received directions to your location')"> Alert All Friends</button>
-        <button class="mbtn danger-soft" onclick="closeModal('helpme-modal');toast('','Calling Mom','(555) 867-5309 — emergency contact')"> Also Call Emergency Contact</button>
+        <button class="mbtn danger-soft" onclick="closeModal('helpme-modal');toast('','Calling Mom','(555) 867-5309 — emergency contact')"> Call Emergency Contact</button>
         <button class="mbtn ghost" onclick="closeModal('helpme-modal')">Cancel</button>
       </div>
     </div>
