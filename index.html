@@ -23,7 +23,6 @@
     .sidebar-title{font-size:13px;font-weight:600;color:var(--text);}
     .sidebar-desc{font-size:11px;color:var(--text-muted);margin-top:1px;line-height:1.3;}
     .sidebar-arr{font-size:13px;color:rgba(255,255,255,0.2);}
-    .sidebar-divider{height:1px;background:var(--border);margin:8px 20px;}
 
     /*  Main content wrapper  */
     .main{position:absolute;inset:0;transition:transform 0.32s cubic-bezier(0.4,0,0.2,1);}
@@ -148,13 +147,6 @@
       <div class="sidebar-title" style="flex:1">Gait Calibration</div>
       <div class="sidebar-arr">›</div>
     </a>
-    <a class="sidebar-item" href="emergency.html">
-      <div class="sidebar-ic" style="background:rgba(53,94,59,0.2)">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-      </div>
-      <div class="sidebar-title" style="flex:1">Emergency &amp; SOS</div>
-      <div class="sidebar-arr">›</div>
-    </a>
 
     <!-- User profile footer -->
     <div style="flex:1"></div>
@@ -213,7 +205,7 @@
       <button class="action-primary" onclick="openModal('helpme-modal')"> Come Help Me</button>
       <div class="action-row">
         <button class="action-btn btn-contact" onclick="openModal('contact-modal')"> Call Emergency Contact</button>
-        <button class="action-btn btn-uber" onclick="openModal('uber-modal')"> Order Uber</button>
+        <button class="action-btn btn-uber" onclick="openModal('uber-modal')"> Order Ride</button>
       </div>
       <div class="chips" id="chips"></div>
     </div>
@@ -260,7 +252,7 @@
           <div style="font-size:12px;color:var(--text-muted);margin-top:3px">1819 University Ave, Charlottesville, VA</div>
         </div>
         <button class="mbtn primary" onclick="closeModal('uber-modal');toast('','Opening Uber','Pickup pre-filled to your GPS location')"> Open Uber</button>
-        <button class="mbtn ghost" style="color:var(--text-muted)" onclick="closeModal('uber-modal');toast('','Opening Lyft','Pickup pre-filled to your GPS location')">Open Lyft</button>
+        <button class="mbtn primary" onclick="closeModal('uber-modal');toast('','Opening Lyft','Pickup pre-filled to your GPS location')"> Open Lyft</button>
         <button class="mbtn ghost" onclick="closeModal('uber-modal')">Cancel</button>
       </div>
     </div>
