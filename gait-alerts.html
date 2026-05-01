@@ -130,7 +130,10 @@
     <div class="header-top">
       <a class="back" href="index.html">&#8249; Back</a>
       <div class="header-title">Safety Alerts</div>
-      <div style="font-size:11px;font-weight:600;padding:3px 10px;border-radius:50px;background:rgba(16,185,129,0.12);color:#10b981">LIVE</div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <div id="demo-btn" onclick="toggleDemo()" style="font-size:11px;font-weight:600;padding:3px 10px;border-radius:50px;background:rgba(255,255,255,0.08);color:var(--text-muted);cursor:pointer;border:1px solid var(--border);">Demo</div>
+        <div style="font-size:11px;font-weight:600;padding:3px 10px;border-radius:50px;background:rgba(16,185,129,0.12);color:#10b981">LIVE</div>
+      </div>
     </div>
   </div>
 
@@ -190,7 +193,7 @@
         <div class="hero-desc" id="gdesc">Your walk is steady. No concerns detected.</div>
       </div>
 
-      <div class="card">
+      <div class="card" id="gait-sim-card">
         <div class="slider-row">
           <span>Simulate gait impairment</span>
           <strong id="gait-val">12%</strong>
@@ -687,6 +690,29 @@ function initAmbient() {
     b.style.height = Math.floor(h * 0.4) + 'px';
     w.appendChild(b);
   });
+}
+
+// Demo mode
+let demoActive = false;
+function toggleDemo() {
+  demoActive = !demoActive;
+  const btn = document.getElementById('demo-btn');
+  const simCard = document.getElementById('gait-sim-card');
+  if (demoActive) {
+    btn.style.background = 'rgba(53,94,59,0.2)';
+    btn.style.color = '#6fcf7c';
+    btn.style.borderColor = 'rgba(53,94,59,0.5)';
+    simCard.style.display = 'none';
+    const slider = document.getElementById('gait-slider');
+    slider.value = 59;
+    setGait(59);
+    switchTab('gait', document.querySelector('.tab'));
+  } else {
+    btn.style.background = 'rgba(255,255,255,0.08)';
+    btn.style.color = 'var(--text-muted)';
+    btn.style.borderColor = 'var(--border)';
+    simCard.style.display = '';
+  }
 }
 
 // Init

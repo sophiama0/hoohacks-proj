@@ -5,7 +5,9 @@
       "Bash(ls:*)",
       "Bash(curl:*)",
       "Bash(grep:*)",
-      "Bash(find C:Userstylerhoohacks-proj -maxdepth 2 -not -path */node_modules/* -not -path */.next/* -type f)"
+      "Bash(find C:Userstylerhoohacks-proj -maxdepth 2 -not -path */node_modules/* -not -path */.next/* -type f)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
     ]
   }
 }
